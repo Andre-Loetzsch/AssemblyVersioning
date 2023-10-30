@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using Versioning.ExternalProcesses;
+using Oleander.AssemblyVersioning.ExternalProcesses;
 
-namespace Versioning;
+namespace Oleander.AssemblyVersioning;
 
 internal class Program
 {
@@ -10,12 +10,8 @@ internal class Program
 
         var dir = AppDomain.CurrentDomain.BaseDirectory;
 
-        if (args.Length == 1)
-        {
-            dir = Path.GetDirectoryName(args[0]);
-        }
-
-        if (dir == null) return -1;
+        if (args.Length == 1) dir = args[0];
+        
 
         if (!VSProject.TryFindVSProject(dir, out var projectDirName, out var projectFileName)) return -1;
         if (!VSProject.TryFindGitRepositoryDirName(projectDirName, out var gitRepositoryDirName)) return -1;
@@ -25,18 +21,21 @@ internal class Program
         var result = new GitGetStatus().Start();
         if (result.ExitCode != 0) return result.ExitCode;
 
-
         var increaseMajor = false;
         var increaseRevision = false;
         var extensionList = new List<string> { ".xaml" };
         var projectFiles = Directory.GetFiles(projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => extensionList.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x.Substring(gitRepositoryDirName.Length + 1).ToLower());
+        
+        if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
 
         var increaseBuild = projectFiles.Any(projectFile => result.StandardOutput.ToLower().Contains(projectFile.Replace('\\', '/')));
 
         result = new GitGetHash().Start();
         if (result.ExitCode != 0) return result.ExitCode;
+        if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
+
 
         var versioningPath = Path.Combine(projectDirName, ".versioning", result.StandardOutput.Trim());
         var assemblyName = Path.GetFileNameWithoutExtension(projectFileName);
@@ -139,28 +138,6 @@ internal class Program
     }
 
 
-
-
-    private static string CompareAssemblies(string refAssemblyFile, string assemblyFile)
-    {
-
-        var refAssembly = Assembly.LoadFile(refAssemblyFile);
-        var assembly = Assembly.LoadFile(assemblyFile);
-        var refAssemblyVersion = refAssembly.GetName().Version;
-        var major = refAssemblyVersion?.Major ?? 0;
-        var minor = refAssemblyVersion?.Minor ?? 0;
-        var build = refAssemblyVersion?.Build ?? 0;
-        var revision = refAssemblyVersion?.Revision ?? 0;
-
-
-
-
-
-        return $"{major}.{minor}.{build}.{revision}";
-    }
-
-
-
     private static Assembly CreateAssembly(FileInfo assemblyFileInfo)
     {
         var assemblyFile = assemblyFileInfo.FullName;
@@ -237,18 +214,10 @@ internal class Program
     }
 
 
-
-
-
-
     private static string CreateRefInfo(Module module)
     {
         return $"module:{module.Name}";
     }
-
-
-
-
 
     private static IEnumerable<string> CreateRefInfo(Type type)
     {
@@ -265,8 +234,6 @@ internal class Program
         var parameters = string.Join(':', methodInfo.GetParameters().Select(CreateRefInfo));
         var genericArguments = string.Join(':', methodInfo.GetGenericArguments().Select(CreateRefInfo));
 
-
-
         return $"methodInfo:{methodInfo.DeclaringType}.{methodInfo.Name}:{methodInfo.ReturnType.FullName}:{methodInfo.IsAbstract}:{methodInfo.IsVirtual}:{methodInfo.IsStatic}:{parameters}:{genericArguments}";
     }
 
@@ -275,10 +242,6 @@ internal class Program
     {
         return $"{{parameterInfo:{parameterInfo.ParameterType}:{parameterInfo.Position}:{parameterInfo.IsOut}:{parameterInfo.IsIn}:{parameterInfo.IsOptional}:{parameterInfo.HasDefaultValue}:{parameterInfo.DefaultValue}}}";
     }
-
-
-   
-
 
     private static string CreateRefInfo(Attribute attribute)
     {

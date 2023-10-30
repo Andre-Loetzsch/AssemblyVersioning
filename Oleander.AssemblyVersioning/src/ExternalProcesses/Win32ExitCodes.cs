@@ -1,4 +1,4 @@
-﻿namespace Versioning.ExternalProcesses;
+﻿namespace Oleander.AssemblyVersioning.ExternalProcesses;
 
 public enum Win32ExitCodes : int
 {

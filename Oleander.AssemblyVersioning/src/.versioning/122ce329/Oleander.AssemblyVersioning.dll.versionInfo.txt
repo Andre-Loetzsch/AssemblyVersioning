@@ -1,0 +1,50 @@
+1.0.0.0
+module:Oleander.AssemblyVersioning.dll
+type:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess:System.Object:False
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess.Start:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult:False:False:False::
+
+
+
+
+type:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult:System.Object:False
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_ExeFileName:System.String:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_CommandLine:System.String:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_Win32ExitCode:Oleander.AssemblyVersioning.ExternalProcesses.Win32ExitCodes:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_ExitCode:System.Int32:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_StandardOutput:System.String:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.get_StandardErrorOutput:System.String:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult.ToString:System.String:False:True:False::
+
+
+
+type:Oleander.AssemblyVersioning.ExternalProcesses.GitGetHash:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess:False
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess.Start:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult:False:False:False::
+
+
+
+
+type:Oleander.AssemblyVersioning.ExternalProcesses.GitGetStatus:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess:False
+methodInfo:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcess.Start:Oleander.AssemblyVersioning.ExternalProcesses.ExternalProcessResult:False:False:False::
+
+
+
+
+type:Oleander.AssemblyVersioning.ExternalProcesses.Win32ExitCodes:System.Enum:False
+methodInfo:System.Enum.HasFlag:System.Boolean:False:False:False:{parameterInfo:System.Enum:0:False:False:False:False:}:
+methodInfo:System.Enum.Equals:System.Boolean:False:True:False:{parameterInfo:System.Object:0:False:False:False:False:}:
+methodInfo:System.Enum.GetHashCode:System.Int32:False:True:False::
+methodInfo:System.Enum.ToString:System.String:False:True:False::
+methodInfo:System.Enum.CompareTo:System.Int32:False:True:False:{parameterInfo:System.Object:0:False:False:False:False:}:
+methodInfo:System.Enum.ToString:System.String:False:True:False:{parameterInfo:System.String:0:False:False:False:False:}:{parameterInfo:System.IFormatProvider:1:False:False:False:False:}:
+methodInfo:System.Enum.ToString:System.String:False:False:False:{parameterInfo:System.String:0:False:False:False:False:}:
+methodInfo:System.Enum.ToString:System.String:False:True:False:{parameterInfo:System.IFormatProvider:0:False:False:False:False:}:
+methodInfo:System.Enum.GetTypeCode:System.TypeCode:False:True:False::
+
+System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+System.Collections, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+Microsoft.Build, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+System.Diagnostics.Process, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+Microsoft.Win32.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+System.Linq, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+System.ComponentModel.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a

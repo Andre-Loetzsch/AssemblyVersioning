@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Versioning.ExternalProcesses
+namespace Oleander.AssemblyVersioning.ExternalProcesses
 {
     public class ExternalProcessResult
     {
@@ -16,8 +16,8 @@ namespace Versioning.ExternalProcesses
 
         public Win32ExitCodes Win32ExitCode { get; internal set; } = Win32ExitCodes.ERROR_SUCCESS;
         public int ExitCode { get; internal set; }
-        public string StandardOutput { get; internal set; }
-        public string StandardErrorOutput { get; internal set; }
+        public string? StandardOutput { get; internal set; }
+        public string? StandardErrorOutput { get; internal set; }
 
         public override string ToString()
         {
