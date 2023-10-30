@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Versioning": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\dev\\git\\tentakeldev\\Tentakel.Machine.ToolSet\\Tentakel.Machine.ToolSet.BusinessConnector\\src\\ToolSetConnector.cs"
+    }
+  }
+}
