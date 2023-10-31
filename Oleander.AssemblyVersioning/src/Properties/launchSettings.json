@@ -2,7 +2,7 @@
   "profiles": {
     "Versioning": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\dev\\git\\oleander\\AssemblyVersioning\\Oleander.AssemblyVersioning\\src"
+      "commandLineArgs": "C:\\dev\\git\\oleander\\AssemblyVersioning\\Oleander.AssemblyVersioning\\tests\\bin\\Debug\\net7.0"
     }
   }
 }
