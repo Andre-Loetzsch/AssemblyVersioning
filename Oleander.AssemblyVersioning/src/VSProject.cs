@@ -53,8 +53,14 @@ internal class VSProject
 
         set
         {
-            var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "AssemblyVersion") ?? 
-                           this._projectRootElement.AddProperty("AssemblyVersion", value);
+            var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "AssemblyVersion");
+
+            if (property == null)
+            {
+                this._projectRootElement.AddProperty("AssemblyVersion", value);
+                this._hasChanges = true;
+                return;
+            }
 
             this._hasChanges = property.Value != value;
             property.Value = value;
@@ -63,14 +69,9 @@ internal class VSProject
 
     public void SaveChanges()
     {
-        if (this._hasChanges)
-        {
-            this._projectRootElement.Save();
-            this._hasChanges = false;
-
-            return;
-        }
-
+        if (!this._hasChanges) return;
+        this._projectRootElement.Save();
+        this._hasChanges = false;
     }
 
 

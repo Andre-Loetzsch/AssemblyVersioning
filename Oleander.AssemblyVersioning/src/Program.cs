@@ -7,13 +7,15 @@ internal class Program
 {
     static int Main(string[] args)
     {
+        if (args.Length != 1) return -1;
 
-        var dir = AppDomain.CurrentDomain.BaseDirectory;
+        var targetPath = args[0];
+        if (!File.Exists(targetPath)) return -1;
 
-        if (args.Length == 1) dir = args[0];
-        
+        var targetDir = Path.GetDirectoryName(targetPath);
 
-        if (!VSProject.TryFindVSProject(dir, out var projectDirName, out var projectFileName)) return -1;
+        if (!Directory.Exists(targetDir)) return -1;
+        if (!VSProject.TryFindVSProject(targetDir, out var projectDirName, out var projectFileName)) return -1;
         if (!VSProject.TryFindGitRepositoryDirName(projectDirName, out var gitRepositoryDirName)) return -1;
 
         Directory.SetCurrentDirectory(gitRepositoryDirName);
@@ -27,7 +29,7 @@ internal class Program
         var projectFiles = Directory.GetFiles(projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => extensionList.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x.Substring(gitRepositoryDirName.Length + 1).ToLower());
-        
+
         if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
 
         var increaseBuild = projectFiles.Any(projectFile => result.StandardOutput.ToLower().Contains(projectFile.Replace('\\', '/')));
@@ -36,22 +38,31 @@ internal class Program
         if (result.ExitCode != 0) return result.ExitCode;
         if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
 
+        var gitHash = result.StandardOutput.Trim();
+        var versioningDir = Path.Combine(projectDirName, ".versioning");
 
-        var versioningPath = Path.Combine(projectDirName, ".versioning", result.StandardOutput.Trim());
-        var assemblyName = Path.GetFileNameWithoutExtension(projectFileName);
-        var assemblyFile = Directory.GetFiles(Path.Combine(projectDirName, "bin", "Debug"), $"{assemblyName}.dll", SearchOption.AllDirectories).FirstOrDefault() ??
-                           Directory.GetFiles(Path.Combine(projectDirName, "bin", "Debug"), $"{assemblyName}.exe", SearchOption.AllDirectories).FirstOrDefault();
+        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
-        if (assemblyFile == null) return -1;
-
-        var refVersionInfoFileName = Path.Combine(versioningPath, string.Concat(Path.GetFileName(assemblyFile), ".versionInfo.txt"));
+        var defaultRefVersionInfoFileName = Path.Combine(projectDirName, string.Concat(Path.GetFileName(targetPath),".versionInfo"));
+        var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(targetPath), $".{gitHash}.versionInfo"));
+        var assemblyVersion = new VSProject(projectFileName).AssemblyVersion;
+        var fileContent = CreateRefInfos(CreateAssembly(new FileInfo(targetPath))).ToList();
+        
+        fileContent.Insert(0, assemblyVersion ?? "0.0.0.0");
 
         if (!File.Exists(refVersionInfoFileName))
         {
-            Directory.CreateDirectory(versioningPath);
-            File.WriteAllLines(refVersionInfoFileName, CreateRefInfos(CreateAssembly(new FileInfo(assemblyFile))));
-            return 0;
+            if (File.Exists(defaultRefVersionInfoFileName))
+            {
+                File.Copy(defaultRefVersionInfoFileName, refVersionInfoFileName);
+            }
+            else
+            {
+                File.WriteAllLines(refVersionInfoFileName, fileContent);
+            }
         }
+
+        File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
 
         var refList = File.ReadAllLines(refVersionInfoFileName).ToList();
         var refVersion = refList.First().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => int.TryParse(x, out var v) ? v : 0).ToList();
@@ -65,29 +76,28 @@ internal class Program
         var minor = refVersion[1];
         var build = refVersion[2];
         var revision = refVersion[3];
-        var assembly = CreateAssembly(new FileInfo(assemblyFile));
-
+        var assembly = CreateAssembly(new FileInfo(targetPath));
         var currentList = CreateRefInfos(assembly).ToList();
 
-        foreach (var line in refList)
+        for (var i = 1; i < refList.Count; i++)
         {
+            var line = refList[i];
             if (currentList.Remove(line)) continue;
             increaseMajor = true;
         }
 
         var increaseMinor = currentList.Count > 0;
 
-        if (new Version(major, minor, build, revision) < GetAssemblyVersion(assembly)) return 0;
+        if (assemblyVersion != null && new Version(major, minor, build, revision) < GetAssemblyVersion(assembly)) return 0;
 
         var calculateVersion = CalculateVersion(major, minor, build, revision, increaseMajor, increaseMinor, increaseBuild, increaseRevision);
         WriteVersionFile(projectFileName, calculateVersion);
         return 0;
-
     }
 
 
-    private static Version CalculateVersion(int major, int minor, int build, int revision, 
-        bool increaseMajor, bool  increaseMinor, bool increaseBuild, bool increaseRevision)
+    private static Version CalculateVersion(int major, int minor, int build, int revision,
+        bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
     {
         // beta version
         if (increaseMajor && major == 0)
@@ -141,7 +151,7 @@ internal class Program
     private static Assembly CreateAssembly(FileInfo assemblyFileInfo)
     {
         var assemblyFile = assemblyFileInfo.FullName;
-        
+
         AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
         {
             var fileName = args.Name.Split(", ", StringSplitOptions.RemoveEmptyEntries).First();
@@ -166,7 +176,7 @@ internal class Program
 
     private static IEnumerable<string> CreateRefInfos(Assembly assembly)
     {
-        yield return GetAssemblyVersion(assembly).ToString();
+        //yield return GetAssemblyVersion(assembly).ToString();
 
         foreach (var result in assembly.Modules.Select(CreateRefInfo))
         {
@@ -183,7 +193,7 @@ internal class Program
 
         foreach (var assemblyName in assembly.GetReferencedAssemblies())
         {
-            yield return assemblyName.FullName;
+            yield return $"referencedAssembly:{assemblyName.FullName}";
         }
 
 
@@ -225,7 +235,7 @@ internal class Program
         result.AddRange(type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(CreateRefInfo));
         result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
 
-        return result;
+        return result.Where(x => !string.IsNullOrEmpty(x));
     }
 
     private static string CreateRefInfo(MethodInfo methodInfo)
