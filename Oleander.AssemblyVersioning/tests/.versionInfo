@@ -1,4 +1,4 @@
-0.0.0.0
+0.0.1.0
 module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.Class1:System.Object:False
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.get_Test:System.Int32:False:False:False::

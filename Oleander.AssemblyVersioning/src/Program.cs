@@ -25,7 +25,7 @@ internal class Program
 
         var increaseMajor = false;
         var increaseRevision = false;
-        var extensionList = new List<string> { ".xaml" };
+        var extensionList = new List<string> { ".cs", ".xaml" };
         var projectFiles = Directory.GetFiles(projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => extensionList.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x.Substring(gitRepositoryDirName.Length + 1).ToLower());
@@ -43,12 +43,13 @@ internal class Program
 
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
-        var defaultRefVersionInfoFileName = Path.Combine(projectDirName, string.Concat(Path.GetFileName(targetPath),".versionInfo"));
+        //var defaultRefVersionInfoFileName = Path.Combine(projectDirName, string.Concat(Path.GetFileName(targetPath),".versionInfo"));
+        var defaultRefVersionInfoFileName = Path.Combine(projectDirName, ".versionInfo");
         var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(targetPath), $".{gitHash}.versionInfo"));
-        var assemblyVersion = new VSProject(projectFileName).AssemblyVersion;
+        var projectFileAssemblyVersion = new VSProject(projectFileName).AssemblyVersion;
         var fileContent = CreateRefInfos(CreateAssembly(new FileInfo(targetPath))).ToList();
         
-        fileContent.Insert(0, assemblyVersion ?? "0.0.0.0");
+        fileContent.Insert(0, projectFileAssemblyVersion ?? "0.0.0.0");
 
         if (!File.Exists(refVersionInfoFileName))
         {
@@ -61,8 +62,6 @@ internal class Program
                 File.WriteAllLines(refVersionInfoFileName, fileContent);
             }
         }
-
-        File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
 
         var refList = File.ReadAllLines(refVersionInfoFileName).ToList();
         var refVersion = refList.First().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => int.TryParse(x, out var v) ? v : 0).ToList();
@@ -87,10 +86,21 @@ internal class Program
         }
 
         var increaseMinor = currentList.Count > 0;
-
-        if (assemblyVersion != null && new Version(major, minor, build, revision) < GetAssemblyVersion(assembly)) return 0;
-
         var calculateVersion = CalculateVersion(major, minor, build, revision, increaseMajor, increaseMinor, increaseBuild, increaseRevision);
+        var assemblyVersion = projectFileAssemblyVersion != null ? 
+            new Version(projectFileAssemblyVersion) : 
+            GetAssemblyVersion(assembly);
+
+        var lastCalculateVersion = new Version(File.Exists(defaultRefVersionInfoFileName) ? 
+            File.ReadAllLines(defaultRefVersionInfoFileName).FirstOrDefault() ?? calculateVersion.ToString() : 
+            calculateVersion.ToString());
+
+        fileContent[0] = calculateVersion.ToString();
+        File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
+
+        if (lastCalculateVersion < assemblyVersion) return 0;
+        if (calculateVersion == assemblyVersion) return 0;
+
         WriteVersionFile(projectFileName, calculateVersion);
         return 0;
     }
