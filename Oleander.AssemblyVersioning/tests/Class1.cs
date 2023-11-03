@@ -13,5 +13,9 @@
     public interface ITest
     {
         int Count { get; }
+
+        string GetName();
+
+        string GetName(string s);
     }
 }

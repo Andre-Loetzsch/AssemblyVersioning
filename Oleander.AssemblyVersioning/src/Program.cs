@@ -254,13 +254,21 @@ internal class Program
 
     private static IEnumerable<string> CreateRefInfo(Type type)
     {
-        var result = new List<string> { $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}" };
+        var result = new List<string>
+        {
+            type.IsInterface ? 
+                $"interface:{type.FullName}:{type.BaseType?.FullName}" : 
+                $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}"
+        };
+
         result.AddRange(type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(CreateRefInfo));
         result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
 
+        result.Sort();
 
-
-        return result.Where(x => !string.IsNullOrEmpty(x));
+        return type.IsInterface ?
+            new []{ string.Join('|', result) } :
+            result.Where(x => !string.IsNullOrEmpty(x));
     }
 
     private static string CreateRefInfo(MethodInfo methodInfo)
