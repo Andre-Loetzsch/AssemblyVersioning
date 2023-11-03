@@ -1,8 +1,11 @@
-1.1.0.0
+1.2.0.0
 module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.Class1:System.Object:False
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.get_Test:System.Int32:False:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.set_Test:System.Void:False:False:False:{parameterInfo:System.Int32:0:False:False:False:False:}:
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.DoSomeThing:System.Void:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.Class1.get_Count:System.Int32:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.Class1.GetName:System.String:False:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.Class1.GetName:System.String:False:False:False:{parameterInfo:System.String:0:False:False:False:False:}:
 interface:Oleander.AssemblyVersioning.Test.ITest:|methodInfo:Oleander.AssemblyVersioning.Test.ITest.get_Count:System.Int32:True:True:False::|methodInfo:Oleander.AssemblyVersioning.Test.ITest.GetName:System.String:True:True:False::|methodInfo:Oleander.AssemblyVersioning.Test.ITest.GetName:System.String:True:True:False:{parameterInfo:System.String:0:False:False:False:False:}:
 referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
