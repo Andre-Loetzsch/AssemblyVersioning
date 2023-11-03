@@ -1,0 +1,93 @@
+name: 'deployNugetPackages'
+
+on:
+  push:
+    branches:
+    - main
+    - 'release/**'
+  pull_request:
+    branches:
+    - main
+    - 'release/**'
+
+  workflow_dispatch:
+
+env:
+  VERSION_SUFFIX: ${{ github.ref_name }}
+  PACKOUTDIR: ${{ github.workspace }}\packoutput
+                    
+jobs:
+  deploy:
+    name: 'Deploy packages'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    steps:
+     - name: 'echo VERSION_SUFFIX'
+       shell: bash
+       run: echo ${{ env.VERSION_SUFFIX }}
+
+     - name: 'Set VERSION_SUFFIX: dev'
+       if: ${{ github.ref_name }} == 'main'
+       shell: bash
+       run: echo "VERSION_SUFFIX=dev" >> $GITHUB_ENV
+
+     - name: 'Set VERSION_SUFFIX: string.Empty'
+       if: ${{ startsWith(github.ref_name, 'release/v') }}
+       shell: bash
+       run: echo "VERSION_SUFFIX=" >> $GITHUB_ENV
+
+     - name: 'Set VERSION_SUFFIX: alpha'
+       if: ${{ startsWith(github.ref_name, 'release/alpha') }}
+       shell: bash
+       run: echo "VERSION_SUFFIX=alpha" >> $GITHUB_ENV
+
+     - name: 'Set VERSION_SUFFIX: beta'
+       if: ${{ startsWith(github.ref_name, 'release/beta') }}
+       shell: bash
+       run:  echo "VERSION_SUFFIX=beta" >> $GITHUB_ENV
+
+     - name: 'Checkout'
+       uses: actions/checkout@v3
+     
+     - name: 'Install dotnet'
+       uses: actions/setup-dotnet@v2
+       with:
+         dotnet-version: '7.0.x'
+
+     - name: 'Add GitHub to Nuget source'
+       uses: 'Andre-Loetzsch/actions/addGitHubToNugetSource@v1'
+       with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+
+     - name: 'Build and test Oleander.AssemblyVersioning.sln'
+       uses: Andre-Loetzsch/actions/buildAndTestSolution@v1
+       with:
+         solution: '${{ github.workspace }}\Oleander.AssemblyVersioning\Oleander.AssemblyVersioning.sln'
+         version-suffix: ${{ env.VERSION_SUFFIX }}
+         packoutdir: ${{ env.PACKOUTDIR }}
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+   
+     # - name: 'delete Oleander.Extensions.Configuration-dev old packages'
+     #   if: env.VERSION_SUFFIX == 'dev'
+     #   uses: actions/delete-package-versions@v4
+     #   with:
+     #     package-name: 'Oleander.Extensions.Configuration'
+     #     package-type: 'nuget'
+     #     min-versions-to-keep: 5
+     #     delete-only-pre-release-versions: "true"
+       
+     # - name: 'push nuget packages'
+     #   if: matrix.os == 'windows-latest' && github.event_name != 'pull_request'
+     #   uses: Andre-Loetzsch/actions/pushNugetPackages@v1
+     #   with:
+     #     outdir: ${{ env.PACKOUTDIR }}
+     #     github_token: ${{ secrets.GITHUB_TOKEN }}
+
+     # - name: 'push nuget packages to nuget gallery'
+     #   if: matrix.os == 'windows-latest' && github.event_name != 'pull_request' && env.VERSION_SUFFIX != 'dev'
+     #   uses: Andre-Loetzsch/actions/pushNugetPackagesToNugetOrg@v1
+     #   with:
+     #     packagedir: ${{ env.PACKOUTDIR }}
+     #     nuget_apikey: ${{ secrets.NUGETORG_ACCESS_TOKEN }}
