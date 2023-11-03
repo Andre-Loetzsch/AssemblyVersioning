@@ -1,4 +1,6 @@
-﻿namespace Oleander.AssemblyVersioning.ExternalProcesses;
+﻿using System.Runtime.CompilerServices;
+
+namespace Oleander.AssemblyVersioning.ExternalProcesses;
 
 public class GitGetHash : ExternalProcess
 {

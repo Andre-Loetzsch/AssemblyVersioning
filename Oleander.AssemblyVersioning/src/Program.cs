@@ -20,30 +20,40 @@ internal class Program
 
         Directory.SetCurrentDirectory(gitRepositoryDirName);
 
-        var result = new GitGetStatus().Start();
+        var result = new GitGetHash().Start();
+        if (result.ExitCode != 0) return result.ExitCode;
+        if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
+
+        var gitHash = result.StandardOutput.Trim();
+
+        result = new GitDiffNameOnly(gitHash).Start();
         if (result.ExitCode != 0) return result.ExitCode;
 
         var increaseMajor = false;
         var increaseRevision = false;
-        var extensionList = new List<string> { ".cs", ".xaml" };
+        var gitDiffExtensionList = new List<string> { ".cs", ".xaml" };
+        var gitDiffFileExtensionPath = Path.Combine(projectDirName, ".gitdiff");
+
+        if (File.Exists(gitDiffFileExtensionPath))
+        {
+            gitDiffExtensionList = File.ReadAllLines(gitDiffFileExtensionPath).ToList();
+        }
+        else
+        {
+            File.WriteAllLines(gitDiffFileExtensionPath, gitDiffExtensionList);
+        }
+
         var projectFiles = Directory.GetFiles(projectDirName, "*.*", SearchOption.AllDirectories)
-            .Where(x => extensionList.Contains(Path.GetExtension(x).ToLower()))
+            .Where(x => gitDiffExtensionList.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x.Substring(gitRepositoryDirName.Length + 1).ToLower());
 
         if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
 
         var increaseBuild = projectFiles.Any(projectFile => result.StandardOutput.ToLower().Contains(projectFile.Replace('\\', '/')));
-
-        result = new GitGetHash().Start();
-        if (result.ExitCode != 0) return result.ExitCode;
-        if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
-
-        var gitHash = result.StandardOutput.Trim();
         var versioningDir = Path.Combine(projectDirName, ".versioning");
 
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
-        //var defaultRefVersionInfoFileName = Path.Combine(projectDirName, string.Concat(Path.GetFileName(targetPath),".versionInfo"));
         var defaultRefVersionInfoFileName = Path.Combine(projectDirName, ".versionInfo");
         var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(targetPath), $".{gitHash}.versionInfo"));
         var projectFileAssemblyVersion = new VSProject(projectFileName).AssemblyVersion;
@@ -244,6 +254,8 @@ internal class Program
         var result = new List<string> { $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}" };
         result.AddRange(type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(CreateRefInfo));
         result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
+
+
 
         return result.Where(x => !string.IsNullOrEmpty(x));
     }
