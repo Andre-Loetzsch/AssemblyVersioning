@@ -1,6 +1,9 @@
-0.0.2.0
+1.1.0.0
 module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.Class1:System.Object:False
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.get_Test:System.Int32:False:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.Class1.set_Test:System.Void:False:False:False:{parameterInfo:System.Int32:0:False:False:False:False:}:
+methodInfo:Oleander.AssemblyVersioning.Test.Class1.DoSomeThing:System.Void:False:False:False::
+type:Oleander.AssemblyVersioning.Test.ITest::True
+methodInfo:Oleander.AssemblyVersioning.Test.ITest.get_Count:System.Int32:True:True:False::
 referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a

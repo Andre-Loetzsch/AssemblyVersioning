@@ -4,8 +4,14 @@
     {
         public int Test { get; set; }
 
+        public void DoSomeThing()
+        {
 
+        }
+    }
 
-
+    public interface ITest
+    {
+        int Count { get; }
     }
 }

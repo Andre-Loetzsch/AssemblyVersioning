@@ -40,26 +40,32 @@ internal class Program
         }
         else
         {
-            File.WriteAllLines(gitDiffFileExtensionPath, gitDiffExtensionList);
+            //File.WriteAllLines(gitDiffFileExtensionPath, gitDiffExtensionList);
         }
 
         var projectFiles = Directory.GetFiles(projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => gitDiffExtensionList.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x.Substring(gitRepositoryDirName.Length + 1).ToLower());
 
-        if (string.IsNullOrEmpty(result.StandardOutput)) return -1;
-
-        var increaseBuild = projectFiles.Any(projectFile => result.StandardOutput.ToLower().Contains(projectFile.Replace('\\', '/')));
+        var increaseBuild = result.StandardOutput != null && projectFiles.Any(projectFile => result.StandardOutput.ToLower().Contains(projectFile.Replace('\\', '/')));
         var versioningDir = Path.Combine(projectDirName, ".versioning");
 
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
         var defaultRefVersionInfoFileName = Path.Combine(projectDirName, ".versionInfo");
         var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(targetPath), $".{gitHash}.versionInfo"));
-        var projectFileAssemblyVersion = new VSProject(projectFileName).AssemblyVersion;
         var fileContent = CreateRefInfos(CreateAssembly(new FileInfo(targetPath))).ToList();
-        
-        fileContent.Insert(0, projectFileAssemblyVersion ?? "0.0.0.0");
+        var vsProject = new VSProject(projectFileName);
+        var projectFileAssemblyVersion = vsProject.AssemblyVersion;
+
+        if (projectFileAssemblyVersion == null)
+        {
+            projectFileAssemblyVersion = "0.0.0.0";
+            vsProject.AssemblyVersion = projectFileAssemblyVersion;
+            vsProject.SaveChanges();
+        }
+
+        fileContent.Insert(0, projectFileAssemblyVersion);
 
         if (!File.Exists(refVersionInfoFileName))
         {
@@ -97,10 +103,7 @@ internal class Program
 
         var increaseMinor = currentList.Count > 0;
         var calculateVersion = CalculateVersion(major, minor, build, revision, increaseMajor, increaseMinor, increaseBuild, increaseRevision);
-        var assemblyVersion = projectFileAssemblyVersion != null ? 
-            new Version(projectFileAssemblyVersion) : 
-            GetAssemblyVersion(assembly);
-
+        var assemblyVersion = new Version(projectFileAssemblyVersion);
         var lastCalculateVersion = new Version(File.Exists(defaultRefVersionInfoFileName) ? 
             File.ReadAllLines(defaultRefVersionInfoFileName).FirstOrDefault() ?? calculateVersion.ToString() : 
             calculateVersion.ToString());
