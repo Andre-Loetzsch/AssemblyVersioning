@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using Oleander.AssemblyVersioning.ExternalProcesses;
 
 namespace Oleander.AssemblyVersioning;
@@ -254,19 +255,31 @@ internal class Program
 
     private static IEnumerable<string> CreateRefInfo(Type type)
     {
-        var result = new List<string>
-        {
-            type.IsInterface ? 
-                $"interface:{type.FullName}:{type.BaseType?.FullName}" : 
-                $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}"
-        };
-
-        result.AddRange(type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(CreateRefInfo));
-        result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
+        var result = new List<string> { $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}:{type.IsInterface}:{type.IsEnum}" };
 
         result.Sort();
 
-        return type.IsInterface ?
+        if (type.IsEnum)
+        {
+            var properties = type.GetProperties(BindingFlags.Instance |  BindingFlags.Public);
+
+            var b = type.GetMethod("HasFlag", BindingFlags.Instance | BindingFlags.Public);
+            var values = type.GetEnumValues();
+
+            var names = Enum.GetNames(type);
+            var values2 = Enum.GetValues(type);
+            var value3 = GetEnumValues(type).ToList();
+
+        }
+        else
+        {
+            result.AddRange(type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(CreateRefInfo));
+            result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
+            result.AddRange(type.GetInterfaces().Select(@interface => $"type:{type.FullName}:interface:{@interface.FullName}, {@interface.Assembly.GetName().Name}"));
+        }
+
+
+        return type.IsInterface || type.IsEnum ?
             new []{ string.Join('|', result) } :
             result.Where(x => !string.IsNullOrEmpty(x));
     }
@@ -277,7 +290,7 @@ internal class Program
         var parameters = string.Join(':', methodInfo.GetParameters().Select(CreateRefInfo));
         var genericArguments = string.Join(':', methodInfo.GetGenericArguments().Select(CreateRefInfo));
 
-        return $"methodInfo:{methodInfo.DeclaringType}.{methodInfo.Name}:{methodInfo.ReturnType.FullName}:{methodInfo.IsAbstract}:{methodInfo.IsVirtual}:{methodInfo.IsStatic}:{parameters}:{genericArguments}";
+        return $"methodInfo:{methodInfo.DeclaringType}.{methodInfo.Name}:{methodInfo.ReturnType.FullName}:{methodInfo.IsAbstract}:{methodInfo.IsStatic}:{parameters}:{genericArguments}";
     }
 
 
@@ -309,7 +322,22 @@ internal class Program
         return $"{{memberInfo:{memberInfo}}}";
     }
 
+    private static IEnumerable<object> GetEnumValues(Type enumType)
+    {
+        
+        System.Type enumUnderlyingType = System.Enum.GetUnderlyingType(enumType);
+        System.Array enumValues = System.Enum.GetValues(enumType);
 
+        for (int i = 0; i < enumValues.Length; i++)
+        {
+            // Retrieve the value of the ith enum item.
+            object value = enumValues.GetValue(i);
+
+            // Convert the value to its underlying type (int, byte, long, ...)
+            yield return System.Convert.ChangeType(value, enumUnderlyingType);
+
+        }
+    }
 
 
     private static void WriteVersionFile(string projectFileName, Version assemblyVersion)
