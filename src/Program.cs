@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using Oleander.AssemblyVersioning.ExternalProcesses;
 
 namespace Oleander.AssemblyVersioning;
@@ -8,9 +7,20 @@ internal class Program
 {
     static int Main(string[] args)
     {
-        if (args.Length != 1) return -1;
+        if (args.Length == 0) return -1;
+        return new Versioning().CalculateAssemblyVersion(args[0]);
+    }
 
-        var targetPath = args[0];
+
+
+
+}
+
+public class Versioning
+{
+    public int CalculateAssemblyVersion(string targetPath)
+    {
+
         if (!File.Exists(targetPath)) return -1;
 
         var targetDir = Path.GetDirectoryName(targetPath);
@@ -105,9 +115,7 @@ internal class Program
         var increaseMinor = currentList.Count > 0;
         var calculateVersion = CalculateVersion(major, minor, build, revision, increaseMajor, increaseMinor, increaseBuild, increaseRevision);
         var assemblyVersion = new Version(projectFileAssemblyVersion);
-        var lastCalculateVersion = new Version(File.Exists(defaultRefVersionInfoFileName) ? 
-            File.ReadAllLines(defaultRefVersionInfoFileName).FirstOrDefault() ?? calculateVersion.ToString() : 
-            calculateVersion.ToString());
+        var lastCalculateVersion = new Version(File.Exists(defaultRefVersionInfoFileName) ? File.ReadAllLines(defaultRefVersionInfoFileName).FirstOrDefault() ?? calculateVersion.ToString() : calculateVersion.ToString());
 
         fileContent[0] = calculateVersion.ToString();
         File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
@@ -129,6 +137,7 @@ internal class Program
             increaseMajor = false;
             increaseMinor = true;
         }
+
         // alpha version
         if (increaseMinor && major == 0 && minor == 0)
         {
@@ -261,7 +270,7 @@ internal class Program
 
         if (type.IsEnum)
         {
-            var properties = type.GetProperties(BindingFlags.Instance |  BindingFlags.Public);
+            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             var b = type.GetMethod("HasFlag", BindingFlags.Instance | BindingFlags.Public);
             var values = type.GetEnumValues();
@@ -279,9 +288,7 @@ internal class Program
         }
 
 
-        return type.IsInterface || type.IsEnum ?
-            new []{ string.Join('|', result) } :
-            result.Where(x => !string.IsNullOrEmpty(x));
+        return type.IsInterface || type.IsEnum ? new[] { string.Join('|', result) } : result.Where(x => !string.IsNullOrEmpty(x));
     }
 
     private static string CreateRefInfo(MethodInfo methodInfo)
@@ -324,7 +331,7 @@ internal class Program
 
     private static IEnumerable<object> GetEnumValues(Type enumType)
     {
-        
+
         System.Type enumUnderlyingType = System.Enum.GetUnderlyingType(enumType);
         System.Array enumValues = System.Enum.GetValues(enumType);
 
@@ -349,6 +356,4 @@ internal class Program
 
         vsProject.SaveChanges();
     }
-
-
 }
