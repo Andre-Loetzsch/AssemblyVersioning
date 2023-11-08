@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace Oleander.AssemblyVersioning.Test;
 
@@ -8,27 +7,7 @@ internal static class Helper
 {
     public static bool TryFindCsProject(string startDirectory, out string projectDirName, out string projectFileName)
     {
-        projectFileName = string.Empty;
-        projectDirName = string.Empty;
-
-        var dirInfo = new DirectoryInfo(startDirectory);
-        var parentDir = dirInfo;
-
-        while (parentDir != null)
-        {
-            var fileInfo = parentDir.GetFiles("*.csproj").MinBy(x => x.FullName);
-
-            if (fileInfo != null)
-            {
-                projectDirName = parentDir.FullName;
-                projectFileName = fileInfo.FullName;
-                return true;
-            }
-
-            parentDir = parentDir.Parent;
-        }
-
-        return false;
+        return VSProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
     }
 
     public static void CopyFilesRecursively(string sourcePath, string targetPath)
@@ -80,12 +59,13 @@ internal static class Helper
         throw new Win32Exception(p.ExitCode, error);
     }
 
-    public static void CopyAndBuildProject(string testName)
+    public static void CopyAndBuildProject(string testName, string gitHash, IEnumerable<string> gitChanges)
     {
-        var testTemplateDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, testName);
-        var testDir = Path.Combine(Path.GetTempPath(), "__assemblyVersioningTest");
+        var testTemplateDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "simulations", testName);
+        var testDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "simulations", "result", testName);
 
-        if (Directory.Exists(testDir)) Directory.Delete(testDir, true);
+
+        //if (Directory.Exists(testDir)) Directory.Delete(testDir, true);
         Helper.CopyFilesRecursively(testTemplateDir, testDir);
 
         foreach (var file in Directory.GetFiles(testDir, "*.txt", SearchOption.AllDirectories))
@@ -98,19 +78,21 @@ internal static class Helper
             throw new Exception($"Test '{testName}' not found!");
         }
 
-        try
-        {
-            var outDir = Path.Combine(testDir, "out");
-            Helper.DotnetBuild(Path.Combine(testDir, Path.GetFileName(projectFileName)), outDir);
+        //try
+        //{
+        var outDir = Path.Combine(testDir, "out");
+        Helper.DotnetBuild(Path.Combine(testDir, Path.GetFileName(projectFileName)), outDir);
 
-            var versioning = new Versioning();
-            var targetPath = Path.Combine(outDir, Path.GetFileName(typeof(Helper).Assembly.Location));
-            versioning.CalculateAssemblyVersion(targetPath);
+        var targetPath = Path.Combine(outDir, Path.GetFileName(typeof(Helper).Assembly.Location));
+        var versioning = new TestVersioning(targetPath) { GitHash = gitHash };
+        versioning.GitChanges.AddRange(gitChanges);
 
-        }
-        finally
-        {
-            Directory.Delete(testDir, true);
-        }
+        versioning.CalculateAssemblyVersion();
+
+        //}
+        //finally
+        //{
+        //    Directory.Delete(testDir, true);
+        //}
     }
 }

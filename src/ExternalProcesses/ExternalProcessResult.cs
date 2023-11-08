@@ -2,7 +2,7 @@
 
 namespace Oleander.AssemblyVersioning.ExternalProcesses
 {
-    public class ExternalProcessResult
+    internal class ExternalProcessResult
     {
         public ExternalProcessResult(string exeFileName, string arguments)
         {

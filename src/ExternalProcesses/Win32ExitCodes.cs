@@ -1,6 +1,6 @@
 ﻿namespace Oleander.AssemblyVersioning.ExternalProcesses;
 
-public enum Win32ExitCodes : int
+internal enum Win32ExitCodes : int
 {
     ERROR_SUCCESS = 0, // (0x0) The operation completed successfully.
     ERROR_INVALID_FUNCTION = 1, // (0x1) Incorrect function.

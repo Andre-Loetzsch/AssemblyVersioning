@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Oleander.AssemblyVersioning.ExternalProcesses;
 
-public class ExternalProcess
+internal class ExternalProcess
 {
     private readonly string _fileName;
     private readonly string _arguments;

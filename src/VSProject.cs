@@ -1,6 +1,5 @@
 ﻿using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
-using Microsoft.Build.Framework;
 
 namespace Oleander.AssemblyVersioning;
 
@@ -8,14 +7,12 @@ namespace Oleander.AssemblyVersioning;
 // ReSharper disable once InconsistentNaming
 internal class VSProject
 {
-
     private readonly ProjectRootElement _projectRootElement;
-    private readonly ILogger _logger;
+    //private readonly ILogger _logger;
     private bool _hasChanges;
 
     public VSProject(string projectFileName)
     {
-       
 
         if (!File.Exists(projectFileName))
         {
@@ -30,18 +27,9 @@ internal class VSProject
         this.IsDotnetCoreProject = !string.IsNullOrEmpty(this._projectRootElement.Sdk) &&
                                    string.IsNullOrEmpty(this._projectRootElement.ToolsVersion);
 
-        //foreach (var property in this._projectRootElement.Properties)
-        //{
-        //    Console.WriteLine($"Name: {property.Name} - Value: {property.Value}");
-        //}
-
     }
 
     public bool IsDotnetCoreProject { get; set; }
-
-
-
-
 
     public string? AssemblyVersion
     {
@@ -74,9 +62,6 @@ internal class VSProject
         this._hasChanges = false;
     }
 
-
-
-
     // ReSharper disable once InconsistentNaming
     public static bool TryFindVSProject(string startDirectory, out string projectDirName, out string projectFileName)
     {
@@ -103,25 +88,4 @@ internal class VSProject
         return false;
     }
 
-
-    public static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
-    {
-        gitRepositoryDirName = string.Empty;
-        if (string.IsNullOrEmpty(startDirectory)) return false;
-        var dirInfo = new DirectoryInfo(startDirectory);
-        var parentDir = dirInfo;
-
-        while (parentDir != null)
-        {
-            if (parentDir.GetDirectories(".git").Any())
-            {
-                gitRepositoryDirName = parentDir.FullName;
-                return true;
-            }
-
-            parentDir = parentDir.Parent;
-        }
-
-        return false;
-    }
 }

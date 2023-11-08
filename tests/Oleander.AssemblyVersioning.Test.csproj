@@ -11,17 +11,7 @@
     <!--<Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />-->
   </Target>
 
-  <ItemGroup>
-    <None Remove="Class1.cs.txt" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="v1.0.0.0\Class1.cs.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
- 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="xunit" Version="2.6.1" />
@@ -34,13 +24,6 @@
  
   <ItemGroup>
     <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
-  </ItemGroup>
-
- 
-  <ItemGroup>
-    <None Update="v1.0.0.0\Oleander.AssemblyVersioning.Test.csproj.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
