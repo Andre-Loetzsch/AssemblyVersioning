@@ -8,10 +8,19 @@ public class TestPublicMethodInfo
     public void AddNewPublicMethod()
     {
 
-        Helper.CopyAndBuildProject("v1.0.0.0", "122ce329", new []{""});
-        Helper.CopyAndBuildProject("v1.0.1.0", "122ce486", new[] { "Class1.sc" });
 
 
+        var result = TestRunner.RunSimulation("simulation1").ToList();
+    }
+
+    [Fact]
+    public void TestGitChanges()
+    {
+        var result = TestRunner.RunSimulation("gitChanges").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 0, 1, 0), result[1]);
     }
 
 

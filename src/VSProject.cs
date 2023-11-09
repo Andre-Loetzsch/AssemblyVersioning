@@ -71,7 +71,7 @@ internal class VSProject
         var dirInfo = new DirectoryInfo(startDirectory);
         var parentDir = dirInfo;
 
-        while (parentDir != null)
+        while (parentDir is { Exists: true })
         {
             var fileInfo = parentDir.GetFiles("*.csproj").MinBy(x => x.FullName);
 

@@ -7,10 +7,11 @@
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
-  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />-->
-  </Target>
+  <!--<Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
+    --><!--<Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />--><!--
+  </Target>-->
 
+  
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
@@ -25,5 +26,11 @@
   <ItemGroup>
     <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
   </ItemGroup>
+
+ 
+  <Target Name="PostBuild" AfterTargets="PreBuildEvent">
+    <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
+    <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
+  </Target>
 
 </Project>

@@ -4,50 +4,45 @@ using Oleander.AssemblyVersioning.ExternalProcesses;
 
 namespace Oleander.AssemblyVersioning;
 
-internal class Versioning
+public class Versioning
 {
-    private readonly string _targetFileName;
-    private readonly string _projectDirName;
-    private readonly string _projectFileName;
-    private readonly string _gitRepositoryDirName;
+    private const string projectVersionInfoFileName = ".versionInfo";
+    private string _targetFileName = string.Empty;
+    private string _projectDirName = string.Empty;
+    private string _projectFileName = string.Empty;
+    private string _gitRepositoryDirName = string.Empty;
 
     private readonly string _currentDirectory = Directory.GetCurrentDirectory();
 
+    #region UpdateAssemblyVersion
 
-    public VersioningErrorCodes ErrorCode { get; private set; }
-
-    public Version? CalculatedVersion { get; private set; }
-
-    public ExternalProcessResult? ExternalProcessResult { get; private set; }
-
-
-    #region constructors
-
-    public Versioning(string targetFileName)
+    public VersioningResult UpdateAssemblyVersion(string targetFileName)
     {
         this._targetFileName = targetFileName;
         this._projectDirName = string.Empty;
         this._projectFileName = string.Empty;
         this._gitRepositoryDirName = string.Empty;
 
+        var updateResult = new VersioningResult();
+
         if (!File.Exists(targetFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
+            return updateResult;
         }
 
         var targetDir = Path.GetDirectoryName(targetFileName);
 
-        if (targetDir == null || Directory.Exists(targetDir))
+        if (targetDir == null || !Directory.Exists(targetDir))
         {
-            this.ErrorCode = VersioningErrorCodes.TargetDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.TargetDirNotExist;
+            return updateResult;
         }
 
         if (!VSProject.TryFindVSProject(targetDir, out var projectDirName, out var projectFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
         }
 
         this._projectDirName = projectDirName;
@@ -55,179 +50,120 @@ internal class Versioning
 
         if (!TryFindGitRepositoryDirName(projectDirName, out var gitRepositoryDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
         }
-        
+
         this._gitRepositoryDirName = gitRepositoryDirName;
 
         if (!File.Exists(this._targetFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._projectDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
         }
 
         if (!File.Exists(this._projectFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._gitRepositoryDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
         }
+
+        return this.PrivateUpdateAssemblyVersion();
     }
 
-    public Versioning(string targetFileName, string projectDirName, string projectFileName)
+    public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectDirName, string projectFileName)
     {
         this._targetFileName = targetFileName;
         this._projectDirName = projectDirName;
         this._projectFileName = projectFileName;
         this._gitRepositoryDirName = string.Empty;
 
+        var updateResult = new VersioningResult();
+
         if (!TryFindGitRepositoryDirName(projectDirName, out var gitRepositoryDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
         }
-      
+
         this._gitRepositoryDirName = gitRepositoryDirName;
 
         if (!File.Exists(this._targetFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._projectDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
         }
 
         if (!File.Exists(this._projectFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._gitRepositoryDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
         }
+
+        return this.PrivateUpdateAssemblyVersion();
     }
 
-    public Versioning(string targetFileName, string projectDirName, string projectFileName, string gitRepositoryDirName)
+    public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectDirName, string projectFileName, string gitRepositoryDirName)
     {
         this._targetFileName = targetFileName;
         this._projectDirName = projectDirName;
         this._projectFileName = projectFileName;
         this._gitRepositoryDirName = gitRepositoryDirName;
 
+        var updateResult = new VersioningResult();
+
         if (!File.Exists(this._targetFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._projectDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
         }
 
         if (!File.Exists(this._projectFileName))
         {
-            this.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
+            return updateResult;
         }
 
         if (!Directory.Exists(this._gitRepositoryDirName))
         {
-            this.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
-            return;
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
         }
+
+        return this.PrivateUpdateAssemblyVersion();
     }
 
     #endregion
-
-    public void CalculateAssemblyVersion()
-    {
-        if (!this.TryGetGitHash(out var result, out var gitHash))
-        {
-            this.ExternalProcessResult = result;
-            this.ErrorCode = VersioningErrorCodes.GetGitHashFailed;
-            return;
-        }
-
-        if (!this.TryGetGitChanges(gitHash, out result, out var gitChanges))
-        {
-            this.ExternalProcessResult = result;
-            this.ErrorCode = VersioningErrorCodes.GetGitDiffNameOnlyFailed;
-            return;
-        }
-
-        var increaseMajor = false;
-        var increaseRevision = false;
-        var increaseBuild = this.IncreaseBuild(gitChanges);
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning");
-
-        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
-
-        var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), $".{gitHash}.versionInfo"));
-        var defaultRefVersionInfoFileName = Path.Combine(this._projectDirName, ".versionInfo");
-        var projectAssemblyVersion = this.GetAssemblyVersionFromProjectFile();
-        var fileContent = CreateRefInfos(CreateAssembly(new FileInfo(this._targetFileName))).ToList();
-
-
-        fileContent.Insert(0, projectAssemblyVersion.ToString());
-
-        if (!File.Exists(refVersionInfoFileName))
-        {
-            if (File.Exists(defaultRefVersionInfoFileName))
-            {
-                File.Copy(defaultRefVersionInfoFileName, refVersionInfoFileName);
-            }
-            else
-            {
-                File.WriteAllLines(refVersionInfoFileName, fileContent);
-            }
-        }
-
-        var refList = File.ReadAllLines(refVersionInfoFileName).ToList();
-        var refVersion = refList.Any() && Version.TryParse(refList[0], out var rv) ? rv : new Version(0, 0, 0, 0);
-        var assembly = CreateAssembly(new FileInfo(this._targetFileName));
-        var currentList = CreateRefInfos(assembly).ToList();
-
-        for (var i = 1; i < refList.Count; i++)
-        {
-            var line = refList[i];
-            if (currentList.Remove(line)) continue;
-            increaseMajor = true;
-        }
-
-        var increaseMinor = currentList.Count > 0;
-        var calculateVersion = CalculateVersion(refVersion, increaseMajor, increaseMinor, increaseBuild, increaseRevision);
-        var assemblyVersion = projectAssemblyVersion;
-        var lastCalculateVersion = new Version(File.Exists(defaultRefVersionInfoFileName) ? File.ReadAllLines(defaultRefVersionInfoFileName).FirstOrDefault() ?? calculateVersion.ToString() : calculateVersion.ToString());
-
-        fileContent[0] = calculateVersion.ToString();
-        File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
-
-        if (lastCalculateVersion < assemblyVersion) return;
-        if (calculateVersion == assemblyVersion) return;
-
-        WriteVersionFile(this._projectFileName, calculateVersion);
-    }
 
 
     #region protected virtual
@@ -267,21 +203,101 @@ internal class Versioning
         return true;
     }
 
-    protected virtual string[]  GetGitDiffFiler()
+    protected virtual string[] GetGitDiffFiler()
     {
-        if (Directory.Exists(this._projectDirName) || 
+        if (Directory.Exists(this._projectDirName) &&
             File.Exists(Path.Combine(this._projectDirName, ".gitdiff")))
         {
             return File.ReadAllLines(Path.Combine(this._projectDirName, ".gitdiff"));
         }
 
-        return new [] { ".cs", ".xaml" };
+        return new[] { ".cs", ".xaml" };
     }
 
     #endregion
 
-
     #region private members
+
+    private VersioningResult PrivateUpdateAssemblyVersion()
+    {
+        var updateResult = new VersioningResult();
+
+        if (!this.TryGetGitHash(out var result, out var gitHash))
+        {
+            updateResult.ExternalProcessResult = result;
+            updateResult.ErrorCode = VersioningErrorCodes.GetGitHashFailed;
+            return updateResult;
+        }
+
+        if (!this.TryGetGitChanges(gitHash, out result, out var gitChanges))
+        {
+            updateResult.ExternalProcessResult = result;
+            updateResult.ErrorCode = VersioningErrorCodes.GetGitDiffNameOnlyFailed;
+            return updateResult;
+        }
+
+        var refVersionFileContent = this.GetRefVersionFileContent(gitHash).ToList();
+        var assemblyVersion = this.GetAssemblyVersionFromProjectFile();
+        var refVersion = TryGetRefVersion(refVersionFileContent, out var v) ? v : assemblyVersion;
+        var assembly = CreateAssembly(new FileInfo(this._targetFileName));
+        var currentVersionList = CreateRefInfos(assembly).ToList();
+        var increaseMajor = false;
+
+        foreach (var line in RemoveRefVersion(refVersionFileContent))
+        {
+            if (currentVersionList.Remove(line)) continue;
+            increaseMajor = true;
+        }
+
+        var increaseMinor = refVersionFileContent.Count > 0 && currentVersionList.Count > 0;
+        var increaseBuild = this.IncreaseBuild(gitChanges);
+
+        updateResult.CalculatedVersion = CalculateVersion(refVersion, increaseMajor, increaseMinor, increaseBuild, false);
+
+        this.WriteProjectVersionInfoFile(currentVersionList, assemblyVersion > updateResult.CalculatedVersion ? assemblyVersion : updateResult.CalculatedVersion);
+
+        if (assemblyVersion > updateResult.CalculatedVersion) return updateResult;
+
+        WriteVersionFile(this._projectFileName, updateResult.CalculatedVersion);
+
+        return updateResult;
+    }
+
+    private IEnumerable<string> GetRefVersionFileContent(string gitHash)
+    {
+        var versioningDir = Path.Combine(this._projectDirName, ".versioning");
+        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
+
+        var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), $".{gitHash}.versionInfo"));
+
+        if (File.Exists(refVersionInfoFileName)) return File.ReadLines(refVersionInfoFileName);
+
+        var defaultRefVersionInfoFileName = Path.Combine(this._projectDirName, projectVersionInfoFileName);
+
+        if (!File.Exists(defaultRefVersionInfoFileName)) return Enumerable.Empty<string>();
+        File.Copy(defaultRefVersionInfoFileName, refVersionInfoFileName);
+        return File.ReadLines(refVersionInfoFileName);
+
+    }
+
+    private static bool TryGetRefVersion(IEnumerable<string> refVersionFileContent, [MaybeNullWhen(false)] out Version version)
+    {
+        version = null;
+        var firstLine = refVersionFileContent.FirstOrDefault();
+        return firstLine != null && Version.TryParse(firstLine, out version);
+    }
+
+    private static IEnumerable<string> RemoveRefVersion(IList<string> refVersionFileContent)
+    {
+        var firstLine = refVersionFileContent.FirstOrDefault();
+
+        if (firstLine != null && Version.TryParse(firstLine, out _))
+        {
+            refVersionFileContent.RemoveAt(0);
+        }
+
+        return refVersionFileContent;
+    }
 
     private bool IncreaseBuild(IEnumerable<string> gitChanges)
     {
@@ -308,6 +324,14 @@ internal class Versioning
         vsProject.SaveChanges();
 
         return version;
+    }
+
+    private void WriteProjectVersionInfoFile(IList<string> fileContent, Version currentVersion)
+    {
+        var defaultRefVersionInfoFileName = Path.Combine(this._projectDirName, projectVersionInfoFileName);
+
+        fileContent.Insert(0, currentVersion.ToString());
+        File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
     }
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
@@ -393,7 +417,7 @@ internal class Versioning
     {
         var assemblyFile = assemblyFileInfo.FullName;
 
-        AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+        AppDomain.CurrentDomain.AssemblyResolve += (_, args) =>
         {
             var fileName = args.Name.Split(", ", StringSplitOptions.RemoveEmptyEntries).First();
             var directoryName = assemblyFileInfo.DirectoryName;
@@ -406,11 +430,6 @@ internal class Versioning
         };
 
         return Assembly.LoadFile(assemblyFile);
-    }
-
-    private static Version GetAssemblyVersion(Assembly assembly)
-    {
-        return assembly.GetName().Version ?? new Version(0, 0, 0, 0);
     }
 
     private static IEnumerable<string> CreateRefInfos(Assembly assembly)
