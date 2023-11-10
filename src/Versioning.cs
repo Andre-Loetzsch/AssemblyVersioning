@@ -218,6 +218,70 @@ public class Versioning
 
     #endregion
 
+    #region internal members
+
+    internal static Version CalculateVersion(Version version, bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
+    {
+
+        var major = version.Major;
+        var minor = version.Minor;
+        var build = version.Build;
+        var revision = version.Revision;
+
+
+        // beta version
+        if (increaseMajor && major == 0)
+        {
+            increaseMajor = false;
+            increaseMinor = true;
+        }
+
+        // alpha version
+        if (increaseMinor && major == 0 && minor == 0)
+        {
+            increaseMinor = false;
+            increaseBuild = true;
+        }
+
+        if (increaseMajor)
+        {
+            major++;
+            minor = 0;
+            build = 0;
+            revision = 0;
+            increaseMinor = false;
+            increaseBuild = false;
+            increaseRevision = false;
+        }
+
+        if (increaseMinor)
+        {
+            minor++;
+            build = 0;
+            revision = 0;
+            increaseBuild = false;
+            increaseRevision = false;
+        }
+
+        if (increaseBuild)
+        {
+            build++;
+            revision = 0;
+            increaseRevision = false;
+        }
+
+        if (increaseRevision)
+        {
+            revision++;
+        }
+
+        return new Version(major, minor, build, revision);
+    }
+
+
+    #endregion
+
+
     #region private members
 
     private VersioningResult PrivateUpdateAssemblyVersion()
@@ -367,64 +431,6 @@ public class Versioning
         }
 
         return false;
-    }
-
-    private static Version CalculateVersion(Version version, bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
-    {
-
-        var major = version.Major;
-        var minor = version.Minor;
-        var build = version.Build;
-        var revision = version.Revision;
-
-
-        // beta version
-        if (increaseMajor && major == 0)
-        {
-            increaseMajor = false;
-            increaseMinor = true;
-        }
-
-        // alpha version
-        if (increaseMinor && major == 0 && minor == 0)
-        {
-            increaseMinor = false;
-            increaseBuild = true;
-        }
-
-        if (increaseMajor)
-        {
-            major++;
-            minor = 0;
-            build = 0;
-            revision = 0;
-            increaseMinor = false;
-            increaseBuild = false;
-            increaseRevision = false;
-        }
-
-        if (increaseMinor)
-        {
-            minor++;
-            build = 0;
-            revision = 0;
-            increaseBuild = false;
-            increaseRevision = false;
-        }
-
-        if (increaseBuild)
-        {
-            build++;
-            revision = 0;
-            increaseRevision = false;
-        }
-
-        if (increaseRevision)
-        {
-            revision++;
-        }
-
-        return new Version(major, minor, build, revision);
     }
 
     private static Assembly CreateAssembly(FileInfo assemblyFileInfo)
