@@ -218,7 +218,7 @@ public class Versioning
 
     #endregion
 
-    #region internal members
+    #region internal / private members
 
     internal static Version CalculateVersion(Version version, bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
     {
@@ -277,12 +277,6 @@ public class Versioning
 
         return new Version(major, minor, build, revision);
     }
-
-
-    #endregion
-
-
-    #region private members
 
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
@@ -506,23 +500,24 @@ public class Versioning
         return $"module:{module.Name}";
     }
 
-    private static IEnumerable<string> CreateRefInfo(Type type)
+    internal static IEnumerable<string> CreateRefInfo(Type type)
     {
+        if (!type.IsPublic) return Enumerable.Empty<string>();
+
         var result = new List<string> { $"type:{type.FullName}:{type.BaseType?.FullName}:{type.IsAbstract}:{type.IsInterface}:{type.IsEnum}" };
 
         result.Sort();
 
         if (type.IsEnum)
         {
-            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var hasFlag = type.GetCustomAttributes(true).OfType<FlagsAttribute>().Any();
 
-            var b = type.GetMethod("HasFlag", BindingFlags.Instance | BindingFlags.Public);
-            var values = type.GetEnumValues();
+            var enumNames = Enum.GetNames(type);
+            var enumValues = GetEnumValues(type).ToArray();
 
-            var names = Enum.GetNames(type);
-            var values2 = Enum.GetValues(type);
-            var value3 = GetEnumValues(type).ToList();
+            result.AddRange(enumNames.Select((t, i) => $"enum:{type.FullName}:{hasFlag}:{t}:{enumValues[i]}"));
 
+            return result;
         }
         else
         {
@@ -530,7 +525,6 @@ public class Versioning
             result.AddRange(type.GetMethods(BindingFlags.Static | BindingFlags.Public).Select(CreateRefInfo));
             result.AddRange(type.GetInterfaces().Select(@interface => $"type:{type.FullName}:interface:{@interface.FullName}, {@interface.Assembly.GetName().Name}"));
         }
-
 
         return type.IsInterface || type.IsEnum ? new[] { string.Join('|', result) } : result.Where(x => !string.IsNullOrEmpty(x));
     }
@@ -573,18 +567,14 @@ public class Versioning
 
     private static IEnumerable<object> GetEnumValues(Type enumType)
     {
+        var enumUnderlyingType = Enum.GetUnderlyingType(enumType);
+        var enumValues = Enum.GetValues(enumType);
 
-        System.Type enumUnderlyingType = System.Enum.GetUnderlyingType(enumType);
-        System.Array enumValues = System.Enum.GetValues(enumType);
-
-        for (int i = 0; i < enumValues.Length; i++)
+        for (var i = 0; i < enumValues.Length; i++)
         {
-            // Retrieve the value of the ith enum item.
-            object value = enumValues.GetValue(i);
-
-            // Convert the value to its underlying type (int, byte, long, ...)
-            yield return System.Convert.ChangeType(value, enumUnderlyingType);
-
+            var value = enumValues.GetValue(i);
+            if (value == null) continue;
+            yield return Convert.ChangeType(value, enumUnderlyingType);
         }
     }
 

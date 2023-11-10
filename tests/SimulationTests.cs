@@ -63,4 +63,78 @@ public class SimulationTests
         Assert.Equal(new(1, 0, 0, 0), result[0]);
         Assert.Equal(new(2, 0, 0, 0), result[1]);
     }
+
+    [Fact]
+    public void TestChangeNamespace()
+    {
+        var result = TestRunner.RunSimulation("changeNamespace").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestAddParameterToPublicMethod()
+    {
+        var result = TestRunner.RunSimulation("addParameterToPublicMethod").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestAddAndRemovePublicMethod()
+    {
+        var result = TestRunner.RunSimulation("addAndRemovePublicMethod").ToList();
+
+        Assert.Equal(3, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+        Assert.Equal(new(2, 0, 0, 0), result[2]);
+    }
+
+    [Fact]
+    public void TestAddAndRemovePublicMethodWithoutCommit()
+    {
+        var result = TestRunner.RunSimulation("addAndRemovePublicMethodWithoutCommit").ToList();
+
+        Assert.Equal(3, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+        Assert.Equal(new(1, 0, 0, 0), result[2]);
+    }
+
+    [Fact]
+    public void TestAddAnInterfaceToAClass()
+    {
+        var result = TestRunner.RunSimulation("addInterfaceToClass").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestRemoveInterfaceFromClass()
+    {
+        var result = TestRunner.RunSimulation("removeInterfaceFromClass").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestModifyEnum()
+    {
+        var result = TestRunner.RunSimulation("modifyEnum").ToList();
+
+        Assert.Equal(3, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+        Assert.Equal(new(2, 0, 0, 0), result[2]);
+
+    }
 }
