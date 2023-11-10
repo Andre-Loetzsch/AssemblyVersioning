@@ -165,7 +165,6 @@ public class Versioning
 
     #endregion
 
-
     #region protected virtual
 
     protected virtual bool TryGetGitHash(out ExternalProcessResult result, [MaybeNullWhen(false)] out string hash)
@@ -243,7 +242,9 @@ public class Versioning
         var currentVersionList = CreateRefInfos(assembly).ToList();
         var increaseMajor = false;
 
-        foreach (var line in RemoveRefVersion(refVersionFileContent))
+        RemoveRefVersion(refVersionFileContent);
+
+        foreach (var line in refVersionFileContent)
         {
             if (currentVersionList.Remove(line)) continue;
             increaseMajor = true;
@@ -254,7 +255,8 @@ public class Versioning
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, increaseMajor, increaseMinor, increaseBuild, false);
 
-        this.WriteProjectVersionInfoFile(currentVersionList, assemblyVersion > updateResult.CalculatedVersion ? assemblyVersion : updateResult.CalculatedVersion);
+        this.CreateRefVersionFileIfNotExist(gitHash,
+                this.WriteProjectVersionInfoFile(currentVersionList, assemblyVersion > updateResult.CalculatedVersion ? assemblyVersion : updateResult.CalculatedVersion));
 
         if (assemblyVersion > updateResult.CalculatedVersion) return updateResult;
 
@@ -280,6 +282,16 @@ public class Versioning
 
     }
 
+    private void CreateRefVersionFileIfNotExist(string gitHash, IEnumerable<string> fileContent)
+    {
+        var versioningDir = Path.Combine(this._projectDirName, ".versioning");
+        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
+
+        var refVersionInfoFileName = Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), $".{gitHash}.versionInfo"));
+
+        if (!File.Exists(refVersionInfoFileName)) File.WriteAllLines(refVersionInfoFileName, fileContent);
+    }
+
     private static bool TryGetRefVersion(IEnumerable<string> refVersionFileContent, [MaybeNullWhen(false)] out Version version)
     {
         version = null;
@@ -287,7 +299,7 @@ public class Versioning
         return firstLine != null && Version.TryParse(firstLine, out version);
     }
 
-    private static IEnumerable<string> RemoveRefVersion(IList<string> refVersionFileContent)
+    private static void RemoveRefVersion(IList<string> refVersionFileContent)
     {
         var firstLine = refVersionFileContent.FirstOrDefault();
 
@@ -295,8 +307,6 @@ public class Versioning
         {
             refVersionFileContent.RemoveAt(0);
         }
-
-        return refVersionFileContent;
     }
 
     private bool IncreaseBuild(IEnumerable<string> gitChanges)
@@ -326,12 +336,13 @@ public class Versioning
         return version;
     }
 
-    private void WriteProjectVersionInfoFile(IList<string> fileContent, Version currentVersion)
+    private IEnumerable<string> WriteProjectVersionInfoFile(IList<string> fileContent, Version currentVersion)
     {
         var defaultRefVersionInfoFileName = Path.Combine(this._projectDirName, projectVersionInfoFileName);
 
         fileContent.Insert(0, currentVersion.ToString());
         File.WriteAllLines(defaultRefVersionInfoFileName, fileContent);
+        return fileContent;
     }
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)

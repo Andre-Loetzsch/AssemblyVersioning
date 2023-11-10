@@ -59,4 +59,36 @@ internal static class Helper
         var error = p.StandardError.ReadToEnd();
         throw new Win32Exception(p.ExitCode, error);
     }
+
+    public static void DotnetClean(string projectFileName, string outPath)
+    {
+        var p = new Process
+        {
+            StartInfo =
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                FileName = "dotnet",
+                Arguments = $"clean {projectFileName} -c Debug -o {outPath}",
+                CreateNoWindow = true,
+                ErrorDialog = false
+            }
+        };
+
+        if (!p.Start())
+        {
+            throw new Win32Exception("The process did not start!");
+        }
+
+        if (!p.WaitForExit(30000))
+        {
+            p.Kill();
+            throw new Win32Exception("The process did not exit!");
+        }
+
+        if (p.ExitCode == 0) return;
+        var error = p.StandardError.ReadToEnd();
+        throw new Win32Exception(p.ExitCode, error);
+    }
 }
