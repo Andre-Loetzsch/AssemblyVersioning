@@ -195,10 +195,13 @@ public class Versioning
         Directory.SetCurrentDirectory(this._currentDirectory);
 
         if (result.ExitCode != 0) return false;
-        if (string.IsNullOrEmpty(result.StandardOutput)) return false;
+        if (string.IsNullOrEmpty(result.StandardOutput))
+        {
+            gitChanges = Array.Empty<string>();
+            return true;
+        }
 
         gitChanges = result.StandardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
         return true;
     }
 
