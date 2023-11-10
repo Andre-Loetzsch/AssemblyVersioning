@@ -1,2 +1,15 @@
-0.0.2.0
-referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.2.0, Culture=neutral, PublicKeyToken=null
+0.0.3.0
+module:Oleander.AssemblyVersioning.Test.dll
+type:Oleander.AssemblyVersioning.Test.SimulationTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPrivateMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestGitChanges:System.Void:False:False::
+referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Diagnostics.Process, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:xunit.core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:System.Collections, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.3.0, Culture=neutral, PublicKeyToken=null
+referencedAssembly:Microsoft.Win32.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Linq, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:xunit.assert, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
