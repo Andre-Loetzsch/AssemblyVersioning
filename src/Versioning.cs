@@ -179,7 +179,7 @@ public class Versioning
         if (result.ExitCode != 0) return false;
         if (string.IsNullOrEmpty(result.StandardOutput)) return false;
 
-        hash = result.StandardOutput;
+        hash = result.StandardOutput.Trim();
 
         return true;
     }

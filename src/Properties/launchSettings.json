@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "Versioning": {
+    "D316IT012": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\dev\\git\\oleander\\AssemblyVersioning\\Oleander.AssemblyVersioning\\tests\\bin\\Debug\\net7.0\\Oleander.AssemblyVersioning.Test.dll"
+      "commandLineArgs": "D:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\bin\\Debug\\net7.0\\Oleander.AssemblyVersioning.Test.dll"
+    },
+    "M316IT012": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\bin\\Debug\\net7.0\\Oleander.AssemblyVersioning.Test.dll"
     }
   }
 }

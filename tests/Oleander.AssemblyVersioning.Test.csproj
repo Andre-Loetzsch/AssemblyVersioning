@@ -4,13 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
   </PropertyGroup>
-
-  <!--<Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
-    --><!--<Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />--><!--
-  </Target>-->
-
   
 
   <ItemGroup>
@@ -26,11 +21,14 @@
   <ItemGroup>
     <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
   </ItemGroup>
-
  
   <Target Name="PostBuild" AfterTargets="PreBuildEvent">
     <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
     <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
+  </Target>
+
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />
   </Target>
 
 </Project>
