@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Xunit;
+﻿using Xunit;
 
 namespace Oleander.AssemblyVersioning.Test;
 
@@ -17,12 +16,6 @@ internal static class TestRunner
 
         foreach (var file in Directory.GetFiles(simulationSourceDir, "*.*", SearchOption.TopDirectoryOnly))
         {
-            if (file.EndsWith(".txt"))
-            {
-                File.Copy(file, file[..^4].Replace(simulationSourceDir, simulationTargetDir), true);
-                continue;
-            }
-
             File.Copy(file, file.Replace(simulationSourceDir, simulationTargetDir), true);
         }
 
@@ -38,20 +31,6 @@ internal static class TestRunner
         foreach (var directory in Directory.GetDirectories(simulationSourceDir).Select(x => new DirectoryInfo(x)))
         {
             Helper.CopyFilesRecursively(directory.FullName, simulationTargetDir);
-
-            foreach (var file in Directory.GetFiles(simulationTargetDir, "*.txt", SearchOption.AllDirectories))
-            {
-                var newFileName = file[..^4];
-
-                if (File.Exists(newFileName))
-                {
-                    File.WriteAllText(newFileName, File.ReadAllText(file));
-                    File.Delete(file);
-                    continue;
-                }
-
-                File.Move(file, newFileName, true);
-            }
 
             var outDir = Path.Combine(projectDirName, "out", directory.Name);
             var targetPath = Path.Combine(outDir, string.Concat(Path.GetFileNameWithoutExtension(projectFileName), ".dll"));

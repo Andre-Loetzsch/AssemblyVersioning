@@ -33,4 +33,34 @@ public class SimulationTests
         Assert.Equal(new(1, 0, 0, 0), result[0]);
         Assert.Equal(new(1, 0, 1, 0), result[1]);
     }
+
+    [Fact]
+    public void TestAddInterface()
+    {
+        var result = TestRunner.RunSimulation("addInterface").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestModifyInterface()
+    {
+        var result = TestRunner.RunSimulation("modifyInterface").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestRemovePublicMethod()
+    {
+        var result = TestRunner.RunSimulation("removePublicMethod").ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
 }

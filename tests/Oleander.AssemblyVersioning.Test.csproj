@@ -4,8 +4,14 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+    <AssemblyVersion>0.0.5.0</AssemblyVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Simulations\**" />
+    <EmbeddedResource Remove="Simulations\**" />
+    <None Remove="Simulations\**" />
+  </ItemGroup>
   
 
   <ItemGroup>
@@ -22,7 +28,7 @@
     <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
   </ItemGroup>
  
-  <Target Name="PostBuild" AfterTargets="PreBuildEvent">
+  <Target Name="PreBuild" AfterTargets="PreBuildEvent">
     <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
     <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
   </Target>

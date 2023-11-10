@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using Xunit;
 
 namespace Oleander.AssemblyVersioning.Test;
 
@@ -22,9 +21,17 @@ internal static class Helper
         }
 
         //Copy all the files & Replaces any files with the same name
-        foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+        foreach (var sourceFile in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
         {
-            File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            var targetFile = sourceFile.Replace(sourcePath, targetPath);
+
+            if (File.Exists(targetFile))
+            {
+                File.WriteAllText(targetFile, File.ReadAllText(sourceFile));
+                continue;
+            }
+
+            File.Copy(sourceFile, targetFile, true);
         }
     }
 
