@@ -1,4 +1,4 @@
-0.0.7.0
+0.0.8.0
 module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests:System.Object:False:False:False
 methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseRevision:System.Void:False:False::
@@ -34,9 +34,9 @@ methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestModifyEnum:Syste
 referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 referencedAssembly:Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 referencedAssembly:xunit.core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.9.0, Culture=neutral, PublicKeyToken=null
 referencedAssembly:System.Diagnostics.Process, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 referencedAssembly:System.Collections, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.8.0, Culture=neutral, PublicKeyToken=null
 referencedAssembly:xunit.assert, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
 referencedAssembly:Microsoft.Win32.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 referencedAssembly:System.Linq, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a

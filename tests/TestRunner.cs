@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.VisualBasic;
+using Xunit;
 
 namespace Oleander.AssemblyVersioning.Test;
 
@@ -55,7 +56,7 @@ internal static class TestRunner
             var result = versioning.UpdateAssemblyVersion(targetPath);
             Assert.Equal(VersioningErrorCodes.Success, result.ErrorCode);
            
-            if (result.CalculatedVersion != null) yield return result.CalculatedVersion;
+            if (Helper.TryGetVersionFromProjectFile(projectFileName, out var version)) yield return version;
         }
     }
 }

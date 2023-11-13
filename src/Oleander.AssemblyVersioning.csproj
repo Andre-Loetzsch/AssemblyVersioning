@@ -5,7 +5,16 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.8.0</AssemblyVersion>
+
+    <AssemblyVersion>0.0.9.0</AssemblyVersion>
+    <SourceRevisionId>b18eaf68770932d46f1f8b7054a7a44a8609776d</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
+
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

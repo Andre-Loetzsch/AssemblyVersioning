@@ -5,7 +5,7 @@ namespace Oleander.AssemblyVersioning.ExternalProcesses;
 internal class GitGetHash : ExternalProcess
 {
     public GitGetHash()
-        : base("git", "describe --long --always --exclude=* --abbrev=8")
+        : base("git", "describe --long --always --exclude=* --abbrev=40")
     {
     }
 }

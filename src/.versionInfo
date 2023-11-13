@@ -1,4 +1,4 @@
-0.0.8.0
+0.0.9.0
 module:Oleander.AssemblyVersioning.dll
 type:Oleander.AssemblyVersioning.Versioning:System.Object:False:False:False
 methodInfo:Oleander.AssemblyVersioning.Versioning.UpdateAssemblyVersion:Oleander.AssemblyVersioning.VersioningResult:False:False:{parameterInfo:System.String:0:False:False:False:False:}:

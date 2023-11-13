@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Oleander.AssemblyVersioning.Test;
 
@@ -8,6 +9,13 @@ internal static class Helper
     public static bool TryFindCsProject(string startDirectory, out string projectDirName, out string projectFileName)
     {
         return VSProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
+    }
+
+    public static bool TryGetVersionFromProjectFile(string projectFileName, [MaybeNullWhen(false)] out Version? version)
+    {
+        version = null;
+        var project = new VSProject(projectFileName);
+        return project.AssemblyVersion != null && Version.TryParse(project.AssemblyVersion, out version);
     }
 
     public static void CopyFilesRecursively(string sourcePath, string targetPath)

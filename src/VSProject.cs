@@ -35,8 +35,7 @@ internal class VSProject
     {
         get
         {
-            var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "AssemblyVersion");
-            return property?.Value ?? null;
+            return this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "AssemblyVersion")?.Value;
         }
 
         set
@@ -50,7 +49,53 @@ internal class VSProject
                 return;
             }
 
-            this._hasChanges = property.Value != value;
+            this._hasChanges = this._hasChanges || property.Value != value;
+            property.Value = value;
+        }
+    }
+
+    public string? SourceRevisionId
+    {
+        get
+        {
+            return this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "SourceRevisionId")?.Value;
+        }
+
+        set
+        {
+            var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "SourceRevisionId");
+
+            if (property == null)
+            {
+                this._projectRootElement.AddProperty("SourceRevisionId", value);
+                this._hasChanges = true;
+                return;
+            }
+
+            this._hasChanges = this._hasChanges || property.Value != value;
+            property.Value = value;
+        }
+    }
+
+    public string? VersionSuffix
+    {
+        get
+        {
+            return this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "VersionSuffix")?.Value;
+        }
+
+        set
+        {
+            var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "VersionSuffix");
+
+            if (property == null)
+            {
+                this._projectRootElement.AddProperty("VersionSuffix", value);
+                this._hasChanges = true;
+                return;
+            }
+
+            this._hasChanges = this._hasChanges || property.Value != value;
             property.Value = value;
         }
     }
