@@ -1,4 +1,5 @@
-0.0.6.0
+0.0.7.0
+module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests:System.Object:False:False:False
 methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseRevision:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseBuild:System.Void:False:False::
@@ -16,6 +17,13 @@ methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionInc
 methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionIncreaseMajor:System.Void:False:False::
 type:Oleander.AssemblyVersioning.Test.CreateRefInfoTests:System.Object:False:False:False
 methodInfo:Oleander.AssemblyVersioning.Test.CreateRefInfoTests.TestCreateRefInfoEnums:System.Void:False:False::
+type:Oleander.AssemblyVersioning.Test.SimulationTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPrivateMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestGitChanges:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddInterface:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestModifyInterface:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestRemovePublicMethod:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestChangeNamespace:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddParameterToPublicMethod:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAndRemovePublicMethod:System.Void:False:False::
@@ -23,4 +31,12 @@ methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAndRemovePubl
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAnInterfaceToAClass:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestRemoveInterfaceFromClass:System.Void:False:False::
 methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestModifyEnum:System.Void:False:False::
-referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.5.0, Culture=neutral, PublicKeyToken=null
+referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:xunit.core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:System.Diagnostics.Process, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Collections, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.8.0, Culture=neutral, PublicKeyToken=null
+referencedAssembly:xunit.assert, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:Microsoft.Win32.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Linq, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a

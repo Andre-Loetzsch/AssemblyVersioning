@@ -4,7 +4,7 @@
     {
         Horizontal = 0,
         Vertical = 1,
-        Right = 2,
-        Left = 3
+        Right = 3,
+        Left = 2
     }
 }

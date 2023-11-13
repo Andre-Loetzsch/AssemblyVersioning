@@ -6,11 +6,14 @@ internal static class TestRunner
 {
     public static IEnumerable<Version> RunSimulation(string simulationName)
     {
+        var gitDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Simulations", ".git");
         var simulationSourceDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Simulations", simulationName);
         var simulationTargetDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Simulations", "deploy", simulationName);
 
         if (!Directory.Exists(simulationSourceDir)) throw new DirectoryNotFoundException($"Directory '{simulationSourceDir}' not found!");
         if (Directory.Exists(simulationTargetDir)) Directory.Delete(simulationTargetDir, true);
+
+        if (!Directory.Exists(gitDir)) Directory.CreateDirectory(gitDir);
 
         Directory.CreateDirectory(simulationTargetDir);
 

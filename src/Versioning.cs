@@ -301,17 +301,18 @@ public class Versioning
         var refVersion = TryGetRefVersion(refVersionFileContent, out var v) ? v : assemblyVersion;
         var assembly = CreateAssembly(new FileInfo(this._targetFileName));
         var currentVersionList = CreateRefInfos(assembly).ToList();
+        var currentVersionTempList = currentVersionList.ToList();
         var increaseMajor = false;
 
         RemoveRefVersion(refVersionFileContent);
 
         foreach (var line in refVersionFileContent)
         {
-            if (currentVersionList.Remove(line)) continue;
+            if (currentVersionTempList.Remove(line)) continue;
             increaseMajor = true;
         }
 
-        var increaseMinor = refVersionFileContent.Count > 0 && currentVersionList.Count > 0;
+        var increaseMinor = refVersionFileContent.Count > 0 && currentVersionTempList.Count > 0;
         var increaseBuild = this.IncreaseBuild(gitChanges);
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, increaseMajor, increaseMinor, increaseBuild, false);
