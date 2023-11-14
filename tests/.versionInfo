@@ -1,0 +1,42 @@
+0.0.11.0
+module:Oleander.AssemblyVersioning.Test.dll
+type:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseRevision:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseBuild:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseMinor:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseMajor:System.Void:False:False::
+type:Oleander.AssemblyVersioning.Test.CalculateBetaVersionTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateBetaVersionTests.TestBetaVersionIncreaseRevision:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateBetaVersionTests.TestBetaVersionIncreaseBuild:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateBetaVersionTests.TestBetaVersionIncreaseMinor:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateBetaVersionTests.TestBetaVersionIncreaseMajor:System.Void:False:False::
+type:Oleander.AssemblyVersioning.Test.CalculateVersionTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionIncreaseRevision:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionIncreaseBuild:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionIncreaseMinor:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.CalculateVersionTests.TestVersionIncreaseMajor:System.Void:False:False::
+type:Oleander.AssemblyVersioning.Test.CreateRefInfoTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.CreateRefInfoTests.TestCreateRefInfoEnums:System.Void:False:False::
+type:Oleander.AssemblyVersioning.Test.SimulationTests:System.Object:False:False:False
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPrivateMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddPublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestGitChanges:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddInterface:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestModifyInterface:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestRemovePublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestChangeNamespace:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddParameterToPublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAndRemovePublicMethod:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAndRemovePublicMethodWithoutCommit:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestAddAnInterfaceToAClass:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestRemoveInterfaceFromClass:System.Void:False:False::
+methodInfo:Oleander.AssemblyVersioning.Test.SimulationTests.TestModifyEnum:System.Void:False:False::
+referencedAssembly:System.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:xunit.core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:Oleander.AssemblyVersioning, Version=0.0.9.0, Culture=neutral, PublicKeyToken=null
+referencedAssembly:System.Diagnostics.Process, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Collections, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:xunit.assert, Version=2.6.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c
+referencedAssembly:Microsoft.Win32.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+referencedAssembly:System.Linq, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a

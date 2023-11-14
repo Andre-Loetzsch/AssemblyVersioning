@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ windows-latest, ubuntu-latest ]
     steps:
      - name: 'echo VERSION_SUFFIX'
        shell: bash
@@ -64,7 +64,7 @@ jobs:
      - name: 'Build and test Oleander.AssemblyVersioning.sln'
        uses: Andre-Loetzsch/actions/buildAndTestSolution@v1
        with:
-         solution: '${{ github.workspace }}\Oleander.AssemblyVersioning\Oleander.AssemblyVersioning.sln'
+         solution: '${{ github.workspace }}\Oleander.AssemblyVersioning.sln'
          version-suffix: ${{ env.VERSION_SUFFIX }}
          packoutdir: ${{ env.PACKOUTDIR }}
          github_token: ${{ secrets.GITHUB_TOKEN }}
