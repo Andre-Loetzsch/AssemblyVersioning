@@ -32,7 +32,7 @@ internal static class TestRunner
         var gitChangesFileName = Path.Combine(projectDirName, ".gitChanges");
         var versioning = new TestVersioning();
 
-        foreach (var directory in Directory.GetDirectories(simulationSourceDir).Select(x => new DirectoryInfo(x)))
+        foreach (var directory in Directory.GetDirectories(simulationSourceDir).Order().Select(x => new DirectoryInfo(x)))
         {
             Helper.CopyFilesRecursively(directory.FullName, simulationTargetDir);
 
