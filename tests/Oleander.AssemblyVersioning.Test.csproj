@@ -36,7 +36,7 @@
   </Target>
 
   <Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
-    <Exec Command="rm -r &quot;$(TargetDir)Simulations\&quot; " />
+    <Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;"  Condition="Exists('$(TargetDir)Simulations')"/>
     <Exec Command="cp -r &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
   </Target>
 
