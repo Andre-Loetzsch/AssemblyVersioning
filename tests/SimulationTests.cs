@@ -91,8 +91,12 @@ public class SimulationTests
 
         Assert.Equal(3, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
-        // TODO enable Assert.Equal(new(1, 1, 0, 0), result[1]);
-        //Assert.Equal(new(1, 1, 0, 0), result[1]);
+        // TODO enable Assert.Equal(new(1, 1, 0, 0), result[1]); for all platforms
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            Assert.Equal(new(1, 1, 0, 0), result[1]);
+        }
+
         Assert.Equal(new(2, 0, 0, 0), result[2]);
     }
 
@@ -103,8 +107,13 @@ public class SimulationTests
 
         Assert.Equal(3, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
-        // TODO enable Assert.Equal(new(1, 1, 0, 0), result[1]);
-        //Assert.Equal(new(1, 1, 0, 0), result[1]);
+
+        // TODO enable Assert.Equal(new(1, 1, 0, 0), result[1]); for all platforms
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            Assert.Equal(new(1, 1, 0, 0), result[1]);
+        }
+
         Assert.Equal(new(1, 0, 0, 0), result[2]);
     }
 
