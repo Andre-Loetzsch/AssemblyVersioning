@@ -1,4 +1,4 @@
-0.0.8.0
+0.0.9.0
 module:Oleander.AssemblyVersioning.Test.dll
 type:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests:System.Object:False:False:False
 methodInfo:Oleander.AssemblyVersioning.Test.CalculateAlphaVersionTests.TestAlphaVersionIncreaseRevision:System.Void:False:False::

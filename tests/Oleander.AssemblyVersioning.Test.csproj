@@ -4,8 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.8.0</AssemblyVersion>
-    <SourceRevisionId>7ef84fddd9a298114ede494cced517e16e5b8ae0</SourceRevisionId>
+    <AssemblyVersion>0.0.9.0</AssemblyVersion>
+    <SourceRevisionId>de299899c2fb1af174cef6c5ad3964138a0bec45</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
@@ -36,7 +36,7 @@
   </Target>
 
   <Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
-    <Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;"  Condition="Exists('$(TargetDir)Simulations')"/>
+    <Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;" Condition="Exists('$(TargetDir)Simulations')" />
     <Exec Command="cp -r &quot;$(ProjectDir)Simulations&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 

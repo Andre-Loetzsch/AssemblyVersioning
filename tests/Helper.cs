@@ -11,7 +11,7 @@ internal static class Helper
         return VSProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
     }
 
-    public static bool TryGetVersionFromProjectFile(string projectFileName, [MaybeNullWhen(false)] out Version? version)
+    public static bool TryGetVersionFromProjectFile(string projectFileName, [MaybeNullWhen(false)] out Version version)
     {
         version = null;
         var project = new VSProject(projectFileName);
