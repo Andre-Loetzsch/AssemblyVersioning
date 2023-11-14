@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyVersion>0.0.8.0</AssemblyVersion>
-    <SourceRevisionId>d68511b7416b8447e29e416de3be7f34c1a30178</SourceRevisionId>
+    <SourceRevisionId>7ef84fddd9a298114ede494cced517e16e5b8ae0</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
@@ -30,9 +30,14 @@
     <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
   </ItemGroup>
  
-  <Target Name="PreBuild" AfterTargets="PreBuildEvent">
+  <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
     <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
     <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
+  </Target>
+
+  <Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
+    <Exec Command="rm -r &quot;$(TargetDir)Simulations\&quot; " />
+    <Exec Command="cp -r &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
   </Target>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
