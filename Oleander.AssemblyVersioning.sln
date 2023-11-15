@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.AssemblyVersioning", "src\Oleander.AssemblyVersioning.csproj", "{6A918191-B9EE-4E28-B5EB-BC2BABC0F805}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.AssemblyVersioning", "src\Oleander.AssemblyVersioning\Oleander.AssemblyVersioning.csproj", "{6A918191-B9EE-4E28-B5EB-BC2BABC0F805}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B54A414D-0042-4945-A9B2-D4BA5FD8F13F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.AssemblyVersioning.Test", "tests\Oleander.AssemblyVersioning.Test.csproj", "{44E02EEA-1DC4-403E-BD85-522E6552B6C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.AssemblyVersioning.Tests", "tests\Oleander.AssemblyVersioning.Tests\Oleander.AssemblyVersioning.Tests.csproj", "{44E02EEA-1DC4-403E-BD85-522E6552B6C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

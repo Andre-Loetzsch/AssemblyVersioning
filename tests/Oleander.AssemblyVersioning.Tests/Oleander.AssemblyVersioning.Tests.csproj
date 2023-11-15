@@ -24,10 +24,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  
 
- 
   <ItemGroup>
-    <ProjectReference Include="..\src\Oleander.AssemblyVersioning.csproj" />
+    <ProjectReference Include="..\..\src\Oleander.AssemblyVersioning\Oleander.AssemblyVersioning.csproj" />
   </ItemGroup>
  
   <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
