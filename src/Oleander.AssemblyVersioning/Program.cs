@@ -1,4 +1,4 @@
-﻿namespace Oleander.AssemblyVersioning;
+﻿namespace Oleander.Assembly.Versioning;
 
 internal class Program
 {

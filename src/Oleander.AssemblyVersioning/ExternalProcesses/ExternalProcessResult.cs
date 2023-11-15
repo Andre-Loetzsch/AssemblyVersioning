@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Oleander.AssemblyVersioning.ExternalProcesses
+namespace Oleander.Assembly.Versioning.ExternalProcesses
 {
     public class ExternalProcessResult
     {

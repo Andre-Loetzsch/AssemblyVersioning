@@ -1,7 +1,7 @@
 ﻿using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 
-namespace Oleander.AssemblyVersioning;
+namespace Oleander.Assembly.Versioning;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 // ReSharper disable once InconsistentNaming

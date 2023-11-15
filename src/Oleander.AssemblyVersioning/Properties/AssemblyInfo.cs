@@ -1,4 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
 
 
-[assembly: InternalsVisibleTo("Oleander.AssemblyVersioning.Tests")]
+[assembly: InternalsVisibleTo("Oleander.Assembly.Versioning.Tests")]

@@ -1,5 +1,6 @@
-﻿using Oleander.AssemblyVersioning.ExternalProcesses;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Oleander.Assembly.Versioning;
+using Oleander.Assembly.Versioning.ExternalProcesses;
 
 namespace Oleander.AssemblyVersioning.Test;
 

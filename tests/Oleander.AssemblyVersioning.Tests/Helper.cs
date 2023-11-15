@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Oleander.Assembly.Versioning;
 
 namespace Oleander.AssemblyVersioning.Test;
 

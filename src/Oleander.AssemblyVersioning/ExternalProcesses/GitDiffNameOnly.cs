@@ -1,4 +1,4 @@
-﻿namespace Oleander.AssemblyVersioning.ExternalProcesses;
+﻿namespace Oleander.Assembly.Versioning.ExternalProcesses;
 
 internal class GitDiffNameOnly : ExternalProcess
 {

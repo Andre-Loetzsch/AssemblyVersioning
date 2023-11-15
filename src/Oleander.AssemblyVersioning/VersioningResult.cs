@@ -1,6 +1,6 @@
-﻿using Oleander.AssemblyVersioning.ExternalProcesses;
+﻿using Oleander.Assembly.Versioning.ExternalProcesses;
 
-namespace Oleander.AssemblyVersioning;
+namespace Oleander.Assembly.Versioning;
 
 public class VersioningResult
 {

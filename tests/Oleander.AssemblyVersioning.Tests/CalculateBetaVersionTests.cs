@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Oleander.Assembly.Versioning;
+using Xunit;
 
 namespace Oleander.AssemblyVersioning.Test;
 

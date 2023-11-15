@@ -27,7 +27,7 @@
   
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Oleander.AssemblyVersioning\Oleander.AssemblyVersioning.csproj" />
+    <ProjectReference Include="..\..\src\Oleander.AssemblyVersioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>
  
   <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 
-namespace Oleander.AssemblyVersioning.ExternalProcesses;
+namespace Oleander.Assembly.Versioning.ExternalProcesses;
 
 internal class ExternalProcess
 {

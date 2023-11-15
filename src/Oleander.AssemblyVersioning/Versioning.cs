@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Oleander.AssemblyVersioning.ExternalProcesses;
+using Oleander.Assembly.Versioning.ExternalProcesses;
 
-namespace Oleander.AssemblyVersioning;
+namespace Oleander.Assembly.Versioning;
 
 public class Versioning
 {
@@ -466,7 +466,7 @@ public class Versioning
         return false;
     }
 
-    private static Assembly CreateAssembly(FileInfo assemblyFileInfo)
+    private static System.Reflection.Assembly CreateAssembly(FileInfo assemblyFileInfo)
     {
         var assemblyFile = assemblyFileInfo.FullName;
 
@@ -479,13 +479,13 @@ public class Versioning
 
             fileName = Directory.GetFiles(directoryName, $"{fileName}.*").FirstOrDefault();
 
-            return fileName == null ? null : Assembly.Load(File.ReadAllBytes(fileName));
+            return fileName == null ? null : System.Reflection.Assembly.Load(File.ReadAllBytes(fileName));
         };
 
-        return Assembly.LoadFile(assemblyFile);
+        return System.Reflection.Assembly.LoadFile(assemblyFile);
     }
 
-    private static IEnumerable<string> CreateRefInfos(Assembly assembly)
+    private static IEnumerable<string> CreateRefInfos(System.Reflection.Assembly assembly)
     {
         //yield return GetAssemblyVersion(assembly).ToString();
 
