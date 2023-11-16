@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Oleander.Assembly.Versioning;
 
-namespace Oleander.AssemblyVersioning.Test;
+namespace Oleander.Assembly.Versioning.Tests;
 
 internal static class Helper
 {

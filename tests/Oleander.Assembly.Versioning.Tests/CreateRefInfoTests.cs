@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
-using Oleander.Assembly.Versioning;
 using Xunit;
 
-namespace Oleander.AssemblyVersioning.Test;
+namespace Oleander.Assembly.Versioning.Tests;
 
 public class CreateRefInfoTests
 {

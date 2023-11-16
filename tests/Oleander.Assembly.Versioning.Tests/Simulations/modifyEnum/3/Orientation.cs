@@ -5,6 +5,6 @@
         Horizontal = 0,
         Vertical = 1,
         Right = 3,
-        Left = 2
+        Left1 = 2
     }
 }

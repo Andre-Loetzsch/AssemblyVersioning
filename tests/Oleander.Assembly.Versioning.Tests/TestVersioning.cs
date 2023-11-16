@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Oleander.Assembly.Versioning;
 using Oleander.Assembly.Versioning.ExternalProcesses;
 
-namespace Oleander.AssemblyVersioning.Test;
+namespace Oleander.Assembly.Versioning.Tests;
 
 internal class TestVersioning : Versioning
 {

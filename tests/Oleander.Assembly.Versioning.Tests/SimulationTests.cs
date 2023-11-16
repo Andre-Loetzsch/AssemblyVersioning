@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Oleander.AssemblyVersioning.Test;
+namespace Oleander.Assembly.Versioning.Tests;
 
 public class SimulationTests
 {

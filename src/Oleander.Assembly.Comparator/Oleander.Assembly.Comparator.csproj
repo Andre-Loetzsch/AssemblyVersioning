@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="JustAssembly.Core">
+      <HintPath>..\..\lib\JustAssembly.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.JustDecompile.Mono.Cecil">
+      <HintPath>..\..\lib\Telerik.JustDecompile.Mono.Cecil.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+ 
+ 
+
+</Project>

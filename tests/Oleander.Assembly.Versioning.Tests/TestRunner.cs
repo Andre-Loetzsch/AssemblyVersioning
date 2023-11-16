@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using Oleander.Assembly.Versioning;
-using Xunit;
+﻿using Xunit;
 
-namespace Oleander.AssemblyVersioning.Test;
+namespace Oleander.Assembly.Versioning.Tests;
 
 internal static class TestRunner
 {
