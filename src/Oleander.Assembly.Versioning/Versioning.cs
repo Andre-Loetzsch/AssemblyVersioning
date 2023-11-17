@@ -309,10 +309,8 @@ public class Versioning
         if (this.IncreaseBuild(gitChanges) && versionChange < VersionChange.Build) versionChange = VersionChange.Build;
         updateResult.CalculatedVersion = CalculateVersion(refAssemblyVersion, versionChange);
 
-        if (projectFileAssemblyVersion <= lastCalculatedVersion &&
-            projectFileAssemblyVersion <= updateResult.CalculatedVersion)
+        if (projectFileAssemblyVersion <= lastCalculatedVersion)
         {
-
             var versionSuffix = updateResult.CalculatedVersion.Major == 0 ? "alpha" :
                 updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
 
