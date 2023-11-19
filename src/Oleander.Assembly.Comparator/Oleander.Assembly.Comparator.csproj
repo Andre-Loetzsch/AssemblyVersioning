@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="JustAssembly.Core">
-      <HintPath>..\..\lib\JustAssembly.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\JustAssembly.Core\JustAssembly.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Telerik.JustDecompile.Mono.Cecil">
-      <HintPath>..\..\lib\Telerik.JustDecompile.Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\lib\diff\Telerik.JustDecompile.Mono.Cecil.dll</HintPath>
     </Reference>
   </ItemGroup>
 

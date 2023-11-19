@@ -8,8 +8,8 @@ namespace Oleander.Assembly.Comparer.Tests
         public void Test1()
         {
 
-            var oldAssembly = new FileInfo(@"D:\dev\git\oleander\AssemblyVersioning\src\Oleander.Assembly.Versioning\bin\Debug\Oleander.Assembly.Versioning.dll");
-            var newAssembly = new FileInfo(@"D:\dev\git\oleander\AssemblyVersioning\src\Oleander.Assembly.Versioning\bin\Debug\net7.0\Oleander.Assembly.Versioning.dll");
+            var oldAssembly = new FileInfo(@"C:\dev\git\oleander\AssemblyVersioning\lib\JustAssembly.Core.dll");
+            var newAssembly = new FileInfo(@"C:\dev\git\oleander\AssemblyVersioning\src\JustAssembly.Core\bin\Debug\JustAssembly.Core.dll");
           
 
             Assert.Equal(VersionChange.Minor, new AssemblyComparison(oldAssembly, newAssembly).VersionChange);
