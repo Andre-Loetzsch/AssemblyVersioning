@@ -10,7 +10,7 @@
     },
     "M316IT012": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\bin\\Debug\\net7.0\\Oleander.Assembly.Versioning.Test.dll"
+      "commandLineArgs": "C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning\\bin\\Debug\\net7.0\\Oleander.Assembly.Versioning.dll"
     }
   }
 }

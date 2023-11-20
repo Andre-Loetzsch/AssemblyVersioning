@@ -218,66 +218,7 @@ public class Versioning
 
     #endregion
 
-
-    #region internal / private members
-
-    internal static Version CalculateVersion(Version version, bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
-    {
-
-        var major = version.Major;
-        var minor = version.Minor;
-        var build = version.Build;
-        var revision = version.Revision;
-
-
-        // beta version
-        if (increaseMajor && major == 0)
-        {
-            increaseMajor = false;
-            increaseMinor = true;
-        }
-
-        // alpha version
-        if (increaseMinor && major == 0 && minor == 0)
-        {
-            increaseMinor = false;
-            increaseBuild = true;
-        }
-
-        if (increaseMajor)
-        {
-            major++;
-            minor = 0;
-            build = 0;
-            revision = 0;
-            increaseMinor = false;
-            increaseBuild = false;
-            increaseRevision = false;
-        }
-
-        if (increaseMinor)
-        {
-            minor++;
-            build = 0;
-            revision = 0;
-            increaseBuild = false;
-            increaseRevision = false;
-        }
-
-        if (increaseBuild)
-        {
-            build++;
-            revision = 0;
-            increaseRevision = false;
-        }
-
-        if (increaseRevision)
-        {
-            revision++;
-        }
-
-        return new Version(major, minor, build, revision);
-    }
+    #region private members
 
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
@@ -459,48 +400,73 @@ public class Versioning
 
     #region public static
 
+
     public static Version CalculateVersion(Version version, VersionChange versionChange)
     {
-        var versionAsList = new List<int> { version.Major, version.Minor, version.Build, version.Revision };
-
-        switch (versionChange)
-        {
-            case VersionChange.Major:
-                versionAsList[0] = version.Major + 1;
-                versionAsList[1] = 0;
-                versionAsList[2] = 0;
-                versionAsList[3] = 0;
-                break;
-            case VersionChange.Minor:
-                versionAsList[1] = version.Minor + 1;
-                versionAsList[2] = 0;
-                versionAsList[3] = 0;
-                break;
-            case VersionChange.Build:
-                versionAsList[2] = version.Build + 1;
-                versionAsList[3] = 0;
-                break;
-            case VersionChange.Revision:
-                versionAsList[3] = version.Revision + 1;
-                break;
-            case VersionChange.None:
-                return version;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(versionChange), versionChange, null);
-        }
-
-        if (version.Major == 0)         // beta
-        {
-            if (versionAsList[0] > 0) versionAsList.Insert(0, 0); // alpha
-
-            if (versionAsList[1] > 0 && version.Minor == 0)
-            {
-                versionAsList.Insert(0, 0);
-            }
-        }
-
-        return new Version(versionAsList[0], versionAsList[1], versionAsList[2], versionAsList[3]);
+        return CalculateVersion(version,
+            versionChange == VersionChange.Major,
+            versionChange == VersionChange.Minor,
+            versionChange == VersionChange.Build,
+            versionChange == VersionChange.Revision);
     }
+
+    public static Version CalculateVersion(Version version, bool increaseMajor, bool increaseMinor, bool increaseBuild, bool increaseRevision)
+    {
+        var major = version.Major;
+        var minor = version.Minor;
+        var build = version.Build;
+        var revision = version.Revision;
+
+
+        // beta version
+        if (increaseMajor && major == 0)
+        {
+            increaseMajor = false;
+            increaseMinor = true;
+        }
+
+        // alpha version
+        if (increaseMinor && major == 0 && minor == 0)
+        {
+            increaseMinor = false;
+            increaseBuild = true;
+        }
+
+        if (increaseMajor)
+        {
+            major++;
+            minor = 0;
+            build = 0;
+            revision = 0;
+            increaseMinor = false;
+            increaseBuild = false;
+            increaseRevision = false;
+        }
+
+        if (increaseMinor)
+        {
+            minor++;
+            build = 0;
+            revision = 0;
+            increaseBuild = false;
+            increaseRevision = false;
+        }
+
+        if (increaseBuild)
+        {
+            build++;
+            revision = 0;
+            increaseRevision = false;
+        }
+
+        if (increaseRevision)
+        {
+            revision++;
+        }
+
+        return new Version(major, minor, build, revision);
+    }
+
 
     #endregion
 }
