@@ -484,16 +484,16 @@ public class Versioning
                 versionAsList[3] = version.Revision + 1;
                 break;
             case VersionChange.None:
-                break;
+                return version;
             default:
                 throw new ArgumentOutOfRangeException(nameof(versionChange), versionChange, null);
         }
 
         if (version.Major == 0)         // beta
         {
-            versionAsList.Insert(0, 0); // alpha
+            if (versionAsList[0] > 0) versionAsList.Insert(0, 0); // alpha
 
-            if (version.Minor == 0)
+            if (versionAsList[1] > 0 && version.Minor == 0)
             {
                 versionAsList.Insert(0, 0);
             }

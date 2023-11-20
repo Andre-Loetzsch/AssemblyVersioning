@@ -4,8 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.12.0</AssemblyVersion>
-    <SourceRevisionId>4f4fe4c0921195679b0ca8b83e7396461ac5cfd1</SourceRevisionId>
+    <AssemblyVersion>0.0.10.0</AssemblyVersion>
+    <SourceRevisionId>683bd1979b85bc9ddcb71cf0016435cedd7d740e</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
@@ -40,8 +40,9 @@
     <Exec Command="cp -r &quot;$(ProjectDir)Simulations&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 
-  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe')" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)src\bin\$(Configuration)\net7.0\Oleander.AssemblyVersioning.exe $(TargetPath)" />
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
   </Target>
+
 
 </Project>

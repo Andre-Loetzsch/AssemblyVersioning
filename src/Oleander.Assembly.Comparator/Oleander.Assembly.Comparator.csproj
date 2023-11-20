@@ -4,19 +4,18 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <SourceRevisionId>683bd1979b85bc9ddcb71cf0016435cedd7d740e</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\JustAssembly.Core\JustAssembly.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Telerik.JustDecompile.Mono.Cecil">
-      <HintPath>..\..\lib\diff\Telerik.JustDecompile.Mono.Cecil.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
- 
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
+  </Target>
  
 
 </Project>
