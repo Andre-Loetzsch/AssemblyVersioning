@@ -1,16 +1,23 @@
 ﻿using JustAssembly.Core;
+using SysAssembly = System.Reflection.Assembly;
 
 namespace Oleander.Assembly.Comparator;
 
 public class AssemblyComparison
 {
+    private readonly FileSystemInfo? _refAssembly;
+    private readonly FileSystemInfo? _newAssembly;
     private readonly IMetadataDiffItem? _diffItem;
+
 
     public AssemblyComparison(FileSystemInfo? refAssembly, FileSystemInfo? newAssembly)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
-        
+
+        this._refAssembly = refAssembly;
+        this._newAssembly = newAssembly;
+
         this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
     }
 
@@ -23,61 +30,78 @@ public class AssemblyComparison
     {
         get
         {
-            if (this._diffItem == null) return VersionChange.None;
+            if (this._diffItem == null) return this.CheckEnumsForBreakingChange(this._refAssembly, this._newAssembly);
             if (this._diffItem.IsBreakingChange) return VersionChange.Major;
 
-            var differences = this._diffItem.ChildrenDiffs.Concat(this._diffItem.DeclarationDiffs).ToList();
-            
-            if (!differences.Any()) return VersionChange.Build;
-            if (differences.Any(diff => diff.DiffType == DiffType.Deleted)) return VersionChange.Major;
+            VersionChange retValue;
 
-            return differences.Any(diff => diff.DiffType is DiffType.Modified or DiffType.New) ?
+            var differences = this._diffItem.ChildrenDiffs.Concat(this._diffItem.DeclarationDiffs).ToList();
+
+            if (!differences.Any()) retValue = VersionChange.Build;
+            if (differences.Any(diff => diff.DiffType == DiffType.Deleted)) retValue = VersionChange.Major;
+
+            retValue = differences.Any(diff => diff.DiffType is DiffType.Modified or DiffType.New) ?
                 VersionChange.Minor :
                 VersionChange.Build;
+
+            var enumVersionChange = this.CheckEnumsForBreakingChange(this._refAssembly, this._newAssembly);
+            return retValue > enumVersionChange ? retValue: enumVersionChange;
+        }
+    }
+
+    private VersionChange CheckEnumsForBreakingChange(FileSystemInfo? refAssemblyFile, FileSystemInfo? newAssemblyFile)
+    {
+        if (refAssemblyFile is not { Exists: true } || newAssemblyFile is not { Exists: true }) return VersionChange.None;
+
+        var refAssemblyEnums = SysAssembly.Load(File.ReadAllBytes(refAssemblyFile.FullName)).ExportedTypes.Where(x => x.IsEnum);
+        var newAssemblyEnums = SysAssembly.Load(File.ReadAllBytes(newAssemblyFile.FullName)).ExportedTypes.Where(x => x.IsEnum);
+        var refList = new List<string>();
+        var newList = new List<string>();
+
+        foreach (var enumType in refAssemblyEnums)
+        {
+            var hasFlag = enumType.GetCustomAttributes(true).OfType<FlagsAttribute>().Any();
+            var enumNames = Enum.GetNames(enumType);
+            var enumValues = GetEnumValues(enumType).ToArray();
+
+            refList.AddRange(enumNames.Select((t, i) => $"enum:{enumType.FullName}:{hasFlag}:{t}:{enumValues[i]}"));
+        }
+
+        foreach (var enumType in newAssemblyEnums)
+        {
+            var hasFlag = enumType.GetCustomAttributes(true).OfType<FlagsAttribute>().Any();
+            var enumNames = Enum.GetNames(enumType);
+            var enumValues = GetEnumValues(enumType).ToArray();
+
+            newList.AddRange(enumNames.Select((t, i) => $"enum:{enumType.FullName}:{hasFlag}:{t}:{enumValues[i]}"));
+        }
+
+        if (refList.Any(item => !newList.Remove(item)))
+        {
+            return VersionChange.Major;
+        }
+       
+        return newList.Any() ? VersionChange.Minor : VersionChange.None;
+    }
+
+
+    private static IEnumerable<object> GetEnumValues(Type enumType)
+    {
+        var enumUnderlyingType = Enum.GetUnderlyingType(enumType);
+        var enumValues = Enum.GetValues(enumType);
+
+        for (var i = 0; i < enumValues.Length; i++)
+        {
+            var value = enumValues.GetValue(i);
+            if (value == null) continue;
+            yield return Convert.ChangeType(value, enumUnderlyingType);
         }
     }
 
 
 
 
-    //public static Version CalculateVersion(Version version, VersionChange versionChange)
-    //{
-    //    var versionAsList = new List<int> {version.Major, version.Minor, version.Build, version.Revision};
-
-    //    switch (versionChange)
-    //    {
-    //        case VersionChange.Major:
-    //            versionAsList[0] = version.Major + 1; 
-    //            break;
-    //        case VersionChange.Minor:
-    //            versionAsList[1] = version.Minor + 1;
-    //            break;
-    //        case VersionChange.Build:
-    //            versionAsList[2] = version.Build + 1;
-    //            break;
-    //        case VersionChange.Revision:
-    //            versionAsList[3] = version.Revision + 1;
-    //            break;
-    //        case VersionChange.None:
-    //            break;
-    //        default:
-    //            throw new ArgumentOutOfRangeException(nameof(versionChange), versionChange, null);
-    //    }
-
-    //    if (version.Major == 0)         // beta
-    //    {
-    //        versionAsList.Insert(0, 0); // alpha
-
-    //        if (version.Minor == 0)
-    //        {
-    //            versionAsList.Insert(0, 0);
-    //        }
-    //    }
-
-    //    return new Version(versionAsList[0], versionAsList[1], versionAsList[2], versionAsList[3]);
-    //}
 
 
 
 }
-
