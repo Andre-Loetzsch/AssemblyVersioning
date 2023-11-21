@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>0.0.13.0</AssemblyVersion>
+    <SourceRevisionId>aaa38bf76d51c9152421d91c7b7ba6e9874a3091</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Simulations\**" />
+    <EmbeddedResource Remove="Simulations\**" />
+    <None Remove="Simulations\**" />
+  </ItemGroup>
+  
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
+  </ItemGroup>
+ 
+  <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
+    <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
+    <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
+  </Target>
+
+  <Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
+    <Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;" Condition="Exists('$(TargetDir)Simulations')" />
+    <Exec Command="cp -r &quot;$(ProjectDir)Simulations&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
+
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
+  </Target>
+
+
+</Project>

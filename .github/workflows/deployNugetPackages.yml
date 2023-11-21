@@ -64,7 +64,7 @@ jobs:
      - name: 'Build and test Oleander.AssemblyVersioning.sln'
        uses: Andre-Loetzsch/actions/buildAndTestSolution@v1
        with:
-         solution: '${{ github.workspace }}\Oleander.AssemblyVersioning.sln'
+         solution: '${{ github.workspace }}\Oleander.Assembly.Versioning.sln'
          version-suffix: ${{ env.VERSION_SUFFIX }}
          packoutdir: ${{ env.PACKOUTDIR }}
          github_token: ${{ secrets.GITHUB_TOKEN }}
