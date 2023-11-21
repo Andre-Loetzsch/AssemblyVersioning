@@ -131,10 +131,11 @@ public class SimulationTests
     {
         var result = TestRunner.RunSimulation("modifyEnum").ToList();
 
-        Assert.Equal(3, result.Count);
+        Assert.Equal(5, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
         Assert.Equal(new(1, 1, 0, 0), result[1]);
         Assert.Equal(new(2, 0, 0, 0), result[2]);
-
+        Assert.Equal(new(2, 1, 0, 0), result[3]);
+        Assert.Equal(new(3, 0, 0, 0), result[4]);
     }
 }

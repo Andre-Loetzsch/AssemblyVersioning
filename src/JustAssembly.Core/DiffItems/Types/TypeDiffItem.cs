@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using JustDecompile.External.JustAssembly;
 using Mono.Cecil;
 
@@ -13,25 +11,9 @@ namespace JustAssembly.Core.DiffItems.Types
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return Core.MetadataType.Type; }
-        }
+        public override MetadataType MetadataType => Core.MetadataType.Type;
 
-        public override bool IsBreakingChange
-        {
-            get
-            {
-                if ( (base.ChildrenDiffs.Any() || 
-                     this.DeclarationDiffs.Any()) && 
-                     (this.OldElement.IsInterface || 
-                     this.NewElement.IsInterface)) return true;
-
-                return base.IsBreakingChange;
-
-            }
-
-        }
+        public override bool IsBreakingChange => base.IsBreakingChange || this.OldElement.IsInterface || this.NewElement.IsInterface;
 
         protected override string GetElementShortName(TypeDefinition typeDef)
         {

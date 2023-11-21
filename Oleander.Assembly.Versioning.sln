@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Versionin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Comparator", "src\Oleander.Assembly.Comparator\Oleander.Assembly.Comparator.csproj", "{5A1575B4-9F48-45D4-A8BD-F91B4203C92F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Comparer.Tests", "tests\Oleander.Assembly.Comparer.Tests\Oleander.Assembly.Comparer.Tests.csproj", "{8A82577A-A5F7-4650-90ED-BCE5398CF19B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustAssembly.Core", "src\JustAssembly.Core\JustAssembly.Core.csproj", "{C83612CD-AD42-4655-98A1-336CE7A65012}"
 EndProject
 Global
@@ -210,60 +208,6 @@ Global
 		{5A1575B4-9F48-45D4-A8BD-F91B4203C92F}.winphone_Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A1575B4-9F48-45D4-A8BD-F91B4203C92F}.winphone_Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A1575B4-9F48-45D4-A8BD-F91B4203C92F}.winphone_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}..NET 3.5 Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}..NET 3.5 Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}..NET 3.5 Release Server EngineOnly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}..NET 3.5 Release Server EngineOnly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug .NET 3.5|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug .NET 3.5|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug EngineOnly|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug EngineOnly|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug JustAssembly|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug JustAssembly|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_2_0_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_2_0_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_2_0_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_2_0_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_ReleaseServer|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_3_5_ReleaseServer|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_0_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_0_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_0_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_0_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_5_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_5_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_5_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.net_4_5_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.NET3.5 Release Server EngineOnly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.NET3.5 Release Server EngineOnly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release EngineOnly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release EngineOnly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release JustAssembly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release JustAssembly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server EngineOnly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server EngineOnly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server JustAssembly|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server JustAssembly|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release Server|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.silverlight_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.silverlight_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.silverlight_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.silverlight_Release|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Telerik Release Build|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.Telerik Release Build|Any CPU.Build.0 = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.winphone_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.winphone_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.winphone_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B}.winphone_Release|Any CPU.Build.0 = Release|Any CPU
 		{C83612CD-AD42-4655-98A1-336CE7A65012}..NET 3.5 Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C83612CD-AD42-4655-98A1-336CE7A65012}..NET 3.5 Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C83612CD-AD42-4655-98A1-336CE7A65012}..NET 3.5 Release Server EngineOnly|Any CPU.ActiveCfg = Release|Any CPU
@@ -326,7 +270,6 @@ Global
 		{6A918191-B9EE-4E28-B5EB-BC2BABC0F805} = {ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}
 		{44E02EEA-1DC4-403E-BD85-522E6552B6C4} = {B54A414D-0042-4945-A9B2-D4BA5FD8F13F}
 		{5A1575B4-9F48-45D4-A8BD-F91B4203C92F} = {ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}
-		{8A82577A-A5F7-4650-90ED-BCE5398CF19B} = {B54A414D-0042-4945-A9B2-D4BA5FD8F13F}
 		{C83612CD-AD42-4655-98A1-336CE7A65012} = {ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using JustAssembly.Core.DiffItems;
 using JustAssembly.Core.DiffItems.Common;
+using JustAssembly.Core.DiffItems.Enums;
 using JustAssembly.Core.DiffItems.Types;
 using JustAssembly.Core.Extensions;
 using Mono.Cecil;
@@ -33,7 +32,8 @@ namespace JustAssembly.Core.Comparers
                     GetPropertyDifferences(oldElement, newElement),
                     GetMethodDifferences(oldElement, newElement),
                     GetEventDifferences(oldElement, newElement),
-                    GetNestedTypeDiffs(oldElement, newElement)
+                    GetNestedTypeDiffs(oldElement, newElement),
+                    GetEnumTypeValueDiffs(oldElement, newElement)
                 );
 
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
@@ -76,6 +76,33 @@ namespace JustAssembly.Core.Comparers
         private IEnumerable<IDiffItem> GetNestedTypeDiffs(TypeDefinition oldType, TypeDefinition newType)
         {
             return new TypeComparer().GetMultipleDifferences(oldType.NestedTypes, newType.NestedTypes);
+        }
+
+        private IEnumerable<IDiffItem> GetEnumTypeValueDiffs(TypeDefinition oldType, TypeDefinition newType)
+        {
+            if (!oldType.IsEnum) return Enumerable.Empty<IDiffItem>();
+            if (!newType.IsEnum) return Enumerable.Empty<IDiffItem>();
+            if (oldType.Fields.Count != newType.Fields.Count) return Enumerable.Empty<IDiffItem>();
+
+            var result = new List<IDiffItem>();
+            var fieldTypeNameIsEquals = oldType.Fields[0].FieldType.Name == newType.Fields[0].FieldType.Name;
+
+            for (var i = 1; i < oldType.Fields.Count; i++)
+            {
+                var oldField = oldType.Fields[i];
+                var newField = newType.Fields.FirstOrDefault(x => x.Name == oldField.Name);
+                if (newField == null) continue;
+                if (fieldTypeNameIsEquals && oldField.Constant?.Value?.ToString() == newField.Constant?.Value.ToString()) continue;
+
+                var oldDef = new EnumFieldDefinition(oldType.Fields[0].FieldType.Name, oldField.Name, oldField.Constant?.Value);
+                var newDef = new EnumFieldDefinition(newType.Fields[0].FieldType.Name, newField.Name, newField.Constant?.Value);
+
+                result.Add(new EnumFieldDiffItem(oldDef, null, null, null));
+                result.Add(new EnumFieldDiffItem(null, newDef, null, null));
+            }
+
+            return result;
+
         }
 
         private static bool IsNotAccessor(MethodDefinition methodDef)

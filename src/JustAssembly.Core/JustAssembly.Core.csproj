@@ -82,6 +82,8 @@
     <Compile Include="DiffItems\BaseMemberDiffItem.cs" />
     <Compile Include="DiffItems\Common\MemberTypeDiffItem.cs" />
     <Compile Include="DiffItems\Common\VisibilityChangedDiffItem.cs" />
+    <Compile Include="DiffItems\Enums\EnumFieldDefinition.cs" />
+    <Compile Include="DiffItems\Enums\EnumFieldDiffItem.cs" />
     <Compile Include="DiffType.cs" />
     <Compile Include="DiffItems\Events\AddAccessorDiffItem.cs" />
     <Compile Include="DiffItems\Events\EventDiffItem.cs" />
@@ -109,7 +111,13 @@
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="Properties\CompanyAssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="postBuild.cmd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(ProjectDir)postBuild.cmd $(SolutionDir) $(ConfigurationName) $(TargetPath)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
