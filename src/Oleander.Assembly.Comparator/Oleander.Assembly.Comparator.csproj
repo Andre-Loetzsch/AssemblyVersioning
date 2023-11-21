@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <SourceRevisionId>1c2dec71efb3dfe13b8b79fc95a7f79d73f3dd3b</SourceRevisionId>
+    <SourceRevisionId>aaa38bf76d51c9152421d91c7b7ba6e9874a3091</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
