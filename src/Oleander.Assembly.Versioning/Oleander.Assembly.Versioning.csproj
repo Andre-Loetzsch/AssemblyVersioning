@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
 
     <AssemblyVersion>0.0.14.0</AssemblyVersion>
-    <SourceRevisionId>78c340bd55adfa0a8ac68d1cc2bad72e991a9f13</SourceRevisionId>
+    <SourceRevisionId>5ce7bf0293affc549980f12a2d730b120cf12854</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>

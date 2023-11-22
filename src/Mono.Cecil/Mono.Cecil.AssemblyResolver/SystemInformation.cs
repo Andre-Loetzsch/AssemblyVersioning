@@ -153,8 +153,10 @@ namespace Mono.Cecil.AssemblyResolver
         {
             get
             {
-                return (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Microsoft\Silverlight", "Version", null) ??
-                    (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Wow6432Node\Microsoft\Silverlight", "Version", null);
+                //return (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Microsoft\Silverlight", "Version", null) ??
+                //    (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Wow6432Node\Microsoft\Silverlight", "Version", null);
+
+                return null;
             }
         }
 
