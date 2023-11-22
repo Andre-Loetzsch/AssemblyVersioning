@@ -90,7 +90,7 @@ namespace Mono.Cecil.AssemblyResolver
         {
             get
             {
-                return Environment.GetEnvironmentVariable("windir") ?? Environment.GetEnvironmentVariable("SystemRoot");
+                return Environment.GetEnvironmentVariable("windir") ?? Environment.GetEnvironmentVariable("SystemRoot") ?? string.Empty;
             }
         }
 
@@ -98,7 +98,7 @@ namespace Mono.Cecil.AssemblyResolver
         {
             get
             {
-                return Environment.GetEnvironmentVariable("ProgramFiles(x86)") ?? Environment.GetEnvironmentVariable("ProgramFiles");
+                return Environment.GetEnvironmentVariable("ProgramFiles(x86)") ?? Environment.GetEnvironmentVariable("ProgramFiles") ?? string.Empty;
             }
         }
 
@@ -156,7 +156,7 @@ namespace Mono.Cecil.AssemblyResolver
                 //return (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Microsoft\Silverlight", "Version", null) ??
                 //    (string)Registry.GetValue(Registry.LocalMachine.Name + @"\Software\Wow6432Node\Microsoft\Silverlight", "Version", null);
 
-                return null;
+                return string.Empty;
             }
         }
 
