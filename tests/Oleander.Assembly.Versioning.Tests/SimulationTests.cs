@@ -34,7 +34,7 @@ public class SimulationTests
         Assert.Equal(new(1, 0, 1, 0), result[1]);
     }
 
-    //[Fact]
+    [Fact]
     public void TestGitChangesRevision()
     {
         var result = TestRunner.RunSimulation("gitChangesRevision").ToList();

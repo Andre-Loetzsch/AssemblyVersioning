@@ -254,7 +254,7 @@ public class Versioning
         }
 
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
-        //if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+        if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
 
@@ -389,17 +389,15 @@ public class Versioning
             .Where(x => gitDiffFilter.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x[(this._gitRepositoryDirName.Length + 1)..].Replace('\\', '/'));
 
-        return projectFiles.Any(
-            projectFile => gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase)));
+        return projectFiles.Any(projectFile => 
+            gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase)));
 
     }
 
     private bool ShouldIncreaseRevisionVersion(IEnumerable<string> gitChanges, VersionChange versionChange)
     {
-        return versionChange < VersionChange.Revision && gitChanges.Any();
+        return versionChange < VersionChange.Revision && gitChanges.Any(x => x != ".versionInfo");
     }
-
-
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
     {
