@@ -12,8 +12,6 @@ public class Versioning
     private string _projectFileName = string.Empty;
     private string _gitRepositoryDirName = string.Empty;
 
-    private readonly string _currentDirectory = Directory.GetCurrentDirectory();
-
     #region UpdateAssemblyVersion
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName)
@@ -170,11 +168,7 @@ public class Versioning
     protected virtual bool TryGetGitHash(out ExternalProcessResult result, [MaybeNullWhen(false)] out string hash)
     {
         hash = null;
-        Directory.SetCurrentDirectory(this._gitRepositoryDirName);
-
-        result = new GitGetHash().Start();
-
-        Directory.SetCurrentDirectory(this._currentDirectory);
+        result = new GitGetHash(this._gitRepositoryDirName).Start();
 
         if (result.ExitCode != 0) return false;
         if (string.IsNullOrEmpty(result.StandardOutput)) return false;
@@ -187,12 +181,7 @@ public class Versioning
     protected virtual bool TryGetGitChanges(string gitHash, out ExternalProcessResult result, [MaybeNullWhen(false)] out string[] gitChanges)
     {
         gitChanges = null;
-
-        Directory.SetCurrentDirectory(this._gitRepositoryDirName);
-
-        result = new GitDiffNameOnly(gitHash).Start();
-
-        Directory.SetCurrentDirectory(this._currentDirectory);
+        result = new GitDiffNameOnly(gitHash, this._gitRepositoryDirName).Start();
 
         if (result.ExitCode != 0) return false;
         if (string.IsNullOrEmpty(result.StandardOutput))

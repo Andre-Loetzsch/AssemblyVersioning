@@ -5,11 +5,13 @@ namespace Oleander.Assembly.Versioning.ExternalProcesses;
 
 internal class ExternalProcess
 {
+    private readonly string _workingDirectory;
     private readonly string _fileName;
     private readonly string _arguments;
 
-    public ExternalProcess(string exeName, string arguments)
+    public ExternalProcess(string exeName, string arguments, string? workingDirectory = null)
     {
+        this._workingDirectory = workingDirectory ?? Directory.GetCurrentDirectory();
         this._fileName = exeName;
         this._arguments = arguments;
     }
@@ -28,7 +30,8 @@ internal class ExternalProcess
                     FileName = this._fileName,
                     Arguments = this._arguments,
                     CreateNoWindow = true,
-                    ErrorDialog = false
+                    ErrorDialog = false, 
+                    WorkingDirectory = this._workingDirectory
                 }
         };
 
