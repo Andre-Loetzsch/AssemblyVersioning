@@ -205,7 +205,7 @@ public class Versioning
         return true;
     }
 
-    protected virtual string[] GetGitDiffFiler()
+    protected virtual string[] GetGitDiffFilter()
     {
         if (Directory.Exists(this._projectDirName) &&
             File.Exists(Path.Combine(this._projectDirName, ".gitdiff")))
@@ -253,20 +253,25 @@ public class Versioning
             this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, lastCalculatedVersion);
         }
 
-        if (this.IncreaseBuild(gitChanges) && versionChange < VersionChange.Build) versionChange = VersionChange.Build;
+        if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
+        //if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
 
-
-        if (projectFileVersion <= lastCalculatedVersion || projectFileVersion <= updateResult.CalculatedVersion)
+        if (projectFileVersion <= lastCalculatedVersion && projectFileVersion != updateResult.CalculatedVersion)
         {
             var versionSuffix = updateResult.CalculatedVersion.Major == 0 ? "alpha" :
                 updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
 
             UpdateProjectFile(this._projectFileName, updateResult.CalculatedVersion, versionSuffix, longGtHash);
+
+            var gitChangesList = gitChanges.ToList();
+            gitChangesList.Add(this._projectFileName);
+            gitChanges = gitChangesList.ToArray();
         }
 
         this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, updateResult.CalculatedVersion);
-        this.CopyTargetFileToProjectRefFile();
+        this.CopyTargetFileToProjectRefFile(gitChanges.Any());
 
         return updateResult;
     }
@@ -282,8 +287,8 @@ public class Versioning
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash, 
-        [MaybeNullWhen(false)] out Version refVersion, 
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash,
+        [MaybeNullWhen(false)] out Version refVersion,
         [MaybeNullWhen(false)] out Version lastCalculatedVersion)
     {
         refVersion = null;
@@ -299,8 +304,8 @@ public class Versioning
 
         var fileContent = File.ReadAllLines(lastCalculatedVersionPath).ToList();
 
-        return fileContent.Count > 1 && 
-               Version.TryParse(fileContent[0], out refVersion) && 
+        return fileContent.Count > 1 &&
+               Version.TryParse(fileContent[0], out refVersion) &&
                Version.TryParse(fileContent[1], out lastCalculatedVersion);
     }
 
@@ -339,21 +344,47 @@ public class Versioning
         var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
-        File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)), 
-            new []{ refVersion.ToString(), calculatedVersion.ToString()});
+        File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)),
+            new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
-    private void CopyTargetFileToProjectRefFile()
+    private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
     {
         if (!File.Exists(this._targetFileName)) return;
 
         var projectRefAssemblyPath = Path.Combine(this._projectDirName, versionInfoFileName);
+
+        if (File.Exists(projectRefAssemblyPath))
+        {
+            if (!hasGitChanges) return;
+
+            var projectRefFileInfo = new FileInfo(projectRefAssemblyPath);
+            var targetFileInfo = new FileInfo(this._targetFileName);
+
+            if (targetFileInfo.Length == projectRefFileInfo.Length)
+            {
+                using var fs1 = projectRefFileInfo.OpenRead();
+                using var fs2 = targetFileInfo.OpenRead();
+                var contentIsDifferent = false;
+
+                for (var i = 0; i < targetFileInfo.Length; i++)
+                {
+                    contentIsDifferent = fs1.ReadByte() != fs2.ReadByte();
+                    if (contentIsDifferent) break;
+                }
+
+                if (!contentIsDifferent) return;
+            }
+        }
+
         File.Copy(this._targetFileName, projectRefAssemblyPath, true);
     }
 
-    private bool IncreaseBuild(IEnumerable<string> gitChanges)
+    private bool ShouldIncreaseBuildVersion(IEnumerable<string> gitChanges, VersionChange versionChange)
     {
-        var gitDiffFilter = this.GetGitDiffFiler();
+        if (versionChange > VersionChange.Revision) return false;
+
+        var gitDiffFilter = this.GetGitDiffFilter();
         var projectFiles = Directory.GetFiles(this._projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => gitDiffFilter.Contains(Path.GetExtension(x).ToLower()))
             .Select(x => x[(this._gitRepositoryDirName.Length + 1)..].Replace('\\', '/'));
@@ -362,6 +393,13 @@ public class Versioning
             projectFile => gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase)));
 
     }
+
+    private bool ShouldIncreaseRevisionVersion(IEnumerable<string> gitChanges, VersionChange versionChange)
+    {
+        return versionChange < VersionChange.Revision && gitChanges.Any();
+    }
+
+
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
     {
@@ -384,12 +422,12 @@ public class Versioning
         return false;
     }
 
-    private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix,  string sourceRevisionId)
+    private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix, string sourceRevisionId)
     {
         var vsProject = new VSProject(projectFileName)
         {
             AssemblyVersion = assemblyVersion.ToString(),
-            SourceRevisionId = sourceRevisionId, 
+            SourceRevisionId = sourceRevisionId,
             VersionSuffix = versionSuffix
         };
 

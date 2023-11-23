@@ -4,8 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.14.0</AssemblyVersion>
-    <SourceRevisionId>5ce7bf0293affc549980f12a2d730b120cf12854</SourceRevisionId>
+    <AssemblyVersion>0.0.17.0</AssemblyVersion>
+    <SourceRevisionId>f6d92a56c5f8e6bd4f2b6fda8c1f9c2facf8a8c8</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
