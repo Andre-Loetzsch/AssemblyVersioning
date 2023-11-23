@@ -283,8 +283,8 @@ public class Versioning
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash, 
-        [MaybeNullWhen(false)] out Version refVersion, 
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash,
+        [MaybeNullWhen(false)] out Version refVersion,
         [MaybeNullWhen(false)] out Version lastCalculatedVersion)
     {
         refVersion = null;
@@ -300,8 +300,8 @@ public class Versioning
 
         var fileContent = File.ReadAllLines(lastCalculatedVersionPath).ToList();
 
-        return fileContent.Count > 1 && 
-               Version.TryParse(fileContent[0], out refVersion) && 
+        return fileContent.Count > 1 &&
+               Version.TryParse(fileContent[0], out refVersion) &&
                Version.TryParse(fileContent[1], out lastCalculatedVersion);
     }
 
@@ -340,8 +340,8 @@ public class Versioning
         var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
-        File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)), 
-            new []{ refVersion.ToString(), calculatedVersion.ToString()});
+        File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)),
+            new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
     private void CopyTargetFileToProjectRefFile()
@@ -349,6 +349,37 @@ public class Versioning
         if (!File.Exists(this._targetFileName)) return;
 
         var projectRefAssemblyPath = Path.Combine(this._projectDirName, versionInfoFileName);
+
+        if (File.Exists(projectRefAssemblyPath))
+        {
+            var projectRefFileInfo = new FileInfo(projectRefAssemblyPath);
+            var targetFileInfo = new FileInfo(this._targetFileName);
+
+            if (targetFileInfo.Length == projectRefFileInfo.Length)
+            {
+                using var fs1 = projectRefFileInfo.OpenRead();
+                using var fs2 = targetFileInfo.OpenRead();
+                var contentIsDifferent = false;
+
+                for (var i = 0; i < targetFileInfo.Length; i++)
+                {
+                    contentIsDifferent = fs1.ReadByte() != fs2.ReadByte();
+                    if (contentIsDifferent) break;
+                }
+
+                if (!contentIsDifferent) return;
+            }
+
+            //var targetFileContent = File.ReadAllBytes(this._targetFileName);
+            //var projectRefAssemblyContent = File.ReadAllBytes(projectRefAssemblyPath);
+
+            //if (targetFileContent.Length == projectRefAssemblyContent.Length)
+            //{
+            //    var contentIsDifferent = targetFileContent.Where((t, i) => t != projectRefAssemblyContent[i]).Any();
+            //   if (!contentIsDifferent) return;
+            //}
+        }
+
         File.Copy(this._targetFileName, projectRefAssemblyPath, true);
     }
 
@@ -394,12 +425,12 @@ public class Versioning
         return false;
     }
 
-    private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix,  string sourceRevisionId)
+    private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix, string sourceRevisionId)
     {
         var vsProject = new VSProject(projectFileName)
         {
             AssemblyVersion = assemblyVersion.ToString(),
-            SourceRevisionId = sourceRevisionId, 
+            SourceRevisionId = sourceRevisionId,
             VersionSuffix = versionSuffix
         };
 
