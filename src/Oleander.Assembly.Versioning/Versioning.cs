@@ -264,10 +264,14 @@ public class Versioning
                 updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
 
             UpdateProjectFile(this._projectFileName, updateResult.CalculatedVersion, versionSuffix, longGtHash);
+
+            var gitChangesList = gitChanges.ToList();
+            gitChangesList.Add(this._projectFileName);
+            gitChanges = gitChangesList.ToArray();
         }
 
         this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, updateResult.CalculatedVersion);
-        this.CopyTargetFileToProjectRefFile();
+        this.CopyTargetFileToProjectRefFile(gitChanges.Any());
 
         return updateResult;
     }
@@ -344,7 +348,7 @@ public class Versioning
             new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
-    private void CopyTargetFileToProjectRefFile()
+    private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
     {
         if (!File.Exists(this._targetFileName)) return;
 
@@ -352,6 +356,8 @@ public class Versioning
 
         if (File.Exists(projectRefAssemblyPath))
         {
+            if (!hasGitChanges) return;
+
             var projectRefFileInfo = new FileInfo(projectRefAssemblyPath);
             var targetFileInfo = new FileInfo(this._targetFileName);
 
@@ -369,15 +375,6 @@ public class Versioning
 
                 if (!contentIsDifferent) return;
             }
-
-            //var targetFileContent = File.ReadAllBytes(this._targetFileName);
-            //var projectRefAssemblyContent = File.ReadAllBytes(projectRefAssemblyPath);
-
-            //if (targetFileContent.Length == projectRefAssemblyContent.Length)
-            //{
-            //    var contentIsDifferent = targetFileContent.Where((t, i) => t != projectRefAssemblyContent[i]).Any();
-            //   if (!contentIsDifferent) return;
-            //}
         }
 
         File.Copy(this._targetFileName, projectRefAssemblyPath, true);
