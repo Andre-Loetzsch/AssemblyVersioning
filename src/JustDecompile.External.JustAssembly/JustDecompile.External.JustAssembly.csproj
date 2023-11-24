@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JustDecompile.EngineInfrastructure\JustDecompile.EngineInfrastructure.csproj" />
     <ProjectReference Include="..\JustDecompiler\JustDecompiler.csproj" />
     <ProjectReference Include="..\Mono.Cecil\Telerik.JustDecompile.Mono.Cecil.csproj" />
     <ProjectReference Include="..\Tools.MSBuildProjectBuilder\JustDecompile.Tools.MSBuildProjectBuilder.csproj" />

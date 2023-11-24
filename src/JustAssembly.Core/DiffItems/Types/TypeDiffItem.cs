@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using JustDecompile.External.JustAssembly;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 
 namespace JustAssembly.Core.DiffItems.Types
 {
@@ -26,16 +23,9 @@ namespace JustAssembly.Core.DiffItems.Types
             }
         }
 
-
         protected override string GetElementShortName(TypeDefinition typeDef)
         {
-            var retVal1 = typeDef.FullName;
-            var retVal2 = typeDef.Namespace + "." + Decompiler.GetTypeName(typeDef.Module.FilePath, typeDef.Module.MetadataToken.ToUInt32(), typeDef.MetadataToken.ToUInt32(), SupportedLanguage.CSharp);
-
-
-            if (retVal1 != retVal2) throw new Exception($"{retVal1} != {retVal2}");
-
-            return retVal1;
+            return typeDef.FullName;
         }
     }
 }

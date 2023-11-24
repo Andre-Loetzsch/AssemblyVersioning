@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JustDecompile.External.JustAssembly\JustDecompile.External.JustAssembly.csproj" />
     <ProjectReference Include="..\Mono.Cecil\Telerik.JustDecompile.Mono.Cecil.csproj" />
   </ItemGroup>
 
