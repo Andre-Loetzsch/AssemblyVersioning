@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.Collections.Generic;
 using Mono.Collections.Generic;
 using SR = System.Reflection;
 
@@ -26,32 +24,32 @@ namespace Mono.Cecil {
 
 		Collection<IGenericParameterProvider> stack;
 
-		public bool IsEmpty { get { return stack == null; } }
+		public bool IsEmpty { get { return this.stack == null; } }
 
 		public ImportGenericContext (IGenericParameterProvider provider)
 		{
-			stack = null;
+            this.stack = null;
 
-			Push (provider);
+            this.Push (provider);
 		}
 
 		public void Push (IGenericParameterProvider provider)
 		{
-			if (stack == null)
-				stack = new Collection<IGenericParameterProvider> (1) { provider };
+			if (this.stack == null)
+                this.stack = new Collection<IGenericParameterProvider> (1) { provider };
 			else
-				stack.Add (provider);
+                this.stack.Add (provider);
 		}
 
 		public void Pop ()
 		{
-			stack.RemoveAt (stack.Count - 1);
+            this.stack.RemoveAt (this.stack.Count - 1);
 		}
 
 		public TypeReference MethodParameter (string method, int position)
 		{
-			for (int i = stack.Count - 1; i >= 0; i--) {
-				var candidate = stack [i] as MethodReference;
+			for (int i = this.stack.Count - 1; i >= 0; i--) {
+				var candidate = this.stack [i] as MethodReference;
 				if (candidate == null)
 					continue;
 
@@ -66,8 +64,8 @@ namespace Mono.Cecil {
 
 		public TypeReference TypeParameter (string type, int position)
 		{
-			for (int i = stack.Count - 1; i >= 0; i--) {
-				var candidate = GenericTypeFor (stack [i]);
+			for (int i = this.stack.Count - 1; i >= 0; i--) {
+				var candidate = GenericTypeFor (this.stack [i]);
 
 				if (candidate.FullName != type)
 					continue;
@@ -125,25 +123,23 @@ namespace Mono.Cecil {
 
 		public TypeReference ImportType (Type type, ImportGenericContext context)
 		{
-			return ImportType (type, context, ImportGenericKind.Open);
+			return this.ImportType (type, context, ImportGenericKind.Open);
 		}
 
 		public TypeReference ImportType (Type type, ImportGenericContext context, ImportGenericKind import_kind)
 		{
 			if (IsTypeSpecification (type) || ImportOpenGenericType (type, import_kind))
-				return ImportTypeSpecification (type, context);
+				return this.ImportTypeSpecification (type, context);
 
 			var reference = new TypeReference (
 				string.Empty,
-				type.Name,
-				module,
-				ImportScope (type.Assembly),
+				type.Name, this.module, this.ImportScope (type.Assembly),
 				type.IsValueType);
 
 			reference.etype = ImportElementType (type);
 
 			if (IsNestedType (type))
-				reference.DeclaringType = ImportType (type.DeclaringType, context, import_kind);
+				reference.DeclaringType = this.ImportType (type.DeclaringType, context, import_kind);
 			else
 				reference.Namespace = type.Namespace ?? string.Empty;
 
@@ -175,16 +171,16 @@ namespace Mono.Cecil {
 		TypeReference ImportTypeSpecification (Type type, ImportGenericContext context)
 		{
 			if (type.IsByRef)
-				return new ByReferenceType (ImportType (type.GetElementType (), context));
+				return new ByReferenceType (this.ImportType (type.GetElementType (), context));
 
 			if (type.IsPointer)
-				return new PointerType (ImportType (type.GetElementType (), context));
+				return new PointerType (this.ImportType (type.GetElementType (), context));
 
 			if (type.IsArray)
-				return new ArrayType (ImportType (type.GetElementType (), context), type.GetArrayRank ());
+				return new ArrayType (this.ImportType (type.GetElementType (), context), type.GetArrayRank ());
 
 			if (type.IsGenericType)
-				return ImportGenericInstance (type, context);
+				return this.ImportGenericInstance (type, context);
 
 			if (type.IsGenericParameter)
 				return ImportGenericParameter (type, context);
@@ -216,7 +212,7 @@ namespace Mono.Cecil {
 
 		TypeReference ImportGenericInstance (Type type, ImportGenericContext context)
 		{
-			var element_type = ImportType (type.GetGenericTypeDefinition (), context, ImportGenericKind.Definition);
+			var element_type = this.ImportType (type.GetGenericTypeDefinition (), context, ImportGenericKind.Definition);
 			var instance = new GenericInstanceType (element_type);
 			var arguments = type.GetGenericArguments ();
 			var instance_arguments = instance.GenericArguments;
@@ -224,7 +220,7 @@ namespace Mono.Cecil {
 			context.Push (element_type);
 			try {
 				for (int i = 0; i < arguments.Length; i++)
-					instance_arguments.Add (ImportType (arguments [i], context));
+					instance_arguments.Add (this.ImportType (arguments [i], context));
 
 				return instance;
 			} finally {
@@ -259,7 +255,7 @@ namespace Mono.Cecil {
 #if !SILVERLIGHT
 			var name = assembly.GetName ();
 
-			if (TryGetAssemblyNameReference (name, out scope))
+			if (this.TryGetAssemblyNameReference (name, out scope))
 				return scope;
 
 			scope = new AssemblyNameReference (name.Name, name.Version) {
@@ -268,7 +264,7 @@ namespace Mono.Cecil {
 				HashAlgorithm = (AssemblyHashAlgorithm) name.HashAlgorithm,
 			};
 
-			module.AssemblyReferences.Add (scope);
+            this.module.AssemblyReferences.Add (scope);
 
 			return scope;
 #else
@@ -286,7 +282,7 @@ namespace Mono.Cecil {
 #if !SILVERLIGHT
 		bool TryGetAssemblyNameReference (SR.AssemblyName name, out AssemblyNameReference assembly_reference)
 		{
-			var references = module.AssemblyReferences;
+			var references = this.module.AssemblyReferences;
 
 			for (int i = 0; i < references.Count; i++) {
 				var reference = references [i];
@@ -304,7 +300,7 @@ namespace Mono.Cecil {
 
 		public FieldReference ImportField (SR.FieldInfo field, ImportGenericContext context)
 		{
-			var declaring_type = ImportType (field.DeclaringType, context);
+			var declaring_type = this.ImportType (field.DeclaringType, context);
 
 			if (IsGenericInstance (field.DeclaringType))
 				field = ResolveFieldDefinition (field);
@@ -314,7 +310,7 @@ namespace Mono.Cecil {
 				return new FieldReference {
 					Name = field.Name,
 					DeclaringType = declaring_type,
-					FieldType = ImportType (field.FieldType, context),
+					FieldType = this.ImportType (field.FieldType, context),
 				};
 			} finally {
 				context.Pop ();
@@ -336,9 +332,9 @@ namespace Mono.Cecil {
 		public MethodReference ImportMethod (SR.MethodBase method, ImportGenericContext context, ImportGenericKind import_kind)
 		{
 			if (IsMethodSpecification (method) || ImportOpenGenericMethod (method, import_kind))
-				return ImportMethodSpecification (method, context);
+				return this.ImportMethodSpecification (method, context);
 
-			var declaring_type = ImportType (method.DeclaringType, context);
+			var declaring_type = this.ImportType (method.DeclaringType, context);
 
 			if (IsGenericInstance (method.DeclaringType))
 				method = method.Module.ResolveMethod (method.MetadataToken);
@@ -347,7 +343,7 @@ namespace Mono.Cecil {
 				Name = method.Name,
 				HasThis = HasCallingConvention (method, SR.CallingConventions.HasThis),
 				ExplicitThis = HasCallingConvention (method, SR.CallingConventions.ExplicitThis),
-				DeclaringType = ImportType (method.DeclaringType, context, ImportGenericKind.Definition),
+				DeclaringType = this.ImportType (method.DeclaringType, context, ImportGenericKind.Definition),
 			};
 
 			if (HasCallingConvention (method, SR.CallingConventions.VarArgs))
@@ -360,15 +356,15 @@ namespace Mono.Cecil {
 			try {
 				var method_info = method as SR.MethodInfo;
 				reference.ReturnType = method_info != null
-					? ImportType (method_info.ReturnType, context)
-					: ImportType (typeof (void), default (ImportGenericContext));
+					? this.ImportType (method_info.ReturnType, context)
+					: this.ImportType (typeof (void), default (ImportGenericContext));
 
 				var parameters = method.GetParameters ();
 				var reference_parameters = reference.Parameters;
 
 				for (int i = 0; i < parameters.Length; i++)
 					reference_parameters.Add (
-						new ParameterDefinition (ImportType (parameters [i].ParameterType, context)));
+						new ParameterDefinition (this.ImportType (parameters [i].ParameterType, context)));
 
 				reference.DeclaringType = declaring_type;
 
@@ -397,7 +393,7 @@ namespace Mono.Cecil {
 			if (method_info == null)
 				throw new InvalidOperationException ();
 
-			var element_method = ImportMethod (method_info.GetGenericMethodDefinition (), context, ImportGenericKind.Definition);
+			var element_method = this.ImportMethod (method_info.GetGenericMethodDefinition (), context, ImportGenericKind.Definition);
 			var instance = new GenericInstanceMethod (element_method);
 			var arguments = method.GetGenericArguments ();
 			var instance_arguments = instance.GenericArguments;
@@ -407,7 +403,7 @@ namespace Mono.Cecil {
 				for (int i = 0; i < arguments.Length; i++)
 				{
 					/*Telerik Authorship*/
-					TypeReference toAdd = ImportType(arguments[i], context);
+					TypeReference toAdd = this.ImportType(arguments[i], context);
 					instance_arguments.Add(toAdd);
 					instance.AddGenericArgument(toAdd);
 				}
@@ -427,19 +423,17 @@ namespace Mono.Cecil {
 		public TypeReference ImportType (TypeReference type, ImportGenericContext context)
 		{
 			if (type.IsTypeSpecification ())
-				return ImportTypeSpecification (type, context);
+				return this.ImportTypeSpecification (type, context);
 
 			var reference = new TypeReference (
 				type.Namespace,
-				type.Name,
-				module,
-				ImportScope (type.Scope),
+				type.Name, this.module, this.ImportScope (type.Scope),
 				type.IsValueType);
 
 			MetadataSystem.TryProcessPrimitiveTypeReference (reference);
 
 			if (type.IsNested)
-				reference.DeclaringType = ImportType (type.DeclaringType, context);
+				reference.DeclaringType = this.ImportType (type.DeclaringType, context);
 
 			if (type.HasGenericParameters)
 				ImportGenericParameters (reference, type);
@@ -451,10 +445,10 @@ namespace Mono.Cecil {
 		{
 			switch (scope.MetadataScopeType) {
 			case MetadataScopeType.AssemblyNameReference:
-				return ImportAssemblyName ((AssemblyNameReference) scope);
+				return this.ImportAssemblyName ((AssemblyNameReference) scope);
 			case MetadataScopeType.ModuleDefinition:
-				if (scope == module) return scope;
-				return ImportAssemblyName (((ModuleDefinition) scope).Assembly.Name);
+				if (scope == this.module) return scope;
+				return this.ImportAssemblyName (((ModuleDefinition) scope).Assembly.Name);
 			case MetadataScopeType.ModuleReference:
 				throw new NotImplementedException ();
 			}
@@ -465,7 +459,7 @@ namespace Mono.Cecil {
 		AssemblyNameReference ImportAssemblyName (AssemblyNameReference name)
 		{
 			AssemblyNameReference reference;
-			if (TryGetAssemblyNameReference (name, out reference))
+			if (this.TryGetAssemblyNameReference (name, out reference))
 				return reference;
 
 			reference = new AssemblyNameReference (name.Name, name.Version) {
@@ -483,14 +477,14 @@ namespace Mono.Cecil {
 
 			reference.PublicKeyToken = pk_token;
 
-			module.AssemblyReferences.Add (reference);
+            this.module.AssemblyReferences.Add (reference);
 
 			return reference;
 		}
 
 		bool TryGetAssemblyNameReference (AssemblyNameReference name_reference, out AssemblyNameReference assembly_reference)
 		{
-			var references = module.AssemblyReferences;
+			var references = this.module.AssemblyReferences;
 
 			for (int i = 0; i < references.Count; i++) {
 				var reference = references [i];
@@ -519,32 +513,28 @@ namespace Mono.Cecil {
 			switch (type.etype) {
 			case ElementType.SzArray:
 				var vector = (ArrayType) type;
-				return new ArrayType (ImportType (vector.ElementType, context));
+				return new ArrayType (this.ImportType (vector.ElementType, context));
 			case ElementType.Ptr:
 				var pointer = (PointerType) type;
-				return new PointerType (ImportType (pointer.ElementType, context));
+				return new PointerType (this.ImportType (pointer.ElementType, context));
 			case ElementType.ByRef:
 				var byref = (ByReferenceType) type;
-				return new ByReferenceType (ImportType (byref.ElementType, context));
+				return new ByReferenceType (this.ImportType (byref.ElementType, context));
 			case ElementType.Pinned:
 				var pinned = (PinnedType) type;
-				return new PinnedType (ImportType (pinned.ElementType, context));
+				return new PinnedType (this.ImportType (pinned.ElementType, context));
 			case ElementType.Sentinel:
 				var sentinel = (SentinelType) type;
-				return new SentinelType (ImportType (sentinel.ElementType, context));
+				return new SentinelType (this.ImportType (sentinel.ElementType, context));
 			case ElementType.CModOpt:
 				var modopt = (OptionalModifierType) type;
-				return new OptionalModifierType (
-					ImportType (modopt.ModifierType, context),
-					ImportType (modopt.ElementType, context));
+				return new OptionalModifierType (this.ImportType (modopt.ModifierType, context), this.ImportType (modopt.ElementType, context));
 			case ElementType.CModReqD:
 				var modreq = (RequiredModifierType) type;
-				return new RequiredModifierType (
-					ImportType (modreq.ModifierType, context),
-					ImportType (modreq.ElementType, context));
+				return new RequiredModifierType (this.ImportType (modreq.ModifierType, context), this.ImportType (modreq.ElementType, context));
 			case ElementType.Array:
 				var array = (ArrayType) type;
-				var imported_array = new ArrayType (ImportType (array.ElementType, context));
+				var imported_array = new ArrayType (this.ImportType (array.ElementType, context));
 				if (array.IsVector)
 					return imported_array;
 
@@ -562,14 +552,14 @@ namespace Mono.Cecil {
 				return imported_array;
 			case ElementType.GenericInst:
 				var instance = (GenericInstanceType) type;
-				var element_type = ImportType (instance.ElementType, context);
+				var element_type = this.ImportType (instance.ElementType, context);
 				var imported_instance = new GenericInstanceType (element_type);
 
 				var arguments = instance.GenericArguments;
 				var imported_arguments = imported_instance.GenericArguments;
 
 				for (int i = 0; i < arguments.Count; i++)
-					imported_arguments.Add (ImportType (arguments [i], context));
+					imported_arguments.Add (this.ImportType (arguments [i], context));
 
 				return imported_instance;
 			case ElementType.Var:
@@ -589,14 +579,14 @@ namespace Mono.Cecil {
 
 		public FieldReference ImportField (FieldReference field, ImportGenericContext context)
 		{
-			var declaring_type = ImportType (field.DeclaringType, context);
+			var declaring_type = this.ImportType (field.DeclaringType, context);
 
 			context.Push (declaring_type);
 			try {
 				return new FieldReference {
 					Name = field.Name,
 					DeclaringType = declaring_type,
-					FieldType = ImportType (field.FieldType, context),
+					FieldType = this.ImportType (field.FieldType, context),
 				};
 			} finally {
 				context.Pop ();
@@ -606,9 +596,9 @@ namespace Mono.Cecil {
 		public MethodReference ImportMethod (MethodReference method, ImportGenericContext context)
 		{
 			if (method.IsGenericInstance)
-				return ImportMethodSpecification (method, context);
+				return this.ImportMethodSpecification (method, context);
 
-			var declaring_type = ImportType (method.DeclaringType, context);
+			var declaring_type = this.ImportType (method.DeclaringType, context);
 
 			var reference = new MethodReference {
 				Name = method.Name,
@@ -623,7 +613,7 @@ namespace Mono.Cecil {
 
 			context.Push (reference);
 			try {
-				reference.ReturnType = ImportType (method.ReturnType, context);
+				reference.ReturnType = this.ImportType (method.ReturnType, context);
 
 				if (!method.HasParameters)
 					return reference;
@@ -633,7 +623,7 @@ namespace Mono.Cecil {
 				var parameters = method.Parameters;
 				for (int i = 0; i < parameters.Count; i++)
 					reference_parameters.Add (
-						new ParameterDefinition (ImportType (parameters [i].ParameterType, context)));
+						new ParameterDefinition (this.ImportType (parameters [i].ParameterType, context)));
 
 				return reference;
 			} finally {
@@ -647,7 +637,7 @@ namespace Mono.Cecil {
 				throw new NotSupportedException ();
 
 			var instance = (GenericInstanceMethod) method;
-			var element_method = ImportMethod (instance.ElementMethod, context);
+			var element_method = this.ImportMethod (instance.ElementMethod, context);
 			var imported_instance = new GenericInstanceMethod (element_method);
 
 			var arguments = instance.GenericArguments;
@@ -656,7 +646,7 @@ namespace Mono.Cecil {
 			for (int i = 0; i < arguments.Count; i++)
 			{
 				/*Telerik Authorship*/
-				var toAdd = ImportType(arguments[i], context);
+				var toAdd = this.ImportType(arguments[i], context);
 				imported_arguments.Add(toAdd);
 				imported_instance.AddGenericArgument(toAdd);
 			}

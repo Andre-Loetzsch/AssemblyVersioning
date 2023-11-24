@@ -3,10 +3,9 @@ namespace Oleander.Assembly.Comparator;
 
 public class AssemblyComparison
 {
-    private readonly IMetadataDiffItem? _diffItem;
+    private readonly IMetadataDiffItem _diffItem;
 
-
-    public AssemblyComparison(FileSystemInfo? refAssembly, FileSystemInfo? newAssembly)
+    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
@@ -17,7 +16,7 @@ public class AssemblyComparison
         var xml = this.ToXml();
     }
 
-    public string? ToXml()
+    public string ToXml()
     {
         return this._diffItem?.ToXml();
     }
