@@ -10,39 +10,34 @@
 
 using Mono.Collections.Generic;
 
-namespace Mono {
+namespace Mono
+{
+    internal static class Empty<T>
+    {
 
-	static class Empty<T> {
-
-		public static readonly T [] Array = new T [0];
-	}
+        public static readonly T[] Array = System.Array.Empty<T>();
+    }
 }
 
-namespace Mono.Cecil {
+namespace Mono.Cecil
+{
+    internal static partial class Mixin
+    {
 
-	static partial class Mixin {
+        public static bool IsNullOrEmpty<T>(this T[] self)
+        {
+            return self == null || self.Length == 0;
+        }
 
-		public static bool IsNullOrEmpty<T> (this T [] self)
-		{
-			return self == null || self.Length == 0;
-		}
+        public static bool IsNullOrEmpty<T>(this Collection<T> self)
+        {
+            return self == null || self.size == 0;
+        }
 
-		public static bool IsNullOrEmpty<T> (this Collection<T> self)
-		{
-			return self == null || self.size == 0;
-		}
-
-		public static T [] Resize<T> (this T [] self, int length)
-		{
-#if !CF
-			Array.Resize (ref self, length);
-#else
-			var copy = new T [length];
-			Array.Copy (self, copy, self.Length);
-			self = copy;
-#endif
-
-			return self;
-		}
-	}
+        public static T[] Resize<T>(this T[] self, int length)
+        {
+            Array.Resize(ref self, length);
+            return self;
+        }
+    }
 }

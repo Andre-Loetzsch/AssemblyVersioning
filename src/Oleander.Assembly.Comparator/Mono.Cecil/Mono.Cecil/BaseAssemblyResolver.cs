@@ -49,34 +49,7 @@ namespace Mono.Cecil {
 			this.architecture = architecture;
 		}
 	}
-
-	/*Telerik Authorship*/
-	/*#if !SILVERLIGHT && !CF
-		[Serializable]
-	#endif
-		public class AssemblyResolutionException : FileNotFoundException {
-
-			readonly AssemblyNameReference reference;
-
-			public AssemblyNameReference AssemblyReference {
-				get { return reference; }
-			}
-
-			public AssemblyResolutionException (AssemblyNameReference reference)
-				: base (string.Format ("Failed to resolve assembly: '{0}'", reference))
-			{
-				this.reference = reference;
-			}
-
-	#if !SILVERLIGHT && !CF
-			protected AssemblyResolutionException (
-				System.Runtime.Serialization.SerializationInfo info,
-				System.Runtime.Serialization.StreamingContext context)
-				: base (info, context)
-			{
-			}
-	#endif
-		}*/
+	
 
 	/*Telerik Authorship*/
 	[DoNotPrune]
@@ -109,9 +82,8 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         private readonly ReaderWriterLockSlim directoryAssembliesLock;
 
-#if !SILVERLIGHT && !CF
+
         Collection<string> gac_paths;
-#endif
 
 		/*Telerik Authorship*/
 		protected BaseAssemblyResolver(AssemblyPathResolverCache pathRespository, ITargetPlatformResolver targetPlatformResolver)
@@ -510,7 +482,6 @@ namespace Mono.Cecil {
 			return version == null || (version.Major == 0 && version.Minor == 0 && version.Build == 0 && version.Revision == 0);
 		}
 
-#if !SILVERLIGHT && !CF
 		AssemblyDefinition GetCorlib (AssemblyNameReference reference, ReaderParameters parameters)
 		{
 			var version = reference.Version;
@@ -666,7 +637,7 @@ namespace Mono.Cecil {
 					Path.Combine (gac, reference.Name), gac_folder.ToString ()),
 				reference.Name + ".dll");
 		}
-#endif
+
 
 #region  /*Telerik Authorship*/
 		AssemblyDefinition GetTargetAssembly(AssemblyNameReference reference, ReaderParameters parameters, TargetArchitecture architecture)
@@ -823,11 +794,8 @@ namespace Mono.Cecil {
 
             string result = this.assemblyPathResolver.GetAssemblyPath(assemblyName, assemblyKey);
 
-	#if !NET_4_0
-			if (!result.IsNullOrWhiteSpace())
-	#else
+	
 			if (!string.IsNullOrWhiteSpace(result))
-	#endif
 			{
 				return result;
 			}
@@ -918,11 +886,7 @@ namespace Mono.Cecil {
 
 		public AssemblyDefinition GetAssemblyDefinition(string filePath)
 		{
-	#if !NET_4_0
-			if (filePath.IsNullOrWhiteSpace())
-	#else
 			if (string.IsNullOrWhiteSpace(filePath))
-	#endif
 			{
 				return null;
 			}
@@ -944,15 +908,25 @@ namespace Mono.Cecil {
 					return null;
 				}
 
-                this.AddToResolvedAssemblies(assemblyDef);
-
+                this.AddToResolvedAssemblies(assemblyDef, filePath);
 				return assemblyDef;
 			}
 		}
 
-		private void AddToResolvedAssemblies(AssemblyDefinition assemblyDef)
+        private void AddToResolvedAssemblies(AssemblyDefinition assemblyDef)
+        {
+            this.AddToResolvedAssemblies(assemblyDef, assemblyDef.MainModule.FilePath);
+        }
+
+        private void AddToResolvedAssemblies(AssemblyDefinition assemblyDef, string key)
 		{
-            this.filePathToAssemblyDefinitionCache.Add(assemblyDef.MainModule.FilePath, assemblyDef);
+            if (string.IsNullOrEmpty(key))
+            {
+				key = Guid.NewGuid().ToString();
+            }
+
+			if (this.filePathToAssemblyDefinitionCache.ContainsKey(key)) return;
+            this.filePathToAssemblyDefinitionCache.Add(key, assemblyDef);
 
             /*Telerik Authorship*/
             AssemblyStrongNameExtended assemblyKey = this.GetAssemblyKey(assemblyDef);

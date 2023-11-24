@@ -161,11 +161,7 @@ namespace Mono.Cecil {
 
 		static bool IsNestedType (Type type)
 		{
-#if !SILVERLIGHT
 			return type.IsNested;
-#else
-			return type.DeclaringType != null;
-#endif
 		}
 
 		TypeReference ImportTypeSpecification (Type type, ImportGenericContext context)
@@ -252,22 +248,6 @@ namespace Mono.Cecil {
 		AssemblyNameReference ImportScope (SR.Assembly assembly)
 		{
 			AssemblyNameReference scope;
-//#if !SILVERLIGHT
-//			var name = assembly.GetName ();
-
-//			if (this.TryGetAssemblyNameReference (name, out scope))
-//				return scope;
-
-//			scope = new AssemblyNameReference (name.Name, name.Version) {
-//				Culture = name.CultureInfo.Name,
-//				PublicKeyToken = name.GetPublicKeyToken (),
-//                HashAlgorithm = (AssemblyHashAlgorithm)name.HashAlgorithm,
-//			};
-
-//            this.module.AssemblyReferences.Add (scope);
-
-//			return scope;
-//#else
 			var name = AssemblyNameReference.Parse (assembly.FullName);
 
 			if (TryGetAssemblyNameReference (name, out scope))
@@ -277,25 +257,6 @@ namespace Mono.Cecil {
 
 			return name;
 		}
-
-//#if !SILVERLIGHT
-//		bool TryGetAssemblyNameReference (SR.AssemblyName name, out AssemblyNameReference assembly_reference)
-//		{
-//			var references = this.module.AssemblyReferences;
-
-//			for (int i = 0; i < references.Count; i++) {
-//				var reference = references [i];
-//				if (name.FullName != reference.FullName) // TODO compare field by field
-//					continue;
-
-//				assembly_reference = reference;
-//				return true;
-//			}
-
-//			assembly_reference = null;
-//			return false;
-//		}
-//#endif
 
 		public FieldReference ImportField (SR.FieldInfo field, ImportGenericContext context)
 		{

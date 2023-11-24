@@ -12,129 +12,129 @@ using System.Text;
 using Mono.Collections.Generic;
 using MD = Mono.Cecil.Metadata;
 
-namespace Mono.Cecil {
+namespace Mono.Cecil
+{
 
-	public struct ArrayDimension {
+    public struct ArrayDimension
+    {
+        private int? _lowerBound;
+        private int? _upperBound;
 
-		int? lower_bound;
-		int? upper_bound;
+        public int? LowerBound
+        {
+            get => this._lowerBound;
+            set => this._lowerBound = value;
+        }
 
-		public int? LowerBound {
-			get { return this.lower_bound; }
-			set { this.lower_bound = value; }
-		}
+        public int? UpperBound
+        {
+            get => this._upperBound;
+            set => this._upperBound = value;
+        }
 
-		public int? UpperBound {
-			get { return this.upper_bound; }
-			set { this.upper_bound = value; }
-		}
+        public readonly bool IsSized => this._lowerBound.HasValue || this._upperBound.HasValue;
 
-		public bool IsSized {
-			get { return this.lower_bound.HasValue || this.upper_bound.HasValue; }
-		}
+        public ArrayDimension(int? lowerBound, int? upperBound)
+        {
+            this._lowerBound = lowerBound;
+            this._upperBound = upperBound;
+        }
 
-		public ArrayDimension (int? lowerBound, int? upperBound)
-		{
-			this.lower_bound = lowerBound;
-			this.upper_bound = upperBound;
-		}
+        public override string ToString()
+        {
+            return !this.IsSized
+                ? string.Empty
+                : this._lowerBound + "..." + this._upperBound;
+        }
+    }
 
-		public override string ToString ()
-		{
-			return !this.IsSized
-				? string.Empty
-				: this.lower_bound + "..." + this.upper_bound;
-		}
-	}
+    public sealed class ArrayType : TypeSpecification
+    {
+        private Collection<ArrayDimension> _dimensions;
 
-	public sealed class ArrayType : TypeSpecification {
+        public Collection<ArrayDimension> Dimensions
+        {
+            get
+            {
+                if (this._dimensions != null)
+                    return this._dimensions;
 
-		Collection<ArrayDimension> dimensions;
+                this._dimensions = new Collection<ArrayDimension> { new ArrayDimension() };
+                return this._dimensions;
+            }
+        }
 
-		public Collection<ArrayDimension> Dimensions {
-			get {
-				if (this.dimensions != null)
-					return this.dimensions;
+        public int Rank => this._dimensions?.Count ?? 1;
 
-                this.dimensions = new Collection<ArrayDimension> ();
-                this.dimensions.Add (new ArrayDimension ());
-				return this.dimensions;
-			}
-		}
+        public bool IsVector
+        {
+            get
+            {
+                if (this._dimensions == null)
+                    return true;
 
-		public int Rank {
-			get { return this.dimensions == null ? 1 : this.dimensions.Count; }
-		}
+                if (this._dimensions.Count > 1)
+                    return false;
 
-		public bool IsVector {
-			get {
-				if (this.dimensions == null)
-					return true;
+                var dimension = this._dimensions[0];
 
-				if (this.dimensions.Count > 1)
-					return false;
+                return !dimension.IsSized;
+            }
+        }
 
-				var dimension = this.dimensions [0];
+        public override bool IsValueType
+        {
+            get => false;
+            set => throw new InvalidOperationException();
+        }
 
-				return !dimension.IsSized;
-			}
-		}
+        public override string Name => base.Name + this.Suffix;
 
-		public override bool IsValueType {
-			get { return false; }
-			set { throw new InvalidOperationException (); }
-		}
+        public override string FullName => base.FullName + this.Suffix;
 
-		public override string Name {
-			get { return base.Name + this.Suffix; }
-		}
+        /*Telerik Authorship*/
+        public string Suffix
+        {
+            get
+            {
+                if (this.IsVector)
+                    return "[]";
 
-		public override string FullName {
-			get { return base.FullName + this.Suffix; }
-		}
+                var suffix = new StringBuilder();
+                suffix.Append('[');
+                for (var i = 0; i < this._dimensions.Count; i++)
+                {
+                    if (i > 0)
+                        suffix.Append(',');
 
-		/*Telerik Authorship*/
-		public string Suffix {
-			get {
-				if (this.IsVector)
-					return "[]";
+                    suffix.Append(this._dimensions[i].ToString());
+                }
+                suffix.Append(']');
 
-				var suffix = new StringBuilder ();
-				suffix.Append ("[");
-				for (int i = 0; i < this.dimensions.Count; i++) {
-					if (i > 0)
-						suffix.Append (",");
+                return suffix.ToString();
+            }
+        }
 
-					suffix.Append (this.dimensions [i].ToString ());
-				}
-				suffix.Append ("]");
+        public override bool IsArray => true;
 
-				return suffix.ToString ();
-			}
-		}
+        public ArrayType(TypeReference type)
+            : base(type)
+        {
+            Mixin.CheckType(type);
+            this.etype = MD.ElementType.Array;
+        }
 
-		public override bool IsArray {
-			get { return true; }
-		}
+        public ArrayType(TypeReference type, int rank)
+            : this(type)
+        {
+            Mixin.CheckType(type);
 
-		public ArrayType (TypeReference type)
-			: base (type)
-		{
-			Mixin.CheckType (type);
-			this.etype = MD.ElementType.Array;
-		}
+            if (rank == 1)
+                return;
 
-		public ArrayType (TypeReference type, int rank)
-			: this (type)
-		{
-			Mixin.CheckType (type);
-
-			if (rank == 1)
-				return;
-
-            this.dimensions = new Collection<ArrayDimension> (rank);
-			for (int i = 0; i < rank; i++) this.dimensions.Add (new ArrayDimension ());
-			this.etype = MD.ElementType.Array;
-		}
-	}
+            this._dimensions = new Collection<ArrayDimension>(rank);
+            for (var i = 0; i < rank; i++) this._dimensions.Add(new ArrayDimension());
+            this.etype = MD.ElementType.Array;
+        }
+    }
 }

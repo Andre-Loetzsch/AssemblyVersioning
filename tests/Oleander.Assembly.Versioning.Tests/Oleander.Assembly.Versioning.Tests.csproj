@@ -4,8 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.21.0</AssemblyVersion>
-    <SourceRevisionId>a1546e8b8ec98da13f6ae4f14881119efe23412c</SourceRevisionId>
+    <AssemblyVersion>0.0.22.0</AssemblyVersion>
+    <SourceRevisionId>64a1582d125719aacde0ff0a19a5bca0a3d36fe0</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
@@ -41,7 +41,7 @@
   </Target>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />-->
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
   </Target>
 
 

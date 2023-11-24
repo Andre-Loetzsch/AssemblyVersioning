@@ -57,9 +57,7 @@ namespace Mono.Cecil {
 		MethodDefinition Resolve (MethodReference method);
 	}
 
-#if !SILVERLIGHT && !CF
 	[Serializable]
-#endif
 	public class ResolutionException : Exception {
 
 		readonly MemberReference member;
@@ -91,14 +89,12 @@ namespace Mono.Cecil {
 			this.member = member;
 		}
 
-#if !SILVERLIGHT && !CF
 		protected ResolutionException (
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
 			: base (info, context)
 		{
 		}
-#endif
 	}
 
 	public class MetadataResolver : IMetadataResolver {

@@ -216,40 +216,5 @@ namespace Mono.Cecil.Cil {
 		{
 			return "Mono.Cecil." + symbol_kind + "." + symbol_kind + name;
 		}
-
-#if !READ_ONLY
-
-		static ISymbolWriterProvider writer_provider;
-
-		public static ISymbolWriterProvider GetPlatformWriterProvider ()
-		{
-			if (writer_provider != null)
-				return writer_provider;
-
-			var type = GetPlatformType (GetProviderTypeName ("WriterProvider"));
-			if (type == null)
-				return null;
-
-			return writer_provider = (ISymbolWriterProvider) Activator.CreateInstance (type);
-		}
-
-#endif
 	}
-
-#if !READ_ONLY
-
-	public interface ISymbolWriter : IDisposable {
-
-		bool GetDebugHeader (out ImageDebugDirectory directory, out byte [] header);
-		void Write(MethodBody body, /*Telerik Authorship*/ MetadataToken methodToken, /*Telerik Authorship*/ MetadataToken localVarToken);
-		void Write (MethodSymbols symbols);
-	}
-
-	public interface ISymbolWriterProvider {
-
-		ISymbolWriter GetSymbolWriter(ModuleDefinition module, string fileName, /*Telerik Authorship*/ Dictionary<MethodDefinition, Dictionary<VariableDefinition, string>> methodsVariableDefinitionToNameMap);
-		ISymbolWriter GetSymbolWriter (ModuleDefinition module, Stream symbolStream);
-	}
-
-#endif
 }
