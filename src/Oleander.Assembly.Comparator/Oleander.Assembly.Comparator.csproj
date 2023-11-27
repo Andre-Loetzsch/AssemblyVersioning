@@ -4,12 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <AssemblyVersion>0.0.5.0</AssemblyVersion>
-    <SourceRevisionId>64a1582d125719aacde0ff0a19a5bca0a3d36fe0</SourceRevisionId>
+    <AssemblyVersion>0.0.6.0</AssemblyVersion>
+    <SourceRevisionId>c3337a14476b478460cc2bcdbcf494d8ee88f107</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />-->
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
   </Target>
 </Project>

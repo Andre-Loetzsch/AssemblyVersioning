@@ -30,6 +30,8 @@ namespace JustAssembly.Core.Comparers
 
         private IEnumerable<IDiffItem> GetReferenceDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
         {
+
+            //return Enumerable.Empty<IDiffItem>();
             return new ReferenceComparer().GetMultipleDifferences(oldModule.AssemblyReferences, newModule.AssemblyReferences);
         }
 

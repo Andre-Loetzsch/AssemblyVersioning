@@ -6,8 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyVersion>0.0.23.0</AssemblyVersion>
-    <SourceRevisionId>37c7923315754c704a3e9d6b2ce4c3c37e9bb6d9</SourceRevisionId>
+    <AssemblyVersion>0.0.24.0</AssemblyVersion>
+    <SourceRevisionId>c3337a14476b478460cc2bcdbcf494d8ee88f107</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="17.7.2" />
+    <PackageReference Include="Microsoft.Build" Version="17.8.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />-->
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
   </Target>
 
 </Project>

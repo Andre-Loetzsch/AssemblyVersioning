@@ -707,7 +707,7 @@ namespace Mono.Cecil {
 
 			foreach (string file in files)
 			{
-				if (this.GetAssemblyDefinition(file).main_module.GetModuleArchitecture().CanReference(architecture))
+				if (this.GetAssemblyDefinition(file).MainModule.GetModuleArchitecture().CanReference(architecture))
 				{
 					return file;
 				}

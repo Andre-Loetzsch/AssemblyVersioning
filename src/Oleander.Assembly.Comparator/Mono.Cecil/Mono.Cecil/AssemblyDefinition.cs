@@ -15,24 +15,13 @@ namespace Mono.Cecil
 
     public sealed class AssemblyDefinition : ICustomAttributeProvider, ISecurityDeclarationProvider
     {
-
-        AssemblyNameDefinition _name;
-
-        internal ModuleDefinition main_module;
         private Collection<ModuleDefinition> _modules;
         private Collection<CustomAttribute> _customAttributes;
         private Collection<SecurityDeclaration> _securityDeclarations;
 
-        public AssemblyNameDefinition Name
-        {
-            get { return this._name; }
-            set { this._name = value; }
-        }
+        public AssemblyNameDefinition Name { get; set; }
 
-        public string FullName
-        {
-            get { return this._name != null ? this._name.FullName : string.Empty; }
-        }
+        public string FullName => this.Name != null ? this.Name.FullName : string.Empty;
 
         public MetadataToken MetadataToken
         {
@@ -47,15 +36,15 @@ namespace Mono.Cecil
                 if (this._modules != null)
                     return this._modules;
 
-                if (this.main_module.HasImage)
+                if (this.MainModule.HasImage)
                 {
                     /*Telerik Authorship*/
-                    this.main_module.Read(ref this._modules, this, (_, reader) => reader.ReadModules(this.main_module.AssemblyResolver));
+                    this.MainModule.Read(ref this._modules, this, (_, reader) => reader.ReadModules(this.MainModule.AssemblyResolver));
 
                     /*Telerik Authorship*/
                     foreach (ModuleDefinition module in this._modules)
                     {
-                        if (module != this.main_module)
+                        if (module != this.MainModule)
                         {
                             module.Assembly = this;
                         }
@@ -65,20 +54,20 @@ namespace Mono.Cecil
                     return this._modules;
                 }
 
-                return this._modules = new Collection<ModuleDefinition>(1) { this.main_module };
+                return this._modules = new Collection<ModuleDefinition>(1) { this.MainModule };
             }
         }
 
-        public ModuleDefinition MainModule => this.main_module;
+        public ModuleDefinition MainModule { get; internal set; }
 
         public MethodDefinition EntryPoint
         {
-            get { return this.main_module.EntryPoint; }
-            set { this.main_module.EntryPoint = value; }
+            get => this.MainModule.EntryPoint;
+            set => this.MainModule.EntryPoint = value;
         }
 
         /*Telerik Authorship*/
-        private bool? hasCustomAttributes;
+        private bool? _hasCustomAttributes;
         public bool HasCustomAttributes
         {
             get
@@ -87,32 +76,32 @@ namespace Mono.Cecil
                     return this._customAttributes.Count > 0;
 
                 /*Telerik Authorship*/
-                if (this.hasCustomAttributes != null)
-                    return this.hasCustomAttributes == true;
+                if (this._hasCustomAttributes != null)
+                    return this._hasCustomAttributes == true;
 
                 /*Telerik Authorship*/
-                return this.GetHasCustomAttributes(ref this.hasCustomAttributes, this.main_module);
+                return this.GetHasCustomAttributes(ref this._hasCustomAttributes, this.MainModule);
             }
         }
 
         /*Telerik Authorship*/
-        private string targetFrameworkAttributeValue;
+        private string _targetFrameworkAttributeValue;
         /*Telerik Authorship*/
         public string TargetFrameworkAttributeValue
         {
             get
             {
-                if (this.targetFrameworkAttributeValue == null)
+                if (this._targetFrameworkAttributeValue == null)
                 {
-                    this.targetFrameworkAttributeValue = this.GetTargetFrameworkAttributeValue();
+                    this._targetFrameworkAttributeValue = this.GetTargetFrameworkAttributeValue();
                 }
 
-                if (this.targetFrameworkAttributeValue == string.Empty)
+                if (this._targetFrameworkAttributeValue == string.Empty)
                 {
                     return null;
                 }
 
-                return this.targetFrameworkAttributeValue;
+                return this._targetFrameworkAttributeValue;
             }
         }
 
@@ -123,7 +112,7 @@ namespace Mono.Cecil
         /// <returns>Returns string.Empty if the attribute is not present or with invalid value. Otherwise returns it's value.</returns>
         private string GetTargetFrameworkAttributeValue()
         {
-            foreach (CustomAttribute customAttr in this.CustomAttributes)
+            foreach (var customAttr in this.CustomAttributes)
             {
                 if (customAttr.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute")
                 {
@@ -153,11 +142,11 @@ namespace Mono.Cecil
 
         public Collection<CustomAttribute> CustomAttributes
         {
-            get { return this._customAttributes ?? (this.GetCustomAttributes(ref this._customAttributes, this.main_module)); }
+            get { return this._customAttributes ?? (this.GetCustomAttributes(ref this._customAttributes, this.MainModule)); }
         }
 
         /*Telerik Authorship*/
-        private bool? hasSecurityDeclarations;
+        private bool? _hasSecurityDeclarations;
         public bool HasSecurityDeclarations
         {
             get
@@ -166,23 +155,23 @@ namespace Mono.Cecil
                     return this._securityDeclarations.Count > 0;
 
                 /*Telerik Authorship*/
-                if (this.hasSecurityDeclarations != null)
-                    return this.hasSecurityDeclarations == true;
+                if (this._hasSecurityDeclarations != null)
+                    return this._hasSecurityDeclarations == true;
 
                 /*Telerik Authorship*/
-                return this.GetHasSecurityDeclarations(ref this.hasSecurityDeclarations, this.main_module);
+                return this.GetHasSecurityDeclarations(ref this._hasSecurityDeclarations, this.MainModule);
             }
         }
 
         public Collection<SecurityDeclaration> SecurityDeclarations
         {
-            get { return this._securityDeclarations ?? (this.GetSecurityDeclarations(ref this._securityDeclarations, this.main_module)); }
+            get { return this._securityDeclarations ?? (this.GetSecurityDeclarations(ref this._securityDeclarations, this.MainModule)); }
         }
 
         internal AssemblyDefinition()
         {
             /*Telerik Authorship*/
-            this.targetFrameworkAttributeValue = null;
+            this._targetFrameworkAttributeValue = null;
         }
 
         public static AssemblyDefinition ReadAssembly(string fileName, ReaderParameters parameters)

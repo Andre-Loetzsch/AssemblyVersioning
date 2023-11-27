@@ -4,34 +4,20 @@ using Mono.Cecil;
 
 namespace JustAssembly.Core.DiffItems
 {
-    abstract class BaseDiffItem : IDiffItem
+    abstract class BaseDiffItem(DiffType diffType) : IDiffItem
     {
-        private readonly DiffType diffType;
-
-        public DiffType DiffType
-        {
-            get
-            {
-                return this.diffType;
-            }
-        }
-
-        public BaseDiffItem(DiffType diffType)
-        {
-            this.diffType = diffType;
-        }
+        public DiffType DiffType { get; } = diffType;
 
         public string ToXml()
         {
-            using (StringWriter stringWriter = new StringWriter())
+            using StringWriter stringWriter = new StringWriter();
+            using (var xmlWriter = new XmlTextWriter(stringWriter))
             {
-                using (XmlWriter xmlWriter = new XmlTextWriter(stringWriter) { Formatting = Formatting.Indented })
-                {
-                    this.ToXml(xmlWriter);
-                }
-
-                return stringWriter.ToString();
+                xmlWriter.Formatting = Formatting.Indented;
+                this.ToXml(xmlWriter);
             }
+
+            return stringWriter.ToString();
         }
 
         protected abstract string GetXmlInfoString();
@@ -40,97 +26,55 @@ namespace JustAssembly.Core.DiffItems
         {
             writer.WriteStartElement("DiffItem");
             writer.WriteAttributeString("DiffType", this.DiffType.ToString());
-            writer.WriteString(GetXmlInfoString());
+            writer.WriteString(this.GetXmlInfoString());
             writer.WriteEndElement();
         }
 
         public abstract bool IsBreakingChange { get; }
     }
 
-    abstract class BaseDiffItem<T> : BaseDiffItem, IMetadataDiffItem<T> where T : class, IMetadataTokenProvider
+    abstract class BaseDiffItem<T>(T oldElement, T newElement, IEnumerable<IDiffItem> declarationDiffs, IEnumerable<IMetadataDiffItem> childrenDiffs)
+        : BaseDiffItem(newElement == null ? DiffType.Deleted : (oldElement == null ? DiffType.New : DiffType.Modified)), IMetadataDiffItem<T>
+        where T : class, IMetadataTokenProvider
     {
-        private readonly T oldElement;
-        private readonly T newElement;
-        private readonly IEnumerable<IDiffItem> declarationDiffs;
-        private readonly IEnumerable<IMetadataDiffItem> childrenDiffs;
+        public T OldElement { get; } = oldElement;
 
-        public T OldElement
-        {
-            get { return this.oldElement; }
-        }
-
-        public T NewElement
-        {
-            get { return this.newElement; }
-        }
+        public T NewElement { get; } = newElement;
 
         public abstract MetadataType MetadataType { get; }
 
-        public uint OldTokenID
-        {
-            get
-            {
-                return this.oldElement.MetadataToken.ToUInt32();
-            }
-        }
+        public uint OldTokenID => this.OldElement.MetadataToken.ToUInt32();
 
-        public uint NewTokenID
-        {
-            get
-            {
-                return this.newElement.MetadataToken.ToUInt32();
-            }
-        }
+        public uint NewTokenID => this.NewElement.MetadataToken.ToUInt32();
 
-        public IEnumerable<IDiffItem> DeclarationDiffs
-        {
-            get
-            {
-                return this.declarationDiffs;
-            }
-        }
+        public IEnumerable<IDiffItem> DeclarationDiffs { get; } = declarationDiffs?.ToList() ?? Enumerable.Empty<IDiffItem>();
 
-        public IEnumerable<IMetadataDiffItem> ChildrenDiffs
-        {
-            get
-            {
-                return this.childrenDiffs;
-            }
-        }
-
-        public BaseDiffItem(T oldElement, T newElement, IEnumerable<IDiffItem> declarationDiffs, IEnumerable<IMetadataDiffItem> childrenDiffs)
-            : base(newElement == null ? DiffType.Deleted : (oldElement == null ? DiffType.New : DiffType.Modified))
-        {
-            this.oldElement = oldElement;
-            this.newElement = newElement;
-            this.declarationDiffs = declarationDiffs != null ? declarationDiffs.ToList() : Enumerable.Empty<IDiffItem>();
-            this.childrenDiffs = childrenDiffs != null ? childrenDiffs.ToList() : Enumerable.Empty<IMetadataDiffItem>();
-        }
+        public IEnumerable<IMetadataDiffItem> ChildrenDiffs { get; } = childrenDiffs?.ToList() ?? Enumerable.Empty<IMetadataDiffItem>();
 
         protected T GetElement()
         {
-            return this.newElement ?? this.oldElement;
+            return this.NewElement ?? this.OldElement;
         }
 
         protected abstract string GetElementShortName(T element);
 
         internal override void ToXml(XmlWriter writer)
         {
-            writer.WriteStartElement(MetadataType.ToString());
-            writer.WriteAttributeString("Name", GetElementShortName(this.GetElement()));
-            writer.WriteAttributeString("DiffType", DiffType.ToString());
+            writer.WriteStartElement(this.MetadataType.ToString());
+            writer.WriteAttributeString("Name", this.GetElementShortName(this.GetElement()));
+            writer.WriteAttributeString("DiffType", this.DiffType.ToString());
 
             if (!this.DeclarationDiffs.IsEmpty())
             {
                 writer.WriteStartElement("DeclarationDiffs");
-                foreach (BaseDiffItem item in this.DeclarationDiffs)
+                foreach (var item in this.DeclarationDiffs.Cast<BaseDiffItem>())
                 {
                     item.ToXml(writer);
                 }
                 writer.WriteEndElement();
             }
 
-            foreach (BaseDiffItem item in this.ChildrenDiffs)
+            foreach (var item in this.ChildrenDiffs.Cast<BaseDiffItem>())
             {
                 item.ToXml(writer);
             }
@@ -143,23 +87,23 @@ namespace JustAssembly.Core.DiffItems
             throw new NotSupportedException();
         }
 
-        private bool? isBreakingChange;
+        private bool? _isBreakingChange;
         public override bool IsBreakingChange
         {
             get
             {
-                if (isBreakingChange == null)
+                if (this._isBreakingChange != null) return this._isBreakingChange.Value;
+                
+                if(this.DiffType != DiffType.Modified)
                 {
-                    if(this.DiffType != Core.DiffType.Modified)
-                    {
-                        this.isBreakingChange = this.DiffType == Core.DiffType.Deleted;
-                    }
-                    else
-                    {
-                        this.isBreakingChange = EnumerableExtensions.ConcatAll<IDiffItem>(this.declarationDiffs, this.childrenDiffs).Any(item => item.IsBreakingChange);
-                    }
+                    this._isBreakingChange = this.DiffType == DiffType.Deleted;
                 }
-                return isBreakingChange.Value;
+                else
+                {
+                    this._isBreakingChange = EnumerableExtensions.ConcatAll(this.DeclarationDiffs, this.ChildrenDiffs).Any(item => item.IsBreakingChange);
+                }
+               
+                return this._isBreakingChange.Value;
             }
         }
     }
