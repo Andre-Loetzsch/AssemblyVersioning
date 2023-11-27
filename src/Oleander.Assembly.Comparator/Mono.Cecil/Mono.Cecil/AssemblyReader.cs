@@ -55,7 +55,7 @@ namespace Mono.Cecil {
 			assembly.Name = name;
 
             this.module.assembly = assembly;
-			assembly.main_module = this.module;
+			assembly.MainModule = this.module;
 		}
 
 		public static ModuleDefinition CreateModuleFrom (Image image, ReaderParameters parameters)

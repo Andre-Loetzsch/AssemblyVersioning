@@ -229,8 +229,17 @@ public class Versioning
 
         var shortGitHash = longGtHash[..8];
         var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
-        var versionChange = this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo) ?
-            new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo).VersionChange : VersionChange.None;
+
+
+        var versionChange = VersionChange.None;
+
+        if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
+        {
+            var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo);
+            versionChange = comparison.VersionChange;
+
+            this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
+        }
 
         var projectFileVersion = this.TryGetProjectFileAssemblyVersion(out var v) ? v : new Version(0, 0, 1, 0);
 
@@ -337,6 +346,23 @@ public class Versioning
             new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
+
+    private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
+    {
+        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
+        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
+
+        var log = new List<string>
+        {
+            $"[{DateTime.Now:yyyy:MM:dd HH:mm:ss}] {versionChange}"
+        };
+
+        if (xmlDiff != null) log.Add(xmlDiff);
+
+        File.WriteAllLines(Path.Combine(versioningDir, "changelog.txt"), log);
+    }
+
+
     private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
     {
         if (!File.Exists(this._targetFileName)) return;
@@ -424,7 +450,6 @@ public class Versioning
     #endregion
 
     #region public static
-
 
     public static Version CalculateVersion(Version version, VersionChange versionChange)
     {

@@ -4,21 +4,12 @@ using JustAssembly.Core.DiffItems.Assemblies;
 
 namespace JustAssembly.Core.Comparers
 {
-    class AssemblyComparer
+    internal class AssemblyComparer(AssemblyDefinition oldAssembly, AssemblyDefinition newAssembly)
     {
-        private readonly AssemblyDefinition oldAssembly;
-        private readonly AssemblyDefinition newAssembly;
-
-        public AssemblyComparer(AssemblyDefinition oldAssembly, AssemblyDefinition newAssembly)
-        {
-            this.oldAssembly = oldAssembly;
-            this.newAssembly = newAssembly;
-        }
-
         public IMetadataDiffItem<AssemblyDefinition> Compare()
         {
-            IEnumerable<IDiffItem> declarationDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldAssembly.CustomAttributes, newAssembly.CustomAttributes);
-            IEnumerable<IDiffItem> childrenDiffs = new ModuleComparer().GetMultipleDifferences(oldAssembly.Modules, newAssembly.Modules);
+            var declarationDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldAssembly.CustomAttributes, newAssembly.CustomAttributes).ToList();
+            var childrenDiffs = new ModuleComparer().GetMultipleDifferences(oldAssembly.Modules, newAssembly.Modules).ToList();
             
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
             {

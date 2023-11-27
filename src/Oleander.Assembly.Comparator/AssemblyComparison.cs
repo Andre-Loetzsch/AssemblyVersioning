@@ -11,9 +11,6 @@ public class AssemblyComparison
         if (newAssembly is not { Exists: true }) return;
 
         this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
-
-        // TODO only for test
-        var xml = this.ToXml();
     }
 
     public string ToXml()
