@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyVersion>0.0.22.0</AssemblyVersion>
-    <SourceRevisionId>64a1582d125719aacde0ff0a19a5bca0a3d36fe0</SourceRevisionId>
+    <AssemblyVersion>0.0.23.0</AssemblyVersion>
+    <SourceRevisionId>37c7923315754c704a3e9d6b2ce4c3c37e9bb6d9</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>
@@ -25,8 +25,8 @@
     <ProjectReference Include="..\Oleander.Assembly.Comparator\Oleander.Assembly.Comparator.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net7.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
+    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />-->
   </Target>
 
 </Project>

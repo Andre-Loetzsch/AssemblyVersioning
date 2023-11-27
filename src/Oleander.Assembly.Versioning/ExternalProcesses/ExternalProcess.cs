@@ -3,22 +3,13 @@ using System.Diagnostics;
 
 namespace Oleander.Assembly.Versioning.ExternalProcesses;
 
-internal class ExternalProcess
+internal class ExternalProcess(string exeName, string arguments, string? workingDirectory = null)
 {
-    private readonly string _workingDirectory;
-    private readonly string _fileName;
-    private readonly string _arguments;
-
-    public ExternalProcess(string exeName, string arguments, string? workingDirectory = null)
-    {
-        this._workingDirectory = workingDirectory ?? Directory.GetCurrentDirectory();
-        this._fileName = exeName;
-        this._arguments = arguments;
-    }
+    private readonly string _workingDirectory = workingDirectory ?? Directory.GetCurrentDirectory();
 
     public ExternalProcessResult Start()
     {
-        var epr = new ExternalProcessResult(this._fileName, this._arguments);
+        var epr = new ExternalProcessResult(exeName, arguments);
 
         var p = new Process
         {
@@ -27,13 +18,15 @@ internal class ExternalProcess
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    FileName = this._fileName,
-                    Arguments = this._arguments,
+                    FileName = exeName,
+                    Arguments = arguments,
                     CreateNoWindow = true,
                     ErrorDialog = false, 
                     WorkingDirectory = this._workingDirectory
                 }
         };
+
+        p.EnableRaisingEvents = true;
 
         try
         {
@@ -58,20 +51,44 @@ internal class ExternalProcess
             return epr;
         }
 
-        if (!p.WaitForExit(30000))
+      
+
+        if (!p.HasExited && !p.WaitForExit(3000))
         {
-            try
+            var p1 = p;
+            var t = Task.Run(() =>
             {
-                epr.ExitCode = -2;
-                epr.StandardErrorOutput = $"Try to kill the process {p.Id} because there is no response!";
-                p.Kill();
-            }
-            catch (Exception ex)
+                try
+                {
+                    epr.StandardOutput = p1.StandardOutput.ReadToEnd();
+                    epr.StandardErrorOutput = p1.StandardError.ReadToEnd();
+
+                    epr.ExitCode = p1.ExitCode;
+                    p1.Close();
+                    p1.Dispose();
+                }
+                catch (Exception)
+                {
+                    //
+                }
+            });
+
+            if (!t.Wait(1500))
             {
-                epr.ExitCode = -1;
-                epr.StandardErrorOutput = $"An error occurred while killing the process! ({ex.Message})";
-                return epr;
+                try
+                {
+                    epr.ExitCode = -2;
+                    epr.StandardErrorOutput = $"Try to kill the process {p.Id} because there is no response!";
+                    p.Kill();
+                }
+                catch (Exception ex)
+                {
+                    epr.ExitCode = -1;
+                    epr.StandardErrorOutput = $"An error occurred while killing the process! ({ex.Message})";
+                }
             }
+
+            return epr;
         }
 
         epr.StandardOutput = p.StandardOutput.ReadToEnd();
