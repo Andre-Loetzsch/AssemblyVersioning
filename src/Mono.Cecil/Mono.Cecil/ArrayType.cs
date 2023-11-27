@@ -8,7 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
 using System.Text;
 using Mono.Collections.Generic;
 using MD = Mono.Cecil.Metadata;
@@ -21,17 +20,17 @@ namespace Mono.Cecil {
 		int? upper_bound;
 
 		public int? LowerBound {
-			get { return lower_bound; }
-			set { lower_bound = value; }
+			get { return this.lower_bound; }
+			set { this.lower_bound = value; }
 		}
 
 		public int? UpperBound {
-			get { return upper_bound; }
-			set { upper_bound = value; }
+			get { return this.upper_bound; }
+			set { this.upper_bound = value; }
 		}
 
 		public bool IsSized {
-			get { return lower_bound.HasValue || upper_bound.HasValue; }
+			get { return this.lower_bound.HasValue || this.upper_bound.HasValue; }
 		}
 
 		public ArrayDimension (int? lowerBound, int? upperBound)
@@ -42,9 +41,9 @@ namespace Mono.Cecil {
 
 		public override string ToString ()
 		{
-			return !IsSized
+			return !this.IsSized
 				? string.Empty
-				: lower_bound + "..." + upper_bound;
+				: this.lower_bound + "..." + this.upper_bound;
 		}
 	}
 
@@ -54,28 +53,28 @@ namespace Mono.Cecil {
 
 		public Collection<ArrayDimension> Dimensions {
 			get {
-				if (dimensions != null)
-					return dimensions;
+				if (this.dimensions != null)
+					return this.dimensions;
 
-				dimensions = new Collection<ArrayDimension> ();
-				dimensions.Add (new ArrayDimension ());
-				return dimensions;
+                this.dimensions = new Collection<ArrayDimension> ();
+                this.dimensions.Add (new ArrayDimension ());
+				return this.dimensions;
 			}
 		}
 
 		public int Rank {
-			get { return dimensions == null ? 1 : dimensions.Count; }
+			get { return this.dimensions == null ? 1 : this.dimensions.Count; }
 		}
 
 		public bool IsVector {
 			get {
-				if (dimensions == null)
+				if (this.dimensions == null)
 					return true;
 
-				if (dimensions.Count > 1)
+				if (this.dimensions.Count > 1)
 					return false;
 
-				var dimension = dimensions [0];
+				var dimension = this.dimensions [0];
 
 				return !dimension.IsSized;
 			}
@@ -87,26 +86,26 @@ namespace Mono.Cecil {
 		}
 
 		public override string Name {
-			get { return base.Name + Suffix; }
+			get { return base.Name + this.Suffix; }
 		}
 
 		public override string FullName {
-			get { return base.FullName + Suffix; }
+			get { return base.FullName + this.Suffix; }
 		}
 
 		/*Telerik Authorship*/
 		public string Suffix {
 			get {
-				if (IsVector)
+				if (this.IsVector)
 					return "[]";
 
 				var suffix = new StringBuilder ();
 				suffix.Append ("[");
-				for (int i = 0; i < dimensions.Count; i++) {
+				for (int i = 0; i < this.dimensions.Count; i++) {
 					if (i > 0)
 						suffix.Append (",");
 
-					suffix.Append (dimensions [i].ToString ());
+					suffix.Append (this.dimensions [i].ToString ());
 				}
 				suffix.Append ("]");
 
@@ -133,9 +132,8 @@ namespace Mono.Cecil {
 			if (rank == 1)
 				return;
 
-			dimensions = new Collection<ArrayDimension> (rank);
-			for (int i = 0; i < rank; i++)
-				dimensions.Add (new ArrayDimension ());
+            this.dimensions = new Collection<ArrayDimension> (rank);
+			for (int i = 0; i < rank; i++) this.dimensions.Add (new ArrayDimension ());
 			this.etype = MD.ElementType.Array;
 		}
 	}

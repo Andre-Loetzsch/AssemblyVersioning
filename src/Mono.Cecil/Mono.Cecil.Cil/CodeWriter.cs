@@ -8,9 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.Collections.Generic;
-
 using Mono.Collections.Generic;
 
 using Mono.Cecil.Metadata;
@@ -35,30 +32,30 @@ namespace Mono.Cecil.Cil {
 			: base (0)
 		{
 			this.code_base = metadata.text_map.GetNextRVA (TextSegment.CLIHeader);
-			this.current = code_base;
+			this.current = this.code_base;
 			this.metadata = metadata;
 			this.standalone_signatures = new Dictionary<uint, MetadataToken> ();
 		}
 
 		public RVA WriteMethodBody (MethodDefinition method)
 		{
-			var rva = BeginMethod ();
+			var rva = this.BeginMethod ();
 
 			if (IsUnresolved (method)) {
 				if (method.rva == 0)
 					return 0;
 
-				WriteUnresolvedMethodBody (method);
+                this.WriteUnresolvedMethodBody (method);
 			} else {
 				if (IsEmptyMethodBody (method.Body))
 					return 0;
 
-				WriteResolvedMethodBody (method);
+                this.WriteResolvedMethodBody (method);
 			}
 
-			Align (4);
+            this.Align (4);
 
-			EndMethod ();
+            this.EndMethod ();
 			return rva;
 		}
 
@@ -75,12 +72,12 @@ namespace Mono.Cecil.Cil {
 
 		void WriteUnresolvedMethodBody (MethodDefinition method)
 		{
-			var code_reader = metadata.module.Read (method, (_, reader) => reader.code);
+			var code_reader = this.metadata.module.Read (method, (_, reader) => reader.code);
 
 			MethodSymbols symbols;
 			var buffer = code_reader.PatchRawMethodBody (method, this, out symbols);
 
-			WriteBytes (buffer);
+            this.WriteBytes (buffer);
 
 			if (symbols.instructions.IsNullOrEmpty ())
 				return;
@@ -88,7 +85,7 @@ namespace Mono.Cecil.Cil {
 			symbols.method_token = method.token;
 			symbols.local_var_token = GetLocalVarToken (buffer, symbols);
 
-			var symbol_writer = metadata.symbol_writer;
+			var symbol_writer = this.metadata.symbol_writer;
 			if (symbol_writer != null)
 				symbol_writer.Write (symbols);
 		}
@@ -104,32 +101,31 @@ namespace Mono.Cecil.Cil {
 
 		void WriteResolvedMethodBody (MethodDefinition method)
 		{
-			body = method.Body;
-			ComputeHeader ();
-			if (RequiresFatHeader ())
-				WriteFatHeader ();
+            this.body = method.Body;
+            this.ComputeHeader ();
+			if (this.RequiresFatHeader ())
+                this.WriteFatHeader ();
 			else
-				WriteByte ((byte) (0x2 | (body.CodeSize << 2))); // tiny
+                this.WriteByte ((byte) (0x2 | (this.body.CodeSize << 2))); // tiny
 
-			WriteInstructions ();
+            this.WriteInstructions ();
 
-			if (body.HasExceptionHandlers)
-				WriteExceptionHandlers ();
+			if (this.body.HasExceptionHandlers) this.WriteExceptionHandlers ();
 
-			var symbol_writer = metadata.symbol_writer;
+			var symbol_writer = this.metadata.symbol_writer;
 
 			/*Telerik Authorship*/
 			if (symbol_writer != null)
 			{
-				MetadataToken methodToken = CodeReader.GetOriginalToken(metadata, method);
-				MetadataToken localVarToken = CodeReader.GetOriginalLocalVarToken(metadata, method);
+				MetadataToken methodToken = CodeReader.GetOriginalToken(this.metadata, method);
+				MetadataToken localVarToken = CodeReader.GetOriginalLocalVarToken(this.metadata, method);
 
 				if (methodToken == MetadataToken.Zero)
 				{
 					throw new Exception("MethodDefinition original token not found.");
 				}
 
-				symbol_writer.Write(body, /*Telerik Authorship*/ methodToken, /*Telerik Authorship*/ localVarToken);
+				symbol_writer.Write(this.body, /*Telerik Authorship*/ methodToken, /*Telerik Authorship*/ localVarToken);
 			}
 		}
 
@@ -142,36 +138,36 @@ namespace Mono.Cecil.Cil {
 			if (body.HasExceptionHandlers)
 				flags |= 0x8;	// more sections
 
-			WriteByte (flags);
-			WriteByte (0x30);
-			WriteInt16 ((short) body.max_stack_size);
-			WriteInt32 (body.code_size);
+            this.WriteByte (flags);
+            this.WriteByte (0x30);
+            this.WriteInt16 ((short) body.max_stack_size);
+            this.WriteInt32 (body.code_size);
 			body.local_var_token = body.HasVariables
-				? GetStandAloneSignature (body.Variables)
+				? this.GetStandAloneSignature (body.Variables)
 				: MetadataToken.Zero;
-			WriteMetadataToken (body.local_var_token);
+            this.WriteMetadataToken (body.local_var_token);
 		}
 
 		void WriteInstructions ()
 		{
-			var instructions = body.Instructions;
+			var instructions = this.body.Instructions;
 			var items = instructions.items;
 			var size = instructions.size;
 
 			for (int i = 0; i < size; i++) {
 				var instruction = items [i];
-				WriteOpCode (instruction.opcode);
-				WriteOperand (instruction);
+                this.WriteOpCode (instruction.opcode);
+                this.WriteOperand (instruction);
 			}
 		}
 
 		void WriteOpCode (OpCode opcode)
 		{
 			if (opcode.Size == 1) {
-				WriteByte (opcode.Op2);
+                this.WriteByte (opcode.Op2);
 			} else {
-				WriteByte (opcode.Op1);
-				WriteByte (opcode.Op2);
+                this.WriteByte (opcode.Op1);
+                this.WriteByte (opcode.Op2);
 			}
 		}
 
@@ -189,66 +185,64 @@ namespace Mono.Cecil.Cil {
 			switch (operand_type) {
 			case OperandType.InlineSwitch: {
 				var targets = (Instruction []) operand;
-				WriteInt32 (targets.Length);
+                this.WriteInt32 (targets.Length);
 				var diff = instruction.Offset + opcode.Size + (4 * (targets.Length + 1));
-				for (int i = 0; i < targets.Length; i++)
-					WriteInt32 (GetTargetOffset (targets [i]) - diff);
+				for (int i = 0; i < targets.Length; i++) this.WriteInt32 (this.GetTargetOffset (targets [i]) - diff);
 				break;
 			}
 			case OperandType.ShortInlineBrTarget: {
 				var target = (Instruction) operand;
-				WriteSByte ((sbyte) (GetTargetOffset (target) - (instruction.Offset + opcode.Size + 1)));
+                this.WriteSByte ((sbyte) (this.GetTargetOffset (target) - (instruction.Offset + opcode.Size + 1)));
 				break;
 			}
 			case OperandType.InlineBrTarget: {
 				var target = (Instruction) operand;
-				WriteInt32 (GetTargetOffset (target) - (instruction.Offset + opcode.Size + 4));
+                this.WriteInt32 (this.GetTargetOffset (target) - (instruction.Offset + opcode.Size + 4));
 				break;
 			}
 			case OperandType.ShortInlineVar:
-				WriteByte ((byte) GetVariableIndex ((VariableDefinition) operand));
+                this.WriteByte ((byte) GetVariableIndex ((VariableDefinition) operand));
 				break;
 			case OperandType.ShortInlineArg:
-				WriteByte ((byte) GetParameterIndex ((ParameterDefinition) operand));
+                this.WriteByte ((byte)this.GetParameterIndex ((ParameterDefinition) operand));
 				break;
 			case OperandType.InlineVar:
-				WriteInt16 ((short) GetVariableIndex ((VariableDefinition) operand));
+                this.WriteInt16 ((short) GetVariableIndex ((VariableDefinition) operand));
 				break;
 			case OperandType.InlineArg:
-				WriteInt16 ((short) GetParameterIndex ((ParameterDefinition) operand));
+                this.WriteInt16 ((short)this.GetParameterIndex ((ParameterDefinition) operand));
 				break;
 			case OperandType.InlineSig:
-				WriteMetadataToken (GetStandAloneSignature ((CallSite) operand));
+                this.WriteMetadataToken (this.GetStandAloneSignature ((CallSite) operand));
 				break;
 			case OperandType.ShortInlineI:
 				if (opcode == OpCodes.Ldc_I4_S)
-					WriteSByte ((sbyte) operand);
+                    this.WriteSByte ((sbyte) operand);
 				else
-					WriteByte ((byte) operand);
+                    this.WriteByte ((byte) operand);
 				break;
 			case OperandType.InlineI:
-				WriteInt32 ((int) operand);
+                this.WriteInt32 ((int) operand);
 				break;
 			case OperandType.InlineI8:
-				WriteInt64 ((long) operand);
+                this.WriteInt64 ((long) operand);
 				break;
 			case OperandType.ShortInlineR:
-				WriteSingle ((float) operand);
+                this.WriteSingle ((float) operand);
 				break;
 			case OperandType.InlineR:
-				WriteDouble ((double) operand);
+                this.WriteDouble ((double) operand);
 				break;
 			case OperandType.InlineString:
-				WriteMetadataToken (
+                this.WriteMetadataToken (
 					new MetadataToken (
-						TokenType.String,
-						GetUserStringIndex ((string) operand)));
+						TokenType.String, this.GetUserStringIndex ((string) operand)));
 				break;
 			case OperandType.InlineType:
 			case OperandType.InlineField:
 			case OperandType.InlineMethod:
 			case OperandType.InlineTok:
-				WriteMetadataToken (metadata.LookupToken ((IMetadataTokenProvider) operand));
+                this.WriteMetadataToken (this.metadata.LookupToken ((IMetadataTokenProvider) operand));
 				break;
 			default:
 				throw new ArgumentException ();
@@ -258,7 +252,7 @@ namespace Mono.Cecil.Cil {
 		int GetTargetOffset (Instruction instruction)
 		{
 			if (instruction == null) {
-				var last = body.instructions [body.instructions.size - 1];
+				var last = this.body.instructions [this.body.instructions.size - 1];
 				return last.offset + last.GetSize ();
 			}
 
@@ -270,7 +264,7 @@ namespace Mono.Cecil.Cil {
 			if (@string == null)
 				return 0;
 
-			return metadata.user_string_heap.GetStringIndex (@string);
+			return this.metadata.user_string_heap.GetStringIndex (@string);
 		}
 
 		static int GetVariableIndex (VariableDefinition variable)
@@ -280,8 +274,8 @@ namespace Mono.Cecil.Cil {
 
 		int GetParameterIndex (ParameterDefinition parameter)
 		{
-			if (body.method.HasThis) {
-				if (parameter == body.this_parameter)
+			if (this.body.method.HasThis) {
+				if (parameter == this.body.this_parameter)
 					return 0;
 
 				return parameter.Index + 1;
@@ -303,15 +297,14 @@ namespace Mono.Cecil.Cil {
 		void ComputeHeader ()
 		{
 			int offset = 0;
-			var instructions = body.instructions;
+			var instructions = this.body.instructions;
 			var items = instructions.items;
 			var count = instructions.size;
 			var stack_size = 0;
 			var max_stack = 0;
 			Dictionary<Instruction, int> stack_sizes = null;
 
-			if (body.HasExceptionHandlers)
-				ComputeExceptionHandlerStackSize (ref stack_sizes);
+			if (this.body.HasExceptionHandlers) this.ComputeExceptionHandlerStackSize (ref stack_sizes);
 
 			for (int i = 0; i < count; i++) {
 				var instruction = items [i];
@@ -321,13 +314,13 @@ namespace Mono.Cecil.Cil {
 				ComputeStackSize (instruction, ref stack_sizes, ref stack_size, ref max_stack);
 			}
 
-			body.code_size = offset;
-			body.max_stack_size = max_stack;
+            this.body.code_size = offset;
+            this.body.max_stack_size = max_stack;
 		}
 
 		void ComputeExceptionHandlerStackSize (ref Dictionary<Instruction, int> stack_sizes)
 		{
-			var exception_handlers = body.ExceptionHandlers;
+			var exception_handlers = this.body.ExceptionHandlers;
 
 			for (int i = 0; i < exception_handlers.Count; i++) {
 				var exception_handler = exception_handlers [i];
@@ -361,9 +354,9 @@ namespace Mono.Cecil.Cil {
 			if (stack_sizes != null && stack_sizes.TryGetValue (instruction, out computed_size))
 				stack_size = computed_size;
 
-			max_stack = System.Math.Max (max_stack, stack_size);
+			max_stack = Math.Max (max_stack, stack_size);
 			ComputeStackDelta (instruction, ref stack_size);
-			max_stack = System.Math.Max (max_stack, stack_size);
+			max_stack = Math.Max (max_stack, stack_size);
 
 			CopyBranchStackSize (instruction, ref stack_sizes, stack_size);
 			ComputeStackSize (instruction, ref stack_size);
@@ -396,7 +389,7 @@ namespace Mono.Cecil.Cil {
 
 			int computed_size;
 			if (stack_sizes.TryGetValue (target, out computed_size))
-				branch_stack_size = System.Math.Max (branch_stack_size, computed_size);
+				branch_stack_size = Math.Max (branch_stack_size, computed_size);
 
 			stack_sizes [target] = branch_stack_size;
 		}
@@ -490,14 +483,14 @@ namespace Mono.Cecil.Cil {
 
 		void WriteExceptionHandlers ()
 		{
-			Align (4);
+            this.Align (4);
 
-			var handlers = body.ExceptionHandlers;
+			var handlers = this.body.ExceptionHandlers;
 
 			if (handlers.Count < 0x15 && !RequiresFatSection (handlers))
-				WriteSmallSection (handlers);
+                this.WriteSmallSection (handlers);
 			else
-				WriteFatSection (handlers);
+                this.WriteFatSection (handlers);
 		}
 
 		static bool RequiresFatSection (Collection<ExceptionHandler> handlers)
@@ -534,14 +527,14 @@ namespace Mono.Cecil.Cil {
 		{
 			const byte eh_table = 0x1;
 
-			WriteByte (eh_table);
-			WriteByte ((byte) (handlers.Count * 12 + 4));
-			WriteBytes (2);
+            this.WriteByte (eh_table);
+            this.WriteByte ((byte) (handlers.Count * 12 + 4));
+            this.WriteBytes (2);
 
-			WriteExceptionHandlers (
+            this.WriteExceptionHandlers (
 				handlers,
-				i => WriteUInt16 ((ushort) i),
-				i => WriteByte ((byte) i));
+				i => this.WriteUInt16 ((ushort) i),
+				i => this.WriteByte ((byte) i));
 		}
 
 		void WriteFatSection (Collection<ExceptionHandler> handlers)
@@ -549,14 +542,14 @@ namespace Mono.Cecil.Cil {
 			const byte eh_table = 0x1;
 			const byte fat_format = 0x40;
 
-			WriteByte (eh_table | fat_format);
+            this.WriteByte (eh_table | fat_format);
 
 			int size = handlers.Count * 24 + 4;
-			WriteByte ((byte) (size & 0xff));
-			WriteByte ((byte) ((size >> 8) & 0xff));
-			WriteByte ((byte) ((size >> 16) & 0xff));
+            this.WriteByte ((byte) (size & 0xff));
+            this.WriteByte ((byte) ((size >> 8) & 0xff));
+            this.WriteByte ((byte) ((size >> 16) & 0xff));
 
-			WriteExceptionHandlers (handlers, WriteInt32, WriteInt32);
+            this.WriteExceptionHandlers (handlers, this.WriteInt32, this.WriteInt32);
 		}
 
 		void WriteExceptionHandlers (Collection<ExceptionHandler> handlers, Action<int> write_entry, Action<int> write_length)
@@ -567,12 +560,12 @@ namespace Mono.Cecil.Cil {
 				write_entry ((int) handler.HandlerType);
 
 				write_entry (handler.TryStart.Offset);
-				write_length (GetTargetOffset (handler.TryEnd) - handler.TryStart.Offset);
+				write_length (this.GetTargetOffset (handler.TryEnd) - handler.TryStart.Offset);
 
 				write_entry (handler.HandlerStart.Offset);
-				write_length (GetTargetOffset (handler.HandlerEnd) - handler.HandlerStart.Offset);
+				write_length (this.GetTargetOffset (handler.HandlerEnd) - handler.HandlerStart.Offset);
 
-				WriteExceptionHandlerSpecific (handler);
+                this.WriteExceptionHandlerSpecific (handler);
 			}
 		}
 
@@ -580,28 +573,28 @@ namespace Mono.Cecil.Cil {
 		{
 			switch (handler.HandlerType) {
 			case ExceptionHandlerType.Catch:
-				WriteMetadataToken (metadata.LookupToken (handler.CatchType));
+                this.WriteMetadataToken (this.metadata.LookupToken (handler.CatchType));
 				break;
 			case ExceptionHandlerType.Filter:
-				WriteInt32 (handler.FilterStart.Offset);
+                this.WriteInt32 (handler.FilterStart.Offset);
 				break;
 			default:
-				WriteInt32 (0);
+                this.WriteInt32 (0);
 				break;
 			}
 		}
 
 		public MetadataToken GetStandAloneSignature (Collection<VariableDefinition> variables)
 		{
-			var signature = metadata.GetLocalVariableBlobIndex (variables);
+			var signature = this.metadata.GetLocalVariableBlobIndex (variables);
 
-			return GetStandAloneSignatureToken (signature);
+			return this.GetStandAloneSignatureToken (signature);
 		}
 
 		public MetadataToken GetStandAloneSignature (CallSite call_site)
 		{
-			var signature = metadata.GetCallSiteBlobIndex (call_site);
-			var token = GetStandAloneSignatureToken (signature);
+			var signature = this.metadata.GetCallSiteBlobIndex (call_site);
+			var token = this.GetStandAloneSignatureToken (signature);
 			call_site.MetadataToken = token;
 			return token;
 		}
@@ -609,33 +602,33 @@ namespace Mono.Cecil.Cil {
 		MetadataToken GetStandAloneSignatureToken (uint signature)
 		{
 			MetadataToken token;
-			if (standalone_signatures.TryGetValue (signature, out token))
+			if (this.standalone_signatures.TryGetValue (signature, out token))
 				return token;
 
-			token = new MetadataToken (TokenType.Signature, metadata.AddStandAloneSignature (signature));
-			standalone_signatures.Add (signature, token);
+			token = new MetadataToken (TokenType.Signature, this.metadata.AddStandAloneSignature (signature));
+            this.standalone_signatures.Add (signature, token);
 			return token;
 		}
 
 		RVA BeginMethod ()
 		{
-			return current;
+			return this.current;
 		}
 
 		void WriteMetadataToken (MetadataToken token)
 		{
-			WriteUInt32 (token.ToUInt32 ());
+            this.WriteUInt32 (token.ToUInt32 ());
 		}
 
 		void Align (int align)
 		{
 			align--;
-			WriteBytes (((position + align) & ~align) - position);
+            this.WriteBytes (((this.position + align) & ~align) - this.position);
 		}
 
 		void EndMethod ()
 		{
-			current = (RVA) (code_base + position);
+            this.current = (RVA) (this.code_base + this.position);
 		}
 	}
 }

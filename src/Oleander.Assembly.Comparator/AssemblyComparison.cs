@@ -3,18 +3,20 @@ namespace Oleander.Assembly.Comparator;
 
 public class AssemblyComparison
 {
-    private readonly IMetadataDiffItem? _diffItem;
+    private readonly IMetadataDiffItem _diffItem;
 
-
-    public AssemblyComparison(FileSystemInfo? refAssembly, FileSystemInfo? newAssembly)
+    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
 
         this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
+
+        // TODO only for test
+        var xml = this.ToXml();
     }
 
-    public string? ToXml()
+    public string ToXml()
     {
         return this._diffItem?.ToXml();
     }

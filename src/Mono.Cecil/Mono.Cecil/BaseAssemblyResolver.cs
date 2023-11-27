@@ -8,13 +8,8 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
 /*Telerik Authorship*/
-using System.Linq;
-
 /*Telerik Authorship*/
 using Mono.Cecil.Extensions;
 using Mono.Collections.Generic;
@@ -23,7 +18,6 @@ using Mono.Cecil.AssemblyResolver;
 /*Telerik Authorship*/
 using JustDecompile.SmartAssembly.Attributes;
 /*Telerik Authorship*/
-using System.Threading;
 
 namespace Mono.Cecil {
 	public delegate AssemblyDefinition AssemblyResolveEventHandler(object sender, /*Telerik Authorship*/ AssemblyResolveEventArgs args);
@@ -38,13 +32,13 @@ namespace Mono.Cecil {
 		private readonly TargetArchitecture architecture;
 
 		public AssemblyNameReference AssemblyReference {
-			get { return reference; }
+			get { return this.reference; }
 		}
 
 		/*Telerik Authorship*/
 		public TargetArchitecture Architecture
 		{
-			get { return architecture; }
+			get { return this.architecture; }
 		}
 
 		public AssemblyResolveEventArgs(AssemblyNameReference reference, /*Telerik Authorship*/ TargetArchitecture architecture)
@@ -122,21 +116,21 @@ namespace Mono.Cecil {
 		/*Telerik Authorship*/
 		protected BaseAssemblyResolver(AssemblyPathResolverCache pathRespository, ITargetPlatformResolver targetPlatformResolver)
 		{
-			directories = new List<string>();
-			resolvedAssemblies = new Dictionary<AssemblyStrongNameExtended, List<AssemblyDefinition>>();
-			filePathToAssemblyDefinitionCache = new Dictionary<string, AssemblyDefinition>();
-			userDefinedAssemblies = new List<string>();
-			resolvableExtensionsSet = new HashSet<string>(SystemInformation.ResolvableExtensions);
-			architectureStrings = GetArchitectureStrings();
+            this.directories = new List<string>();
+            this.resolvedAssemblies = new Dictionary<AssemblyStrongNameExtended, List<AssemblyDefinition>>();
+            this.filePathToAssemblyDefinitionCache = new Dictionary<string, AssemblyDefinition>();
+            this.userDefinedAssemblies = new List<string>();
+            this.resolvableExtensionsSet = new HashSet<string>(SystemInformation.ResolvableExtensions);
+            this.architectureStrings = this.GetArchitectureStrings();
             /*Telerik Authorship*/
-            directoryAssemblies = new HashSet<DirectoryAssemblyInfo>();
+            this.directoryAssemblies = new HashSet<DirectoryAssemblyInfo>();
 
             /*Telerik Authorship*/
             this.targetPlatformResolver = targetPlatformResolver;
             /*Telerik Authorship*/
             this.readerParameters = new ReaderParameters(this);
             /*Telerik Authorship*/
-            assemblyPathResolver = new AssemblyPathResolver(pathRespository, /*Telerik Authorship*/ this.readerParameters, /*Telerik Authorship*/ this.targetPlatformResolver);
+            this.assemblyPathResolver = new AssemblyPathResolver(pathRespository, /*Telerik Authorship*/ this.readerParameters, /*Telerik Authorship*/ this.targetPlatformResolver);
 
             /*Telerik Authorship*/
             this.resolveLock = new ReaderWriterLockSlim();
@@ -161,9 +155,9 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         private void InvalidateDirectoryAssemblyCache()
         {
-            DoWithWriteLock(this.directoryAssembliesLock, () =>
+            this.DoWithWriteLock(this.directoryAssembliesLock, () =>
             {
-                this.directoryAssemblies = new HashSet<DirectoryAssemblyInfo>(GetDirectoryAssemblies().ToList());
+                this.directoryAssemblies = new HashSet<DirectoryAssemblyInfo>(this.GetDirectoryAssemblies().ToList());
             });
         }
 
@@ -172,22 +166,22 @@ namespace Mono.Cecil {
 		{
             string directoryInLowercase = directory.ToLowerInvariant();
 
-            if (DoWithReadLock(this.directoriesLock, () => { return directories.Contains(directoryInLowercase); }))
+            if (this.DoWithReadLock(this.directoriesLock, () => { return this.directories.Contains(directoryInLowercase); }))
             {
                 return;
             }
             
             if (Directory.Exists(directory))
             {
-                bool isAdded = DoWithWriteLock(this.directoriesLock, () =>
+                bool isAdded = this.DoWithWriteLock(this.directoriesLock, () =>
                 {
                     // Double check for ensuring the entry is not added in the meantime.
-                    if (directories.Contains(directoryInLowercase))
+                    if (this.directories.Contains(directoryInLowercase))
                     {
                         return false;
                     }
 
-                    directories.Add(directoryInLowercase);
+                    this.directories.Add(directoryInLowercase);
 
                     return true;
                 });
@@ -203,9 +197,9 @@ namespace Mono.Cecil {
 		public void RemoveSearchDirectory(string directory)
         {
             /*Telerik Authorship*/
-            DoWithWriteLock(this.directoriesLock, () =>
+            this.DoWithWriteLock(this.directoriesLock, () =>
             {
-                directories.Remove(directory);
+                this.directories.Remove(directory);
             });
 		}
 
@@ -213,7 +207,7 @@ namespace Mono.Cecil {
 		public string[] GetSearchDirectories()
         {
             /*Telerik Authorship*/
-            return DoWithReadLock(this.directoriesLock, () =>
+            return this.DoWithReadLock(this.directoriesLock, () =>
             {
                 var directories = new string[this.directories.Count];
                 Array.Copy(this.directories.ToArray(), directories, directories.Length);
@@ -240,10 +234,10 @@ namespace Mono.Cecil {
 		private IEnumerable<DirectoryAssemblyInfo> GetDirectoryAssemblies()
         {
             /*Telerik Authorship*/
-            return DoWithReadLock(this.directoriesLock, () =>
+            return this.DoWithReadLock(this.directoriesLock, () =>
             {
                 List<DirectoryAssemblyInfo> result = new List<DirectoryAssemblyInfo>();
-                foreach (string directory in directories)
+                foreach (string directory in this.directories)
                 {
                     if (!Directory.Exists(directory))
                     {
@@ -253,10 +247,10 @@ namespace Mono.Cecil {
                     {
                         foreach (string file in Directory.GetFiles(directory, "*" + extension))
                         {
-                            if (resolvableExtensionsSet.Contains(Path.GetExtension(file)) && file.Length < 260)
+                            if (this.resolvableExtensionsSet.Contains(Path.GetExtension(file)) && file.Length < 260)
                             //Check is added because of the behaviour of Directory.GetFiles
                             {
-                                result.Add(CreateDirectoryAssemblyInfo(file));
+                                result.Add(this.CreateDirectoryAssemblyInfo(file));
                             }
                         }
                     }
@@ -280,13 +274,13 @@ namespace Mono.Cecil {
 				throw new ArgumentNullException("fullName");
 			}
 
-			return Resolve(AssemblyNameReference.Parse(fullName), string.Empty, parameters, platform, special, bubbleToUserIfFailed);
+			return this.Resolve(AssemblyNameReference.Parse(fullName), string.Empty, parameters, platform, special, bubbleToUserIfFailed);
 		}
 
 		/*Telerik Authorship*/
 		public virtual AssemblyDefinition Resolve(AssemblyNameReference name, string path, TargetArchitecture architecture, SpecialTypeAssembly special, bool bubbleToUserIfFailed = true)
         {
-			AssemblyDefinition assemblyDefinition = Resolve(name, path, new ReaderParameters(this), architecture, special, bubbleToUserIfFailed);
+			AssemblyDefinition assemblyDefinition = this.Resolve(name, path, new ReaderParameters(this), architecture, special, bubbleToUserIfFailed);
 
 			return assemblyDefinition;
 		}
@@ -294,7 +288,7 @@ namespace Mono.Cecil {
 		/*Telerik Authorship*/
 		public virtual AssemblyDefinition Resolve(AssemblyNameReference name, string path, TargetArchitecture architecture, SpecialTypeAssembly special, bool addToFailedCache, bool bubbleToUserIfFailed = true)
         {
-			AssemblyDefinition assemblyDefinition = Resolve(name, path, new ReaderParameters(this), architecture, special, bubbleToUserIfFailed, addToFailedCache);
+			AssemblyDefinition assemblyDefinition = this.Resolve(name, path, new ReaderParameters(this), architecture, special, bubbleToUserIfFailed, addToFailedCache);
 
 			return assemblyDefinition;
 		}
@@ -322,16 +316,16 @@ namespace Mono.Cecil {
             AssemblyDefinition assembly = null;
 
             /*Telerik Authorship*/
-            bool isResolved = DoWithReadLock(this.resolveLock, () =>
+            bool isResolved = this.DoWithReadLock(this.resolveLock, () =>
             {
-                if (assemblyPathResolver.IsFailedAssembly(assemblyKey))
+                if (this.assemblyPathResolver.IsFailedAssembly(assemblyKey))
                 {
                     assembly = null;
 
                     return true;
                 }
 
-                assembly = GetFromResolvedAssemblies(assemblyName, special);
+                assembly = this.GetFromResolvedAssemblies(assemblyName, special);
                 return assembly != null;
             });
 
@@ -341,15 +335,15 @@ namespace Mono.Cecil {
             }
 
             /*Telerik Authorship*/
-            return DoWithWriteLock(this.resolveLock, () =>
+            return this.DoWithWriteLock(this.resolveLock, () =>
             {
                 // Double checks to ensure that the entry is not added in the meantime.
-                if (assemblyPathResolver.IsFailedAssembly(assemblyKey))
+                if (this.assemblyPathResolver.IsFailedAssembly(assemblyKey))
                 {
                     return null;
                 }
 
-                assembly = GetFromResolvedAssemblies(assemblyName, special);
+                assembly = this.GetFromResolvedAssemblies(assemblyName, special);
                 if (assembly != null)
                 {
                     return assembly;
@@ -367,32 +361,32 @@ namespace Mono.Cecil {
                 //	};
                 //}
 
-                assembly = SearchDirectory(name, parameters, architecture, defaultPath) ?? TryGetTargetAssembly(name, parameters, architecture, assemblyKey);
+                assembly = this.SearchDirectory(name, parameters, architecture, defaultPath) ?? this.TryGetTargetAssembly(name, parameters, architecture, assemblyKey);
 
                 if (assembly != null)
                 {
-                    if (!filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
+                    if (!this.filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
                     {
-                        AddToResolvedAssemblies(assembly);
+                        this.AddToResolvedAssemblies(assembly);
                     }
                     return assembly;
                 }
-                assembly = GetTargetAssembly(name, parameters, architecture);
+                assembly = this.GetTargetAssembly(name, parameters, architecture);
                 if (assembly != null)
                 {
-                    if (!filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
+                    if (!this.filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
                     {
-                        AddToResolvedAssemblies(assembly);
+                        this.AddToResolvedAssemblies(assembly);
                     }
                     return assembly;
                 }
                 if (bubbleToUserIfFailed)
                 {
-                    return UserSpecifiedAssembly(name, architecture, assemblyKey);
+                    return this.UserSpecifiedAssembly(name, architecture, assemblyKey);
                 }
                 else if (addToFailedCache)
                 {
-                    assemblyPathResolver.AddToUnresolvedCache(assemblyKey);
+                    this.assemblyPathResolver.AddToUnresolvedCache(assemblyKey);
                 }
                 return null;
             });
@@ -401,11 +395,11 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         private AssemblyDefinition GetFromResolvedAssemblies(AssemblyName assemblyName, SpecialTypeAssembly special)
 		{
-			foreach (string architectureString in GetReferencableArchitectures(assemblyName))
+			foreach (string architectureString in this.GetReferencableArchitectures(assemblyName))
 			{
 				List<AssemblyDefinition> assemblyList;
                 AssemblyStrongNameExtended extendedStrongName = new AssemblyStrongNameExtended(assemblyName.FullName, (TargetArchitecture)Enum.Parse(typeof(TargetArchitecture), architectureString), special);
-                if (TryGetResolvedAssembly(extendedStrongName, out assemblyList))
+                if (this.TryGetResolvedAssembly(extendedStrongName, out assemblyList))
 				{
 					return assemblyList[0];
 				}
@@ -417,7 +411,7 @@ namespace Mono.Cecil {
 		/*Telerik Authorship*/
 		protected virtual bool TryGetResolvedAssembly(AssemblyStrongNameExtended key, out List<AssemblyDefinition> assemblyList)
 		{
-			return resolvedAssemblies.TryGetValue(key, out assemblyList);
+			return this.resolvedAssemblies.TryGetValue(key, out assemblyList);
 		}
 
 		/*Telerik Authorship*/
@@ -427,36 +421,38 @@ namespace Mono.Cecil {
 			{
 				return new string[] { "AnyCPU", assemblyName.TargetArchitecture.ToString() };
 			}
-			return architectureStrings;
+			return this.architectureStrings;
 		}
 
 		/*Telerik Authorship*/
 		private AssemblyDefinition UserSpecifiedAssembly(AssemblyNameReference name, TargetArchitecture architecture, AssemblyStrongNameExtended assemblyKey)
 		{
 			//If not in denied assemblies cache
-			if (assemblyPathResolver.IsFailedAssembly(assemblyKey))
+			if (this.assemblyPathResolver.IsFailedAssembly(assemblyKey))
 			{
 				return null;
 			}
-			if (ResolveFailure != null)
+			if (this.ResolveFailure != null)
 			{
-				AssemblyDefinition assembly = ResolveFailure(this, new AssemblyResolveEventArgs(name, architecture));
+				AssemblyDefinition assembly = this.ResolveFailure(this, new AssemblyResolveEventArgs(name, architecture));
 				if (assembly != null)
 				{
-					if (!filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
+					if (!this.filePathToAssemblyDefinitionCache.ContainsKey(assembly.MainModule.FilePath))
 					{
-						AddToResolvedAssemblies(assembly);
+                        this.AddToResolvedAssemblies(assembly);
 					}
-					if (!userDefinedAssemblies.Contains(assembly.MainModule.FilePath))
+					if (!this.userDefinedAssemblies.Contains(assembly.MainModule.FilePath))
 					{
-						userDefinedAssemblies.Add(assembly.MainModule.FilePath);
+                        this.userDefinedAssemblies.Add(assembly.MainModule.FilePath);
 					}
-					RemoveFromFailedAssemblies(assemblyKey);
+
+                    this.RemoveFromFailedAssemblies(assemblyKey);
 
 					return assembly;
 				}
 			}
-			assemblyPathResolver.AddToUnresolvedCache(assemblyKey);
+
+            this.assemblyPathResolver.AddToUnresolvedCache(assemblyKey);
 			return null;
 		}
 
@@ -464,19 +460,19 @@ namespace Mono.Cecil {
 		private AssemblyDefinition SearchDirectory(AssemblyNameReference name, ReaderParameters parameters, TargetArchitecture architecture, string defaultPath)
         {
             /*Telerik Authorship*/
-            return DoWithReadLock(this.directoryAssembliesLock, () =>
+            return this.DoWithReadLock(this.directoryAssembliesLock, () =>
             {
                 var defaultLocations = this.directoryAssemblies.Where(d => d.Dir.Equals(defaultPath, StringComparison.OrdinalIgnoreCase));
 
                 AssemblyDefinition ad;
 
-                if (TrySearchDirectory(name, parameters, architecture, defaultLocations, out ad))
+                if (this.TrySearchDirectory(name, parameters, architecture, defaultLocations, out ad))
                 {
                     return ad;
                 }
                 var notDefaultLocations = this.directoryAssemblies.Except(defaultLocations);
 
-                if (TrySearchDirectory(name, parameters, architecture, notDefaultLocations, out ad))
+                if (this.TrySearchDirectory(name, parameters, architecture, notDefaultLocations, out ad))
                 {
                     return ad;
                 }
@@ -497,10 +493,10 @@ namespace Mono.Cecil {
 				if (directoryAssembly.FileNameWithoutExtension == lowerName)
 				{
 					AssemblyName assName = new AssemblyName(name.Name, name.FullName, name.Version, name.PublicKeyToken) { TargetArchitecture = architecture };
-					bool sameVersion = assemblyPathResolver.CheckFileExistence(assName, assemblyPath, false, false, checkForArchitectPlatfrom: true);
+					bool sameVersion = this.assemblyPathResolver.CheckFileExistence(assName, assemblyPath, false, false, checkForArchitectPlatfrom: true);
 					if (sameVersion)
 					{
-						assemblyDefinition = GetAssembly(directoryAssembly.FullFileName, parameters);
+						assemblyDefinition = this.GetAssembly(directoryAssembly.FullFileName, parameters);
 
 						return true;
 					}
@@ -521,7 +517,7 @@ namespace Mono.Cecil {
 			var corlib = typeof (object).Assembly.GetName ();
 
 			if (corlib.Version == version || IsZero (version))
-				return GetAssembly (typeof (object).Module.FullyQualifiedName, parameters);
+				return this.GetAssembly (typeof (object).Module.FullyQualifiedName, parameters);
 
 			var path = Directory.GetParent (
 				Directory.GetParent (
@@ -561,7 +557,7 @@ namespace Mono.Cecil {
 
 			var file = Path.Combine (path, "mscorlib.dll");
 			if (File.Exists (file))
-				return GetAssembly (file, parameters);
+				return this.GetAssembly (file, parameters);
 
 			return null;
 		}
@@ -618,22 +614,21 @@ namespace Mono.Cecil {
 			if (reference.PublicKeyToken == null || reference.PublicKeyToken.Length == 0)
 				return null;
 
-			if (gac_paths == null)
-				gac_paths = GetGacPaths ();
+			if (this.gac_paths == null) this.gac_paths = GetGacPaths ();
 
 			if (on_mono)
-				return GetAssemblyInMonoGac (reference, parameters);
+				return this.GetAssemblyInMonoGac (reference, parameters);
 
-			return GetAssemblyInNetGac (reference, parameters);
+			return this.GetAssemblyInNetGac (reference, parameters);
 		}
 
 		AssemblyDefinition GetAssemblyInMonoGac (AssemblyNameReference reference, ReaderParameters parameters)
 		{
-			for (int i = 0; i < gac_paths.Count; i++) {
-				var gac_path = gac_paths [i];
+			for (int i = 0; i < this.gac_paths.Count; i++) {
+				var gac_path = this.gac_paths [i];
 				var file = GetAssemblyFile (reference, string.Empty, gac_path);
 				if (File.Exists (file))
-					return GetAssembly (file, parameters);
+					return this.GetAssembly (file, parameters);
 			}
 
 			return null;
@@ -646,10 +641,10 @@ namespace Mono.Cecil {
 
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < gacs.Length; j++) {
-					var gac = Path.Combine (gac_paths [i], gacs [j]);
+					var gac = Path.Combine (this.gac_paths [i], gacs [j]);
 					var file = GetAssemblyFile (reference, prefixes [i], gac);
 					if (Directory.Exists (gac) && File.Exists (file))
-						return GetAssembly (file, parameters);
+						return this.GetAssembly (file, parameters);
 				}
 			}
 
@@ -686,9 +681,9 @@ namespace Mono.Cecil {
 												reference.PublicKeyToken) { TargetArchitecture = architecture };            
 
             AssemblyStrongNameExtended assemblyKey = new AssemblyStrongNameExtended(assemblyName.FullName, architecture, SpecialTypeAssembly.None);
-            IEnumerable<string> filePaths = assemblyPathResolver.GetAssemblyPaths(assemblyName, assemblyKey);
+            IEnumerable<string> filePaths = this.assemblyPathResolver.GetAssemblyPaths(assemblyName, assemblyKey);
 
-			return GetTargetAssembly(filePaths, parameters, architecture);
+			return this.GetTargetAssembly(filePaths, parameters, architecture);
 		}
 
 		AssemblyDefinition TryGetTargetAssembly(AssemblyNameReference reference, ReaderParameters parameters, TargetArchitecture architecture, AssemblyStrongNameExtended assemblyKey)
@@ -702,9 +697,9 @@ namespace Mono.Cecil {
 												reference.Version,
 												reference.PublicKeyToken) { TargetArchitecture = architecture };
 			IEnumerable<string> filePaths;
-			if (assemblyPathResolver.TryGetAssemblyPathsFromCache(assemblyName, assemblyKey, out filePaths))
+			if (this.assemblyPathResolver.TryGetAssemblyPathsFromCache(assemblyName, assemblyKey, out filePaths))
 			{
-				return GetTargetAssembly(filePaths, parameters, architecture);
+				return this.GetTargetAssembly(filePaths, parameters, architecture);
 			}
 			return null;
 		}
@@ -715,7 +710,7 @@ namespace Mono.Cecil {
 			{
 				if (!string.IsNullOrEmpty(path))
 				{
-					AssemblyDefinition assembly = GetAssembly(path, parameters);
+					AssemblyDefinition assembly = this.GetAssembly(path, parameters);
 					if (assembly.MainModule.GetModuleArchitecture().CanReference(architecture))
 					{
 						return assembly;
@@ -729,7 +724,7 @@ namespace Mono.Cecil {
         public string ResolveAssemblyPath(string strongName, SpecialTypeAssembly special)
 		{
 			AssemblyNameReference nameRef = AssemblyNameReference.Parse(strongName);
-			TargetArchitecture architecture = GetArchitectureFromStrongName(strongName);
+			TargetArchitecture architecture = this.GetArchitectureFromStrongName(strongName);
 
 			AssemblyName assemblyName = new AssemblyName(nameRef.Name,
 												nameRef.FullName,
@@ -737,11 +732,11 @@ namespace Mono.Cecil {
 												nameRef.PublicKeyToken) { TargetArchitecture = architecture };
             
             AssemblyStrongNameExtended assemblyKey = new AssemblyStrongNameExtended(assemblyName.FullName, architecture, special);
-            IEnumerable<string> files = assemblyPathResolver.GetAssemblyPaths(assemblyName, assemblyKey);
+            IEnumerable<string> files = this.assemblyPathResolver.GetAssemblyPaths(assemblyName, assemblyKey);
 
 			foreach (string file in files)
 			{
-				if (GetAssemblyDefinition(file).main_module.GetModuleArchitecture().CanReference(architecture))
+				if (this.GetAssemblyDefinition(file).main_module.GetModuleArchitecture().CanReference(architecture))
 				{
 					return file;
 				}
@@ -776,12 +771,12 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         public virtual void AddToAssemblyCache(string filePath, TargetArchitecture platform, bool storeAssemblyDefInCahce = false)
 		{
-			assemblyPathResolver.AddToAssemblyCache(filePath, platform);
+            this.assemblyPathResolver.AddToAssemblyCache(filePath, platform);
 
-			AddSearchDirectory(Path.GetDirectoryName(filePath));
-			if (storeAssemblyDefInCahce && !filePathToAssemblyDefinitionCache.ContainsKey(filePath))
+            this.AddSearchDirectory(Path.GetDirectoryName(filePath));
+			if (storeAssemblyDefInCahce && !this.filePathToAssemblyDefinitionCache.ContainsKey(filePath))
 			{
-				AssemblyDefinition assemblyDef = LoadAssemblyDefinition(filePath, new ReaderParameters(this), loadPdb: true);
+				AssemblyDefinition assemblyDef = this.LoadAssemblyDefinition(filePath, new ReaderParameters(this), loadPdb: true);
 				if (assemblyDef != null)
                 {
                     string strongName = assemblyDef.MainModule.Name;
@@ -790,8 +785,8 @@ namespace Mono.Cecil {
 
                     AssemblyStrongNameExtended assemblyKey = new AssemblyStrongNameExtended(strongName, architecture, special);
 
-                    AddToResolvedAssemblies(assemblyDef);
-                    assemblyPathResolver.RemoveFromUnresolvedCache(assemblyKey);
+                    this.AddToResolvedAssemblies(assemblyDef);
+                    this.assemblyPathResolver.RemoveFromUnresolvedCache(assemblyKey);
                 }
             }
         }
@@ -799,12 +794,12 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         public virtual string FindAssemblyPath(AssemblyName assemblyName, string fallbackDir, AssemblyStrongNameExtended assemblyKey, bool bubbleToUserIfFailed = true)
 		{
-			if (assemblyPathResolver.IsFailedAssembly(assemblyKey))
+			if (this.assemblyPathResolver.IsFailedAssembly(assemblyKey))
 			{
 				return null;
 			}
 
-			AssemblyDefinition resolvedAssembly = GetFromResolvedAssemblies(assemblyName, SpecialTypeAssembly.None);
+			AssemblyDefinition resolvedAssembly = this.GetFromResolvedAssemblies(assemblyName, SpecialTypeAssembly.None);
 			if (resolvedAssembly != null)
 			{
 				return resolvedAssembly.MainModule.FilePath;
@@ -813,20 +808,20 @@ namespace Mono.Cecil {
 			var assemblyNameRef = new AssemblyNameReference(assemblyName.Name, assemblyName.Version) { PublicKeyToken = assemblyName.PublicKeyToken };
 
 			IEnumerable<string> results;
-			if (assemblyPathResolver.TryGetAssemblyPathsFromCache(assemblyName, assemblyKey, out results))
+			if (this.assemblyPathResolver.TryGetAssemblyPathsFromCache(assemblyName, assemblyKey, out results))
 			{
 				return results.FirstOrDefault();
 			}
-			AssemblyDefinition assemblyDefinition = SearchDirectory(assemblyNameRef, new ReaderParameters(this), assemblyName.TargetArchitecture, fallbackDir);
+			AssemblyDefinition assemblyDefinition = this.SearchDirectory(assemblyNameRef, new ReaderParameters(this), assemblyName.TargetArchitecture, fallbackDir);
 
 			if (assemblyDefinition != null)
 			{
-				assemblyPathResolver.AddToAssemblyPathNameCache(assemblyName, assemblyDefinition.MainModule.FilePath);
+                this.assemblyPathResolver.AddToAssemblyPathNameCache(assemblyName, assemblyDefinition.MainModule.FilePath);
 
 				return assemblyDefinition.MainModule.FilePath;
 			}
 
-            string result = assemblyPathResolver.GetAssemblyPath(assemblyName, assemblyKey);
+            string result = this.assemblyPathResolver.GetAssemblyPath(assemblyName, assemblyKey);
 
 	#if !NET_4_0
 			if (!result.IsNullOrWhiteSpace())
@@ -838,7 +833,7 @@ namespace Mono.Cecil {
 			}
 			if (bubbleToUserIfFailed)
 			{
-				assemblyDefinition = UserSpecifiedAssembly(assemblyNameRef, assemblyName.TargetArchitecture, assemblyKey);
+				assemblyDefinition = this.UserSpecifiedAssembly(assemblyNameRef, assemblyName.TargetArchitecture, assemblyKey);
 			}
 			if (assemblyDefinition != null)
 			{
@@ -862,18 +857,18 @@ namespace Mono.Cecil {
 		public virtual void ClearCache()
         {
             /*Telerik Authorship*/
-            DoWithWriteLock(this.directoriesLock, () =>
+            this.DoWithWriteLock(this.directoriesLock, () =>
             {
                 this.directories.Clear();
             });
 
             /*Telerik Authorship*/
-            DoWithWriteLock(this.directoryAssembliesLock, () =>
+            this.DoWithWriteLock(this.directoryAssembliesLock, () =>
             {
                 this.directoryAssemblies.Clear();
             });
 
-            ClearResolvedAssembliesCache();
+            this.ClearResolvedAssembliesCache();
 
 			this.filePathToAssemblyDefinitionCache.Clear();
 
@@ -888,37 +883,37 @@ namespace Mono.Cecil {
 
 		public void RemoveFromAssemblyCache(string fileName)
 		{
-			assemblyPathResolver.RemoveFromAssemblyCache(fileName);
+            this.assemblyPathResolver.RemoveFromAssemblyCache(fileName);
 
 			AssemblyDefinition assemblyDef;
-			if (filePathToAssemblyDefinitionCache.TryGetValue(fileName, out assemblyDef))
+			if (this.filePathToAssemblyDefinitionCache.TryGetValue(fileName, out assemblyDef))
             {
                 /*Telerik Authorship*/
-                AssemblyStrongNameExtended assemblyKey = GetAssemblyKey(assemblyDef);
+                AssemblyStrongNameExtended assemblyKey = this.GetAssemblyKey(assemblyDef);
 				List<AssemblyDefinition> assemblyDefinitions;
-				if (TryGetResolvedAssembly(assemblyKey, out assemblyDefinitions))
+				if (this.TryGetResolvedAssembly(assemblyKey, out assemblyDefinitions))
 				{
 					assemblyDefinitions.Remove(assemblyDef);
 					if (assemblyDefinitions.Count == 0)
 					{
-						RemoveFromResolvedAssemblies(assemblyKey);
+                        this.RemoveFromResolvedAssemblies(assemblyKey);
 					}
 				}
 
-				filePathToAssemblyDefinitionCache.Remove(fileName);
+                this.filePathToAssemblyDefinitionCache.Remove(fileName);
 			}
 		}
 
 		/*Telerik Authorship*/
 		protected virtual void RemoveFromResolvedAssemblies(AssemblyStrongNameExtended assemblyKey)
 		{
-			resolvedAssemblies.Remove(assemblyKey);
+            this.resolvedAssemblies.Remove(assemblyKey);
 		}
 
         /*Telerik Authorship*/
         public void RemoveFromFailedAssemblies(AssemblyStrongNameExtended assemblyName)
 		{
-			assemblyPathResolver.RemoveFromUnresolvedCache(assemblyName);
+            this.assemblyPathResolver.RemoveFromUnresolvedCache(assemblyName);
 		}
 
 		public AssemblyDefinition GetAssemblyDefinition(string filePath)
@@ -934,22 +929,22 @@ namespace Mono.Cecil {
 			////NOTE: Need to get the full name as filePath can express a relative path - (start from cmd with retalive file args).
 			string fullFilePathName = Path.GetFullPath(filePath);
 
-			if (filePathToAssemblyDefinitionCache.ContainsKey(fullFilePathName))
+			if (this.filePathToAssemblyDefinitionCache.ContainsKey(fullFilePathName))
 			{
-				AssemblyDefinition assemblyDefinition = filePathToAssemblyDefinitionCache[fullFilePathName];
+				AssemblyDefinition assemblyDefinition = this.filePathToAssemblyDefinitionCache[fullFilePathName];
 
 				return assemblyDefinition;
 			}
 			else
 			{
-				AssemblyDefinition assemblyDef = LoadAssemblyDefinition(fullFilePathName, new ReaderParameters(this), loadPdb: true);
+				AssemblyDefinition assemblyDef = this.LoadAssemblyDefinition(fullFilePathName, new ReaderParameters(this), loadPdb: true);
 
 				if (assemblyDef == null)
 				{
 					return null;
 				}
 
-				AddToResolvedAssemblies(assemblyDef);
+                this.AddToResolvedAssemblies(assemblyDef);
 
 				return assemblyDef;
 			}
@@ -957,15 +952,15 @@ namespace Mono.Cecil {
 
 		private void AddToResolvedAssemblies(AssemblyDefinition assemblyDef)
 		{
-			filePathToAssemblyDefinitionCache.Add(assemblyDef.MainModule.FilePath, assemblyDef);
+            this.filePathToAssemblyDefinitionCache.Add(assemblyDef.MainModule.FilePath, assemblyDef);
 
             /*Telerik Authorship*/
-            AssemblyStrongNameExtended assemblyKey = GetAssemblyKey(assemblyDef);
+            AssemblyStrongNameExtended assemblyKey = this.GetAssemblyKey(assemblyDef);
 			List<AssemblyDefinition> assemblyList;
-			if (!TryGetResolvedAssembly(assemblyKey, out assemblyList))
+			if (!this.TryGetResolvedAssembly(assemblyKey, out assemblyList))
 			{
 				assemblyList = new List<AssemblyDefinition>();
-				AddToResolvedAssembliesInternal(assemblyKey, assemblyList);
+                this.AddToResolvedAssembliesInternal(assemblyKey, assemblyList);
 			}
 
 			assemblyList.Add(assemblyDef);
@@ -974,7 +969,7 @@ namespace Mono.Cecil {
 		/*Telerik Authorship*/
 		protected virtual void AddToResolvedAssembliesInternal(AssemblyStrongNameExtended assemblyKey, List<AssemblyDefinition> assemblyList)
 		{
-			resolvedAssemblies.Add(assemblyKey, assemblyList);
+            this.resolvedAssemblies.Add(assemblyKey, assemblyList);
 		}
 
 		public AssemblyDefinition LoadAssemblyDefinition(string filePath, ReaderParameters parameters, bool loadPdb)
@@ -994,22 +989,22 @@ namespace Mono.Cecil {
                     //// NOTE: There is no other way to catch a PdbException as it is internal!
 
                     var exception = new Exception(string.Format("Failed reading {0}\\{1}.pdb", Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath)), ex);
-                    AssemblyDefinitionFailure(this, exception);
+                    this.AssemblyDefinitionFailure(this, exception);
                 
 					parameters.ReadSymbols = false;
 
-					return LoadAssemblyDefinition(filePath, parameters, false);
+					return this.LoadAssemblyDefinition(filePath, parameters, false);
 				}
                 else if (ex.Message == "Magic is wrong.")
                 {
                     parameters.ReadSymbols = false;
-                    return LoadAssemblyDefinition(filePath, parameters, false);
+                    return this.LoadAssemblyDefinition(filePath, parameters, false);
                 }
 				else
 				{
 					var exception = new Exception(filePath, ex);
 
-					AssemblyDefinitionFailure(this, exception);
+                    this.AssemblyDefinitionFailure(this, exception);
 				}
 				return null;
 			}
@@ -1044,33 +1039,33 @@ namespace Mono.Cecil {
         /*Telerik Authorship*/
         public void SetNotResolvedAssembliesForCurrentSession(IList<AssemblyStrongNameExtended> list)
 		{
-			assemblyPathResolver.SetFailedAssemblyCache(list);
+            this.assemblyPathResolver.SetFailedAssemblyCache(list);
 		}
 
 		public void AddResolvedAssembly(string filePath)
 		{
-			AddSearchDirectory(Path.GetDirectoryName(filePath));
+            this.AddSearchDirectory(Path.GetDirectoryName(filePath));
 
-			if (!userDefinedAssemblies.Contains(filePath))
+			if (!this.userDefinedAssemblies.Contains(filePath))
 			{
-				userDefinedAssemblies.Add(filePath);
+                this.userDefinedAssemblies.Add(filePath);
 			}
 		}
 
         /*Telerik Authorship*/
         public IEnumerable<AssemblyStrongNameExtended> GetNotResolvedAssemblyNames()
 		{
-			return assemblyPathResolver.GetAssemblyFailedResolvedCache();
+			return this.assemblyPathResolver.GetAssemblyFailedResolvedCache();
 		}
 
 		public IEnumerable<string> GetUserDefiniedAssemblies()
 		{
-			return userDefinedAssemblies;
+			return this.userDefinedAssemblies;
 		}
 
 		public void ClearAssemblyFailedResolverCache()
 		{
-			assemblyPathResolver.ClearAssemblyFailedResolverCache();
+            this.assemblyPathResolver.ClearAssemblyFailedResolverCache();
 		}
         
 		/*Telerik Authorship*/

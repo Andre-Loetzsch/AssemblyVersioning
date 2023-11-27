@@ -1,34 +1,32 @@
-﻿using System;
-using System.Linq;
-using JustDecompile.External.JustAssembly;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 
 namespace JustAssembly.Core.Extensions
 {
     static class MemberDefinitionExtensions
     {
-        private const string Separator = " : ";
-
         public static void GetMemberTypeAndName(this IMemberDefinition self, out string type, out string name)
         {
-            TypeDefinition declaringType = self.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
-            string assemblyFilePath = module.Assembly.MainModule.FilePath;
-            string nameWithType =
-                Decompiler.GetMemberName(assemblyFilePath, module.MetadataToken.ToUInt32(), declaringType.MetadataToken.ToUInt32(), self.MetadataToken.ToUInt32(), SupportedLanguage.CSharp);
+            name = self.FullName.Contains(':') && self is MethodDefinition ? self.FullName.Split(':').Last() : self.Name;
+            if (name.Contains("System.")) name = name.Replace("System.", string.Empty);
+            type = self.GetReturnType()?.Name ?? string.Empty;
+        }
 
-            int index = nameWithType.IndexOf(Separator);
-            if (index == -1)
+        public static TypeReference? GetReturnType(this IMemberDefinition memberDefinition)
+        {
+            if (memberDefinition is MethodDefinition methodDefinition)
             {
-                // The member is constructor, hense it has no type.
-                name = nameWithType;
-                type = null;
+                return methodDefinition.FixedReturnType;
             }
-            else
+            if (memberDefinition is PropertyDefinition propertyDefinition)
             {
-                name = nameWithType.Substring(0, index);
-                type = nameWithType.Substring(index + Separator.Length);
+                return propertyDefinition.PropertyType;
             }
+            if (memberDefinition is FieldDefinition fieldDefinition)
+            {
+                return fieldDefinition.FieldType;
+            }
+
+            return null;
         }
     }
 }

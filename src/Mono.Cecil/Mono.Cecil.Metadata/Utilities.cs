@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-
 using Mono.Cecil.Metadata;
 
 namespace Mono.Cecil {
@@ -504,7 +502,7 @@ namespace Mono.Cecil {
 			int max = 0;
 
 			for (int i = 0; i < tables.Length; i++) {
-				max = System.Math.Max (counter (tables [i]), max);
+				max = Math.Max (counter (tables [i]), max);
 			}
 
 			return max < (1 << (16 - bits)) ? 2 : 4;

@@ -8,14 +8,11 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using SR = System.Reflection;
 
 using Mono.Collections.Generic;
 /*Telerik Authorship*/
-using System.Collections.Generic;
 
 namespace Mono.Cecil.Cil {
 
@@ -40,38 +37,36 @@ namespace Mono.Cecil.Cil {
 		Collection<VariableDefinition> variables;
 
 		public Instruction Start {
-			get { return start; }
-			set { start = value; }
+			get { return this.start; }
+			set { this.start = value; }
 		}
 
 		public Instruction End {
-			get { return end; }
-			set { end = value; }
+			get { return this.end; }
+			set { this.end = value; }
 		}
 
 		public bool HasScopes {
-			get { return !scopes.IsNullOrEmpty (); }
+			get { return !this.scopes.IsNullOrEmpty (); }
 		}
 
 		public Collection<Scope> Scopes {
 			get {
-				if (scopes == null)
-					scopes = new Collection<Scope> ();
+				if (this.scopes == null) this.scopes = new Collection<Scope> ();
 
-				return scopes;
+				return this.scopes;
 			}
 		}
 
 		public bool HasVariables {
-			get { return !variables.IsNullOrEmpty (); }
+			get { return !this.variables.IsNullOrEmpty (); }
 		}
 
 		public Collection<VariableDefinition> Variables {
 			get {
-				if (variables == null)
-					variables = new Collection<VariableDefinition> ();
+				if (this.variables == null) this.variables = new Collection<VariableDefinition> ();
 
-				return variables;
+				return this.variables;
 			}
 		}
 	}
@@ -98,41 +93,39 @@ namespace Mono.Cecil.Cil {
 		internal Collection<InstructionSymbol> instructions;
 
 		public bool HasVariables {
-			get { return !variables.IsNullOrEmpty (); }
+			get { return !this.variables.IsNullOrEmpty (); }
 		}
 
 		public Collection<VariableDefinition> Variables {
 			get {
-				if (variables == null)
-					variables = new Collection<VariableDefinition> ();
+				if (this.variables == null) this.variables = new Collection<VariableDefinition> ();
 
-				return variables;
+				return this.variables;
 			}
 		}
 
 		public Collection<InstructionSymbol> Instructions {
 			get {
-				if (instructions == null)
-					instructions = new Collection<InstructionSymbol> ();
+				if (this.instructions == null) this.instructions = new Collection<InstructionSymbol> ();
 
-				return instructions;
+				return this.instructions;
 			}
 		}
 
 		public int CodeSize {
-			get { return code_size; }
+			get { return this.code_size; }
 		}
 
 		public string MethodName {
-			get { return method_name; }
+			get { return this.method_name; }
 		}
 
 		public MetadataToken MethodToken {
-			get { return method_token; }
+			get { return this.method_token; }
 		}
 
 		public MetadataToken LocalVarToken {
-			get { return local_var_token; }
+			get { return this.local_var_token; }
 		}
 
 		internal MethodSymbols (string methodName)

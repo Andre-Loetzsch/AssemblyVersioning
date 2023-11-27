@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-
 #if !READ_ONLY
 
 using RVA = System.UInt32;
@@ -45,64 +43,64 @@ namespace Mono.Cecil.PE {
 
 		public void AddMap (TextSegment segment, int length)
 		{
-			map [(int) segment] = new Range (GetStart (segment), (uint) length);
+            this.map [(int) segment] = new Range (this.GetStart (segment), (uint) length);
 		}
 
 		public void AddMap (TextSegment segment, int length, int align)
 		{
 			align--;
 
-			AddMap (segment, (length + align) & ~align);
+            this.AddMap (segment, (length + align) & ~align);
 		}
 
 		public void AddMap (TextSegment segment, Range range)
 		{
-			map [(int) segment] = range;
+            this.map [(int) segment] = range;
 		}
 
 		public Range GetRange (TextSegment segment)
 		{
-			return map [(int) segment];
+			return this.map [(int) segment];
 		}
 
 		public DataDirectory GetDataDirectory (TextSegment segment)
 		{
-			var range = map [(int) segment];
+			var range = this.map [(int) segment];
 
 			return new DataDirectory (range.Length == 0 ? 0 : range.Start, range.Length);
 		}
 
 		public RVA GetRVA (TextSegment segment)
 		{
-			return map [(int) segment].Start;
+			return this.map [(int) segment].Start;
 		}
 
 		public RVA GetNextRVA (TextSegment segment)
 		{
 			var i = (int) segment;
-			return map [i].Start + map [i].Length;
+			return this.map [i].Start + this.map [i].Length;
 		}
 
 		public int GetLength (TextSegment segment)
 		{
-			return (int) map [(int) segment].Length;
+			return (int)this.map [(int) segment].Length;
 		}
 
 		RVA GetStart (TextSegment segment)
 		{
 			var index = (int) segment;
-			return index == 0 ? ImageWriter.text_rva : ComputeStart (index);
+			return index == 0 ? ImageWriter.text_rva : this.ComputeStart (index);
 		}
 
 		RVA ComputeStart (int index)
 		{
 			index--;
-			return map [index].Start + map [index].Length;
+			return this.map [index].Start + this.map [index].Length;
 		}
 
 		public uint GetLength ()
 		{
-			var range = map [(int) TextSegment.StartupStub];
+			var range = this.map [(int) TextSegment.StartupStub];
 			return range.Start - ImageWriter.text_rva + range.Length;
 		}
 	}

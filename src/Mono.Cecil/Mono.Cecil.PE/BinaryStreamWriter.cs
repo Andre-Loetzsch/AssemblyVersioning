@@ -8,9 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.IO;
-
 #if !READ_ONLY
 
 namespace Mono.Cecil.PE {
@@ -24,53 +21,53 @@ namespace Mono.Cecil.PE {
 
 		public void WriteByte (byte value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteUInt16 (ushort value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteInt16 (short value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteUInt32 (uint value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteInt32 (int value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteUInt64 (ulong value)
 		{
-			Write (value);
+            this.Write (value);
 		}
 
 		public void WriteBytes (byte [] bytes)
 		{
-			Write (bytes);
+            this.Write (bytes);
 		}
 
 		public void WriteDataDirectory (DataDirectory directory)
 		{
-			Write (directory.VirtualAddress);
-			Write (directory.Size);
+            this.Write (directory.VirtualAddress);
+            this.Write (directory.Size);
 		}
 
 		public void WriteBuffer (ByteBuffer buffer)
 		{
-			Write (buffer.buffer, 0, buffer.length);
+            this.Write (buffer.buffer, 0, buffer.length);
 		}
 
 		protected void Advance (int bytes)
 		{
-			BaseStream.Seek (bytes, SeekOrigin.Current);
+            this.BaseStream.Seek (bytes, SeekOrigin.Current);
 		}
 	}
 }

@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -96,7 +94,7 @@ namespace Mono.Cecil {
 		static void CopyStreamChunk (Stream stream, Stream dest_stream, byte [] buffer, int length)
 		{
 			while (length > 0) {
-				int read = stream.Read (buffer, 0, System.Math.Min (buffer.Length, length));
+				int read = stream.Read (buffer, 0, Math.Min (buffer.Length, length));
 				dest_stream.Write (buffer, 0, read);
 				length -= read;
 			}

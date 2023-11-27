@@ -8,13 +8,9 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-
 using Mono.Collections.Generic;
 /*Telerik authorship*/
 using Mono.Cecil.AssemblyResolver;
-using System.IO;
-using System.Collections.Generic;
 using Mono.Cecil.Extensions;
 
 namespace Mono.Cecil {
@@ -69,16 +65,16 @@ namespace Mono.Cecil {
 		readonly MemberReference member;
 
 		public MemberReference Member {
-			get { return member; }
+			get { return this.member; }
 		}
 
 		public IMetadataScope Scope {
 			get {
-				var type = member as TypeReference;
+				var type = this.member as TypeReference;
 				if (type != null)
 					return type.Scope;
 
-				var declaring_type = member.DeclaringType;
+				var declaring_type = this.member.DeclaringType;
 				if (declaring_type != null)
 					return declaring_type.Scope;
 
@@ -110,7 +106,7 @@ namespace Mono.Cecil {
 		readonly IAssemblyResolver assembly_resolver;
 
 		public IAssemblyResolver AssemblyResolver {
-			get { return assembly_resolver; }
+			get { return this.assembly_resolver; }
 		}
 
 		public MetadataResolver (IAssemblyResolver assemblyResolver)
@@ -118,7 +114,7 @@ namespace Mono.Cecil {
 			if (assemblyResolver == null)
 				throw new ArgumentNullException ("assemblyResolver");
 
-			assembly_resolver = assemblyResolver;
+            this.assembly_resolver = assemblyResolver;
 		}
 
 		public virtual TypeDefinition Resolve (TypeReference type)
@@ -153,7 +149,7 @@ namespace Mono.Cecil {
 					/*Telerik Authorship*/
 					TargetArchitecture architecture = type.Module.GetModuleArchitecture();
                     SpecialTypeAssembly special = type.Module.IsReferenceAssembly() ? SpecialTypeAssembly.Reference : SpecialTypeAssembly.None;
-					var assembly = assembly_resolver.Resolve((AssemblyNameReference)scope, type.Module.ModuleDirectoryPath, architecture, special);
+					var assembly = this.assembly_resolver.Resolve((AssemblyNameReference)scope, type.Module.ModuleDirectoryPath, architecture, special);
 					if (assembly == null)
 						return null;
 
@@ -246,14 +242,14 @@ namespace Mono.Cecil {
 			if (field == null)
 				throw new ArgumentNullException ("field");
 
-			var type = Resolve (field.DeclaringType);
+			var type = this.Resolve (field.DeclaringType);
 			if (type == null)
 				return null;
 
 			if (!type.HasFields)
 				return null;
 
-			return GetField (type, field);
+			return this.GetField (type, field);
 		}
 
 		FieldDefinition GetField (TypeDefinition type, FieldReference reference)
@@ -266,7 +262,7 @@ namespace Mono.Cecil {
 				if (type.BaseType == null)
 					return null;
 
-				type = Resolve (type.BaseType);
+				type = this.Resolve (type.BaseType);
 			}
 
 			return null;
@@ -294,7 +290,7 @@ namespace Mono.Cecil {
 			if (method == null)
 				throw new ArgumentNullException ("method");
 
-			var type = Resolve (method.DeclaringType);
+			var type = this.Resolve (method.DeclaringType);
 			if (type == null)
 				return null;
 
@@ -303,7 +299,7 @@ namespace Mono.Cecil {
 			if (!type.HasMethods)
 				return null;
 
-			return GetMethod (type, method);
+			return this.GetMethod (type, method);
 		}
 
 		MethodDefinition GetMethod (TypeDefinition type, MethodReference reference)
@@ -316,7 +312,7 @@ namespace Mono.Cecil {
 				if (type.BaseType == null)
 					return null;
 
-				type = Resolve (type.BaseType);
+				type = this.Resolve (type.BaseType);
 			}
 
 			return null;

@@ -8,9 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using System;
-using System.IO;
-
 using Mono.Collections.Generic;
 
 namespace Mono.Cecil {
@@ -25,12 +22,12 @@ namespace Mono.Cecil {
 		Collection<SecurityDeclaration> security_declarations;
 
 		public AssemblyNameDefinition Name {
-			get { return name; }
-			set { name = value; }
+			get { return this.name; }
+			set { this.name = value; }
 		}
 
 		public string FullName {
-			get { return name != null ? name.FullName : string.Empty; }
+			get { return this.name != null ? this.name.FullName : string.Empty; }
 		}
 
 		public MetadataToken MetadataToken {
@@ -40,38 +37,38 @@ namespace Mono.Cecil {
 
 		public Collection<ModuleDefinition> Modules {
 			get {
-				if (modules != null)
-					return modules;
+				if (this.modules != null)
+					return this.modules;
 
-				if (main_module.HasImage)
+				if (this.main_module.HasImage)
 				{
 					/*Telerik Authorship*/
-					main_module.Read(ref modules, this, (_, reader) => reader.ReadModules(main_module.AssemblyResolver));
+                    this.main_module.Read(ref this.modules, this, (_, reader) => reader.ReadModules(this.main_module.AssemblyResolver));
 
 					/*Telerik Authorship*/
-					foreach (ModuleDefinition module in modules)
+					foreach (ModuleDefinition module in this.modules)
 					{
-						if (module != main_module)
+						if (module != this.main_module)
 						{
 							module.Assembly = this;
 						}
 					}
 					
 					/*Telerik Authorship*/
-					return modules;
+					return this.modules;
 				}
 
-				return modules = new Collection<ModuleDefinition> (1) { main_module };
+				return this.modules = new Collection<ModuleDefinition> (1) { this.main_module };
 			}
 		}
 
 		public ModuleDefinition MainModule {
-			get { return main_module; }
+			get { return this.main_module; }
 		}
 
 		public MethodDefinition EntryPoint {
-			get { return main_module.EntryPoint; }
-			set { main_module.EntryPoint = value; }
+			get { return this.main_module.EntryPoint; }
+			set { this.main_module.EntryPoint = value; }
 		}
 
 		/*Telerik Authorship*/
@@ -80,15 +77,15 @@ namespace Mono.Cecil {
 		{
 			get
 			{
-				if (custom_attributes != null)
-					return custom_attributes.Count > 0;
+				if (this.custom_attributes != null)
+					return this.custom_attributes.Count > 0;
 
 				/*Telerik Authorship*/
-				if (hasCustomAttributes != null)
-					return hasCustomAttributes == true;
+				if (this.hasCustomAttributes != null)
+					return this.hasCustomAttributes == true;
 
 				/*Telerik Authorship*/
-				return this.GetHasCustomAttributes(ref hasCustomAttributes, main_module);
+				return this.GetHasCustomAttributes(ref this.hasCustomAttributes, this.main_module);
 			}
 		}
 
@@ -149,27 +146,27 @@ namespace Mono.Cecil {
         }
 
 		public Collection<CustomAttribute> CustomAttributes {
-			get { return custom_attributes ?? (this.GetCustomAttributes (ref custom_attributes, main_module)); }
+			get { return this.custom_attributes ?? (this.GetCustomAttributes (ref this.custom_attributes, this.main_module)); }
 		}
 
 		/*Telerik Authorship*/
 		private bool? hasSecurityDeclarations;
 		public bool HasSecurityDeclarations {
 			get {
-				if (security_declarations != null)
-					return security_declarations.Count > 0;
+				if (this.security_declarations != null)
+					return this.security_declarations.Count > 0;
 
 				/*Telerik Authorship*/
-				if (hasSecurityDeclarations != null)
-					return hasSecurityDeclarations == true;
+				if (this.hasSecurityDeclarations != null)
+					return this.hasSecurityDeclarations == true;
 
 				/*Telerik Authorship*/
-				return this.GetHasSecurityDeclarations (ref hasSecurityDeclarations, main_module);
+				return this.GetHasSecurityDeclarations (ref this.hasSecurityDeclarations, this.main_module);
 			}
 		}
 
 		public Collection<SecurityDeclaration> SecurityDeclarations {
-			get { return security_declarations ?? (this.GetSecurityDeclarations (ref security_declarations, main_module)); }
+			get { return this.security_declarations ?? (this.GetSecurityDeclarations (ref this.security_declarations, this.main_module)); }
 		}
 
 		internal AssemblyDefinition ()
@@ -235,22 +232,22 @@ namespace Mono.Cecil {
 #if !READ_ONLY
 		public void Write (string fileName)
 		{
-			Write (fileName, new WriterParameters ());
+            this.Write (fileName, new WriterParameters ());
 		}
 
 		public void Write (Stream stream)
 		{
-			Write (stream, new WriterParameters ());
+            this.Write (stream, new WriterParameters ());
 		}
 
 		public void Write (string fileName, WriterParameters parameters)
 		{
-			main_module.Write (fileName, parameters);
+            this.main_module.Write (fileName, parameters);
 		}
 
 		public void Write (Stream stream, WriterParameters parameters)
 		{
-			main_module.Write (stream, parameters);
+            this.main_module.Write (stream, parameters);
 		}
 #endif
 
