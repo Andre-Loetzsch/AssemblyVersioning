@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <SourceRevisionId>1fe74f7ab933d513b9cf767d23f6b8ef6253a95f</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Oleander.Extensions.Configuration" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Configuration.Json" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.DependencyInjection" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Hosting.Abstractions" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging.Abstractions" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging.Console" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging.File" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters" Version="1.1.23254.10530" />
+    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters.Abstractions" Version="1.1.23254.10530" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.exe $(TargetPath)" />
+  </Target>
+</Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Oleander.Assembly.Versioning.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\""
+    }
+  }
+}

@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyVersion>0.0.24.0</AssemblyVersion>
-    <SourceRevisionId>c3337a14476b478460cc2bcdbcf494d8ee88f107</SourceRevisionId>
+    <AssemblyVersion>0.0.25.0</AssemblyVersion>
+    <SourceRevisionId>1fe74f7ab933d513b9cf767d23f6b8ef6253a95f</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>
