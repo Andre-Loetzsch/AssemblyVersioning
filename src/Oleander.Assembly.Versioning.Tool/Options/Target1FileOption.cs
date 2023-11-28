@@ -2,14 +2,12 @@
 
 namespace Oleander.Assembly.Versioning.Tool.Options;
 
-internal class TargetFileOption : Option<FileInfo>
+internal class Target1FileOption : Option<FileInfo>
 {
-    public TargetFileOption() : base(name: "--target", description: "The target assembly")
+    public Target1FileOption() : base(name: "--target1", description: "the first target assembly to compare")
     {
-        this.AddAlias("-t");
+        this.AddAlias("-t1");
         this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.dll"));
         this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.exe"));
     }
-
-    
 }

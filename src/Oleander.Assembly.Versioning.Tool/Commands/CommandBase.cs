@@ -32,4 +32,18 @@ internal abstract class CommandBase(ILogger logger, AssemblyVersioningTool tool,
             return -1;
         }
     }
+
+    protected int CompareAssemblies(FileInfo target1FileInfo, FileInfo target2FileInfo)
+    {
+        try
+        {
+            return tool.CompareAssemblies(target1FileInfo, target2FileInfo);
+        }
+        catch (Exception ex)
+        {
+            MSBuildLogFormatter.CreateMSBuildError("AVT-2", ex.Message, "assembly-versioning");
+            logger.LogError("{exception}", ex.GetAllMessages());
+            return -1;
+        }
+    }
 }

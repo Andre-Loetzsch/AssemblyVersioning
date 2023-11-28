@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Oleander.Assembly.Comparator;
 
 namespace Oleander.Assembly.Versioning.Tool;
 
@@ -8,22 +9,20 @@ internal class AssemblyVersioningTool(ILogger<AssemblyVersioningTool> logger)
 
     public int UpdateAssemblyVersion(FileInfo targetFileInfo)
     {
-        logger.LogInformation("UpdateAssemblyVersion({targetFileName})", targetFileInfo.FullName);
+        logger.LogInformation("UpdateAssemblyVersion({targetFileName})", targetFileInfo.Name);
         return this.LogResult(this._versioning.UpdateAssemblyVersion(targetFileInfo.FullName));
     }
 
     public int UpdateAssemblyVersion(FileInfo targetFileInfo, FileInfo projectFileInfo)
     {
-        logger.LogInformation("UpdateAssemblyVersion({targetFileName}, {projectFileName})",
-            targetFileInfo.FullName, projectFileInfo.FullName);
-
+        logger.LogInformation("UpdateAssemblyVersion({targetFileName}, {projectFileName})", targetFileInfo.Name, projectFileInfo.Name);
         return this.LogResult(this._versioning.UpdateAssemblyVersion(targetFileInfo.FullName, projectFileInfo.FullName));
     }
 
     public int UpdateAssemblyVersion(FileInfo targetFileInfo, DirectoryInfo projectDirInfo, FileInfo projectFileInfo)
     {
         logger.LogInformation("UpdateAssemblyVersion({targetFileName}, {projectDirName}, {projectFileName})",
-            targetFileInfo.FullName, projectDirInfo.FullName, projectFileInfo.FullName);
+            targetFileInfo.Name, projectDirInfo.Name, projectFileInfo.Name);
 
         return this.LogResult(this._versioning.UpdateAssemblyVersion(targetFileInfo.FullName, projectDirInfo.FullName, projectFileInfo.FullName));
     }
@@ -31,11 +30,10 @@ internal class AssemblyVersioningTool(ILogger<AssemblyVersioningTool> logger)
     public int UpdateAssemblyVersion(FileInfo targetFileInfo, DirectoryInfo projectDirInfo, FileInfo projectFileInfo, DirectoryInfo gitRepositoryDirInfo)
     {
         logger.LogInformation("UpdateAssemblyVersion({targetFileName}, {projectDirName}, {projectFileName}, {gitRepositoryDirName})",
-            targetFileInfo.FullName, projectDirInfo.FullName, projectFileInfo.FullName, gitRepositoryDirInfo.FullName);
+            targetFileInfo.Name, projectDirInfo.Name, projectFileInfo.Name, gitRepositoryDirInfo.Name);
 
         return this.LogResult(this._versioning.UpdateAssemblyVersion(targetFileInfo.FullName, projectDirInfo.FullName, projectFileInfo.FullName, gitRepositoryDirInfo.FullName));
     }
-
 
     private int LogResult(VersioningResult result)
     {
@@ -56,5 +54,22 @@ internal class AssemblyVersioningTool(ILogger<AssemblyVersioningTool> logger)
 
         MSBuildLogFormatter.CreateMSBuildWarning($"AVT{exitCode}", msBuildLog, "assembly-versioning");
         return exitCode;
+    }
+
+
+    public int CompareAssemblies(FileInfo target1, FileInfo target2)
+    {
+        if (!target1.Exists) return -1;
+        if (!target2.Exists) return -2;
+
+        var assemblyComparison = new AssemblyComparison(target1, target2);
+
+        logger.LogInformation("recommended version change: {versionChange}", assemblyComparison.VersionChange);
+
+        var xml = assemblyComparison.ToXml();
+
+        if (xml != null) logger.LogInformation("{xml}", xml);
+
+        return 0;
     }
 }

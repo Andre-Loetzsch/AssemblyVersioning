@@ -51,6 +51,7 @@ namespace Oleander.Assembly.Versioning.Tool
             TabCompletions.Logger = logger;
 
             rootCommand.AddCommand(new UpdateAssemblyVersionCommand(logger, tool));
+            rootCommand.AddCommand(new CompareAssemblyCommand(logger, tool));
 
             var exitCode = await commandLine.InvokeAsync(args, console);
 
