@@ -26,6 +26,7 @@
   </ItemGroup>
   
 
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>

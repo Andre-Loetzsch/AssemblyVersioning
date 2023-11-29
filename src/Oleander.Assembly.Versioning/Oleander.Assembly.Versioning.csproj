@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyVersion>0.0.26.0</AssemblyVersion>
-    <SourceRevisionId>8ed664665345a338a5ffeadd6a9bbd5a54635560</SourceRevisionId>
+    <AssemblyVersion>0.0.27.0</AssemblyVersion>
+    <SourceRevisionId>e4feec8265592888af016be9e657226a0bf2762f</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>
