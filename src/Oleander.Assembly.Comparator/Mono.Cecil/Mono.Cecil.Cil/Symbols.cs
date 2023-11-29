@@ -85,14 +85,17 @@ namespace Mono.Cecil.Cil {
 
 	public sealed class MethodSymbols {
 
-		internal int code_size;
-		internal string method_name;
+        #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+        internal int code_size;
+        internal string method_name;
 		internal MetadataToken method_token;
 		internal MetadataToken local_var_token;
 		internal Collection<VariableDefinition> variables;
 		internal Collection<InstructionSymbol> instructions;
+        #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
-		public bool HasVariables {
+
+        public bool HasVariables {
 			get { return !this.variables.IsNullOrEmpty (); }
 		}
 
@@ -112,23 +115,14 @@ namespace Mono.Cecil.Cil {
 			}
 		}
 
-		public int CodeSize {
-			get { return this.code_size; }
-		}
+		public int CodeSize => this.code_size;
 
-		public string MethodName {
-			get { return this.method_name; }
-		}
+        public string MethodName => this.method_name;
 
-		public MetadataToken MethodToken {
-			get { return this.method_token; }
-		}
+        public MetadataToken MethodToken => this.method_token;
 
-		public MetadataToken LocalVarToken {
-			get { return this.local_var_token; }
-		}
-
-		internal MethodSymbols (string methodName)
+        public MetadataToken LocalVarToken => this.local_var_token;
+        internal MethodSymbols (string methodName)
 		{
 			this.method_name = methodName;
 		}

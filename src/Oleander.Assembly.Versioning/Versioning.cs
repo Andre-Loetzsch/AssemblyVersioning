@@ -81,6 +81,61 @@ public class Versioning
         return this.PrivateUpdateAssemblyVersion();
     }
 
+    public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectFileName)
+    {
+        this._targetFileName = targetFileName;
+        
+        this._projectFileName = projectFileName;
+        this._gitRepositoryDirName = string.Empty;
+
+        var updateResult = new VersioningResult();
+
+
+        if (!File.Exists(this._projectFileName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
+            return updateResult;
+        }
+
+        var projectDirName = Path.GetDirectoryName(this._projectFileName);
+
+        if (!Directory.Exists(projectDirName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
+        }
+
+        this._projectDirName = projectDirName;
+
+        if (!TryFindGitRepositoryDirName(projectDirName, out var gitRepositoryDirName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
+        }
+
+        this._gitRepositoryDirName = gitRepositoryDirName;
+
+        if (!File.Exists(this._targetFileName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
+            return updateResult;
+        }
+
+        if (!Directory.Exists(this._projectDirName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
+            return updateResult;
+        }
+
+        if (!Directory.Exists(this._gitRepositoryDirName))
+        {
+            updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
+            return updateResult;
+        }
+
+        return this.PrivateUpdateAssemblyVersion();
+    }
+
     public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectDirName, string projectFileName)
     {
         this._targetFileName = targetFileName;

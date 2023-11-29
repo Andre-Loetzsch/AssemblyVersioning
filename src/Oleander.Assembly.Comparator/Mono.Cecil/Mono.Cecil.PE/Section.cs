@@ -15,8 +15,10 @@ namespace Mono.Cecil.PE {
 	sealed class Section {
 		public string Name;
 		public RVA VirtualAddress;
-		public uint VirtualSize;
-		public uint SizeOfRawData;
+        #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+        public uint VirtualSize;
+        #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+        public uint SizeOfRawData;
 		public uint PointerToRawData;
 		public byte [] Data;
 	}

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Tool update": {
+      "commandName": "Project",
+      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\""
+    },
+    "Tool compare": {
+      "commandName": "Project",
+      "commandLineArgs": "compare -t1 \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\" -t2 \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\.versioninfo\""
+    }
+  }
+}
