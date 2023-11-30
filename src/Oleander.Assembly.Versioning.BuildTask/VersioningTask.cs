@@ -7,13 +7,13 @@ namespace Oleander.Assembly.Versioning.BuildTask
     public class VersioningTask : TargetTask
     {
         [Required]
-        public string TargetFileName { get; set; }
-        public string ProjectDirName { get; set; }
-        public string ProjectFileName { get; set; }
-        public string GitRepositoryDirName { get; set; }
+        public string? TargetFileName { get; set; }
+        public string? ProjectDirName { get; set; }
+        public string? ProjectFileName { get; set; }
+        public string? GitRepositoryDirName { get; set; }
 
         [Output]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         private readonly Versioning _versioning = new();
 
