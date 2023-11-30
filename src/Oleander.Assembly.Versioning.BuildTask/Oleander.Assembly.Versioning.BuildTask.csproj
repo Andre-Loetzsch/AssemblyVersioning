@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!--<TargetFramework>net8.0</TargetFramework>-->
+    <!--<ImplicitUsings>enable</ImplicitUsings>-->
+    <!--<Nullable>enable</Nullable>-->
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <SourceRevisionId>51dea74036596972d6c1a9a56cc47441ce61f53f</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
+    <PackAsTool>False</PackAsTool>
+    <!--<DevelopmentDependency>true</DevelopmentDependency>-->
+
+    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>-->
+  </PropertyGroup>
+
+  <Import Project="$(ProjectDir)Oleander.Assembly.Versioning.BuildTask.targets" />
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3" />
+  </ItemGroup>
+  
+
+
+  <!--<Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />
+  </Target>-->
+
+  <ItemGroup>
+    <None Update="Oleander.Assembly.Versioning.BuildTask.targets">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

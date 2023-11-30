@@ -1,0 +1,28 @@
+<Project>
+  <UsingTask TaskName="VersioningTask" AssemblyFile="$(ProjectDir)bin2\Oleander.Assembly.Versioning.BuildTask.dll" />
+
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <!--<Target Name="CustomAfterBuildTarget" AfterTargets="Build">
+    <Message Text="Hello from CustomAfterBuildTarget" Importance="high" />
+  </Target>-->
+
+  <Target Name="GenerateSetting" AfterTargets="Build">
+    <VersioningTask
+      TargetFileName="$(TargetPath)">
+      <Output TaskParameter="Message" 
+              PropertyName="MyMessage" />
+
+
+    </VersioningTask>
+    <!--<ItemGroup>
+      <Message Text="$(MyMessage)" Importance="high" />
+    </ItemGroup>-->
+  </Target>
+
+
+  <Target Name="CustomAfterBuildTarget" AfterTargets="GenerateSetting">
+    <Message Text="$(MyMessage)&quot;" Importance="high" />
+  </Target>
+
+
+</Project>

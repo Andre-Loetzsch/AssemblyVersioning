@@ -284,8 +284,6 @@ public class Versioning
 
         var shortGitHash = longGtHash[..8];
         var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
-
-
         var versionChange = VersionChange.None;
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
@@ -401,7 +399,6 @@ public class Versioning
             new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
-
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
     {
         var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
@@ -416,7 +413,6 @@ public class Versioning
 
         File.WriteAllLines(Path.Combine(versioningDir, "changelog.txt"), log);
     }
-
 
     private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
     {
