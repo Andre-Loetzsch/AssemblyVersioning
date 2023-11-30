@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <!--<TargetFramework>net8.0</TargetFramework>-->
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
@@ -10,8 +11,8 @@
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <SourceRevisionId>51dea74036596972d6c1a9a56cc47441ce61f53f</SourceRevisionId>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <SourceRevisionId>b1a0e8fdacfd956c74e3c30d9778c549714006ae</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <PackAsTool>False</PackAsTool>
     <!--<DevelopmentDependency>true</DevelopmentDependency>-->
@@ -20,10 +21,14 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>-->
   </PropertyGroup>
 
-  <Import Project="$(ProjectDir)Oleander.Assembly.Versioning.BuildTask.targets" />
+  <!--<Import Project="$(ProjectDir)Oleander.Assembly.Versioning.BuildTask.targets" />-->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>
   
 
@@ -34,7 +39,7 @@
 
   <ItemGroup>
     <None Update="Oleander.Assembly.Versioning.BuildTask.targets">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

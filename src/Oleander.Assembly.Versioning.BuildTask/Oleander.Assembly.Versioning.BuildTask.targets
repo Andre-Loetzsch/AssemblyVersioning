@@ -1,27 +1,27 @@
 <Project>
-  <UsingTask TaskName="VersioningTask" AssemblyFile="$(ProjectDir)bin2\Oleander.Assembly.Versioning.BuildTask.dll" />
+  <UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="Oleander.Assembly.Versioning.BuildTask.dll" />
 
-  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
-  <!--<Target Name="CustomAfterBuildTarget" AfterTargets="Build">
-    <Message Text="Hello from CustomAfterBuildTarget" Importance="high" />
-  </Target>-->
+  <Target Name="UpdateAssemblyVersion" AfterTargets="Build">
 
-  <Target Name="GenerateSetting" AfterTargets="Build">
+    <PropertyGroup>
+      <git-repository Condition="Exists('$(SolutionDir)')">$([MSBuild]::GetDirectoryNameOfFileAbove($(SolutionDir), ".git\\HEAD"))</git-repository>
+      <targeDir>$(git-repository)\.targets</targeDir>
+    </PropertyGroup>
+
     <VersioningTask
-      TargetFileName="$(TargetPath)">
+      TargetFileName="$(TargetPath)" ProjectDirName="$(ProjectDir)" ProjectFileName="$(ProjectPath)" GitRepositoryDirName="$(git-repository)">
+      
       <Output TaskParameter="Message" 
               PropertyName="MyMessage" />
-
-
     </VersioningTask>
-    <!--<ItemGroup>
-      <Message Text="$(MyMessage)" Importance="high" />
-    </ItemGroup>-->
   </Target>
 
 
-  <Target Name="CustomAfterBuildTarget" AfterTargets="GenerateSetting">
-    <Message Text="$(MyMessage)&quot;" Importance="high" />
+  <Target Name="CustomAfterBuildTarget" AfterTargets="UpdateAssemblyVersion">
+    <Message Text="$(MyMessage)" Importance="high" />
+    <Message Text="ProjectDir:    $(ProjectDir)" Importance="high" />
+    <Message Text="ProjectPath:   $(ProjectPath)" Importance="high" />
+    <Message Text="git-repository:$(git-repository)" Importance="high" />
   </Target>
 
 

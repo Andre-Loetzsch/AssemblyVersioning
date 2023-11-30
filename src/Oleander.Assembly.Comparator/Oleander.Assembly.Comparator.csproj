@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <!--<TargetFramework>netstandard2.0</TargetFramework>-->
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <AssemblyVersion>0.0.7.3</AssemblyVersion>
-    <SourceRevisionId>51dea74036596972d6c1a9a56cc47441ce61f53f</SourceRevisionId>
+    <AssemblyVersion>0.0.7.4</AssemblyVersion>
+    <SourceRevisionId>b1a0e8fdacfd956c74e3c30d9778c549714006ae</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
