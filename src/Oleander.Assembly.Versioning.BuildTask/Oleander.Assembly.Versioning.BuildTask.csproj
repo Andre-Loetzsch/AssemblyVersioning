@@ -20,8 +20,9 @@
     <Authors>Oleander</Authors>
     <Description>Compares two assemblies and calculates the current version</Description>
     <PackageTags>Oleander; C#; MSBuild Task</PackageTags>
-    <Copyright>Copyright ©Contoso 2022</Copyright>
+    <Copyright>Copyright © Oleander 2023</Copyright>
 
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
     <NoWarn>$(NoWarn);NU5100</NoWarn>
