@@ -8,11 +8,11 @@
 
     <AssemblyVersion>0.0.4.14</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <SourceRevisionId>f05fc9bb398bb82427b7b22872d4d40fc814cfbc</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
-    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
 
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
@@ -21,7 +21,6 @@
     <Description>Compares two assemblies and calculates the current version</Description>
     <PackageTags>Oleander; C#; MSBuild Task</PackageTags>
     <Copyright>Copyright ©Contoso 2022</Copyright>
-
 
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
