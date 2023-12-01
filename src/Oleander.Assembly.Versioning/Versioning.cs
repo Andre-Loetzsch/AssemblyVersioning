@@ -220,32 +220,33 @@ public class Versioning
 
     #region protected virtual
 
-    protected virtual bool TryGetGitHash(out ExternalProcessResult result, [MaybeNullWhen(false)] out string hash)
+    protected virtual bool TryGetGitHash(out ExternalProcessResult result, out string hash)
     {
-        hash = null;
+        hash = string.Empty;
         result = new GitGetHash(this._gitRepositoryDirName).Start();
 
         if (result.ExitCode != 0) return false;
         if (string.IsNullOrEmpty(result.StandardOutput)) return false;
 
-        hash = result.StandardOutput.Trim();
+        hash = result.StandardOutput!.Trim();
 
         return true;
     }
 
-    protected virtual bool TryGetGitChanges(string gitHash, out ExternalProcessResult result, [MaybeNullWhen(false)] out string[] gitChanges)
+    protected virtual bool TryGetGitChanges(string gitHash, out ExternalProcessResult result, out string[] gitChanges)
     {
-        gitChanges = null;
+        gitChanges = Array.Empty<string>();
         result = new GitDiffNameOnly(gitHash, this._gitRepositoryDirName).Start();
 
         if (result.ExitCode != 0) return false;
+        
         if (string.IsNullOrEmpty(result.StandardOutput))
         {
             gitChanges = Array.Empty<string>();
             return true;
         }
-
-        gitChanges = result.StandardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+       
+        gitChanges = result.StandardOutput!.Split(new []{ '\n' }, StringSplitOptions.RemoveEmptyEntries);
         return true;
     }
 
@@ -282,10 +283,8 @@ public class Versioning
             return updateResult;
         }
 
-        var shortGitHash = longGtHash[..8];
+        var shortGitHash = longGtHash.Substring(0, 8);
         var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
-
-
         var versionChange = VersionChange.None;
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
@@ -329,23 +328,21 @@ public class Versioning
         return updateResult;
     }
 
-    private bool TryGetProjectFileAssemblyVersion([MaybeNullWhen(false)] out Version version)
+    private bool TryGetProjectFileAssemblyVersion(out Version version)
     {
-        version = null;
+        version = new Version();
         var vsProject = new VSProject(this._projectFileName);
         var projectFileAssemblyVersion = vsProject.AssemblyVersion;
 
         return projectFileAssemblyVersion != null &&
-               Version.TryParse(projectFileAssemblyVersion, out version);
+               Version.TryParse(projectFileAssemblyVersion, out version!);
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash,
-        [MaybeNullWhen(false)] out Version refVersion,
-        [MaybeNullWhen(false)] out Version lastCalculatedVersion)
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash, out Version refVersion, out Version lastCalculatedVersion)
     {
-        refVersion = null;
-        lastCalculatedVersion = null;
+        refVersion = new Version();
+        lastCalculatedVersion = new Version();
 
         var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
@@ -358,14 +355,12 @@ public class Versioning
         var fileContent = File.ReadAllLines(lastCalculatedVersionPath).ToList();
 
         return fileContent.Count > 1 &&
-               Version.TryParse(fileContent[0], out refVersion) &&
-               Version.TryParse(fileContent[1], out lastCalculatedVersion);
+               Version.TryParse(fileContent[0], out refVersion!)  &&
+               Version.TryParse(fileContent[1], out lastCalculatedVersion!);
     }
 
-    private bool TryGetRefAssemblyFileInfo(string gitHash, [MaybeNullWhen(false)] out FileInfo fileInfo)
+    private bool TryGetRefAssemblyFileInfo(string gitHash, out FileInfo fileInfo)
     {
-        fileInfo = null;
-
         var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
         if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
 
@@ -386,7 +381,9 @@ public class Versioning
             return true;
         }
 
-        if (!File.Exists(this._targetFileName)) return false;
+        fileInfo = new FileInfo(this._targetFileName);
+        if (!fileInfo.Exists) return false;
+
         File.Copy(this._targetFileName, refAssemblyPath);
         fileInfo = new FileInfo(this._targetFileName);
         return true;
@@ -400,7 +397,6 @@ public class Versioning
         File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)),
             new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
-
 
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
     {
@@ -416,7 +412,6 @@ public class Versioning
 
         File.WriteAllLines(Path.Combine(versioningDir, "changelog.txt"), log);
     }
-
 
     private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
     {
@@ -457,7 +452,7 @@ public class Versioning
         var gitDiffFilter = this.GetGitDiffFilter();
         var projectFiles = Directory.GetFiles(this._projectDirName, "*.*", SearchOption.AllDirectories)
             .Where(x => gitDiffFilter.Contains(Path.GetExtension(x).ToLower()))
-            .Select(x => x[(this._gitRepositoryDirName.Length + 1)..].Replace('\\', '/'));
+            .Select(x => x.Substring(this._gitRepositoryDirName.Length + 1).Replace('\\', '/'));
 
         return projectFiles.Any(projectFile => 
             gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase)));

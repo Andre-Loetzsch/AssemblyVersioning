@@ -5,9 +5,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
-    <SourceRevisionId>8ed664665345a338a5ffeadd6a9bbd5a54635560</SourceRevisionId>
+    <AssemblyVersion>0.0.8.0</AssemblyVersion>
+    <SourceRevisionId>3a24d4d8bcdfaf7d351d9bf4d5aaabd86d1deff0</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
+
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackAsTool>True</PackAsTool>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,14 +33,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Oleander.Assembly.Comparator\Oleander.Assembly.Comparator.csproj" />
+    <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Oleander.Assembly.Comparator\Oleander.Assembly.Comparator.csproj" />
-    <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">

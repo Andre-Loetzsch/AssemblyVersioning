@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <BuildTask_TFM Condition="'$(MSBuildRuntimeType)' != 'Core'">netstandard2.0</BuildTask_TFM>
+    <BuildTask_TFM Condition="'$(MSBuildRuntimeType)' == 'Core'">net8.0</BuildTask_TFM>
+    <CustomTasksFolder>$(MSBuildThisFileDirectory)..\tasks\$(BuildTask_TFM)</CustomTasksFolder>
+    <CustomTasksAssembly>$(CustomTasksFolder)\$(MSBuildThisFileName).dll</CustomTasksAssembly>
+  </PropertyGroup>
+  <UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="$(CustomTasksAssembly)"/>
+
+  <Target Name="UpdateAssemblyVersion" AfterTargets="Build">
+
+    <PropertyGroup>
+      <git-repository Condition="Exists('$(SolutionDir)')">$([MSBuild]::GetDirectoryNameOfFileAbove($(SolutionDir), ".git\\HEAD"))</git-repository>
+    </PropertyGroup>
+
+    <VersioningTask
+      TargetFileName="$(TargetPath)" ProjectDirName="$(ProjectDir)" ProjectFileName="$(ProjectPath)" GitRepositoryDirName="$(git-repository)">
+    </VersioningTask>
+  </Target>
+</Project>

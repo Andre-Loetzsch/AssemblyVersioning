@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.24.0</AssemblyVersion>
-    <SourceRevisionId>8ed664665345a338a5ffeadd6a9bbd5a54635560</SourceRevisionId>
+    <AssemblyVersion>0.0.26.0</AssemblyVersion>
+    <SourceRevisionId>f05fc9bb398bb82427b7b22872d4d40fc814cfbc</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
     </PackageReference>
   </ItemGroup>
   
+
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
