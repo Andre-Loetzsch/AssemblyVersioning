@@ -12,15 +12,10 @@ namespace Oleander.Assembly.Versioning.BuildTask
         public string? ProjectFileName { get; set; }
         public string? GitRepositoryDirName { get; set; }
 
-        [Output]
-        public string? Message { get; set; }
-
         private readonly Versioning _versioning = new();
 
         public override bool Execute()
         {
-            this.Message = $"[{DateTime.Now}] Hallo du! dornet2.1";
-
             VersioningResult result;
 
             if (this.TargetFileName == null) return false;
@@ -29,23 +24,50 @@ namespace Oleander.Assembly.Versioning.BuildTask
             {
                 result = this._versioning.UpdateAssemblyVersion(this.TargetFileName, this.ProjectDirName, this.ProjectFileName, this.GitRepositoryDirName);
             }
-
-            if (this.ProjectDirName != null && this.ProjectFileName != null)
+            else if (this.ProjectDirName != null && this.ProjectFileName != null)
             {
                 result = this._versioning.UpdateAssemblyVersion(this.TargetFileName, this.ProjectDirName, this.ProjectFileName);
             }
-
-            if (this.ProjectFileName != null)
+            else if (this.ProjectFileName != null)
             {
                 result = this._versioning.UpdateAssemblyVersion(this.TargetFileName, this.ProjectFileName);
             }
-
-            else
+            else 
             {
                 result = this._versioning.UpdateAssemblyVersion(this.TargetFileName);
             }
 
-            this.Message = $"[{result.ErrorCode}] [{result.ExternalProcessResult}] {result.CalculatedVersion}";
+            if (result.ErrorCode != VersioningErrorCodes.Success)
+            {
+                this.Log.LogError(subcategory: "OAVT",
+                    errorCode: $"OAVT:{(int)result.ErrorCode:000}",
+                    helpKeyword: null,
+                    file: string.Empty,
+                    lineNumber: 0,
+                    columnNumber: 0,
+                    endLineNumber: 0,
+                    endColumnNumber: 0,
+                    message: $"Error: {result.ErrorCode}");
+
+                return false;
+            }
+
+            if (result.ExternalProcessResult != null && result.ExternalProcessResult.ExitCode != 0)
+            {
+                this.Log.LogError(subcategory: "OAVT",
+                    errorCode: $"OAVT:{result.ExternalProcessResult.ExitCode:000}",
+                    helpKeyword: null,
+                    file: string.Empty,
+                    lineNumber: 0,
+                    columnNumber: 0,
+                    endLineNumber: 0,
+                    endColumnNumber: 0,
+                    message: result.ExternalProcessResult.ToString());
+
+                return false;
+            }
+
+            this.Log.LogMessage(MessageImportance.Normal, $"OAVT: Version: {result.CalculatedVersion}");
             return true;
         }
     }

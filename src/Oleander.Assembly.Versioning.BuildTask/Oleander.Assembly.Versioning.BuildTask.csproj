@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyVersion>0.0.3.1</AssemblyVersion>
+    <AssemblyVersion>0.0.4.14</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -24,20 +24,17 @@
 
 
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
     <GenerateDependencyFile>true</GenerateDependencyFile>
   </PropertyGroup>
 
 
-
-
   <ItemGroup>
-    <PackageReference
-      Include="Microsoft.Build.Utilities.Core" Version="17.8.3" PrivateAssets="all" ExcludeAssets="Runtime"/>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3" PrivateAssets="all" ExcludeAssets="Runtime" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" PrivateAssets="all"/>
+    <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,23 +43,14 @@
 
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <!-- The dependencies of your MSBuild task must be packaged inside the package, they cannot be expressed as normal PackageReferences -->
-      <BuildOutputInPackage
-        Include="@(ReferenceCopyLocalPaths)"
-        TargetPath="%(ReferenceCopyLocalPaths.DestinationSubPath)" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)" TargetPath="%(ReferenceCopyLocalPaths.DestinationSubPath)" />
     </ItemGroup>
   </Target>
 
-  <!-- This target adds the generated deps.json file to our package output -->
-  <Target Name="AddBuildDependencyFileToBuiltProjectOutputGroupOutput"
-          BeforeTargets="BuiltProjectOutputGroup"
-          Condition=" '$(GenerateDependencyFile)' == 'true'">
+  <Target Name="AddBuildDependencyFileToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup" Condition=" '$(GenerateDependencyFile)' == 'true'">
 
     <ItemGroup>
-      <BuiltProjectOutputGroupOutput
-        Include="$(ProjectDepsFilePath)"
-        TargetPath="$(ProjectDepsFileName)"
-        FinalOutputPath="$(ProjectDepsFilePath)" />
+      <BuiltProjectOutputGroupOutput Include="$(ProjectDepsFilePath)" TargetPath="$(ProjectDepsFileName)" FinalOutputPath="$(ProjectDepsFilePath)" />
     </ItemGroup>
   </Target>
 

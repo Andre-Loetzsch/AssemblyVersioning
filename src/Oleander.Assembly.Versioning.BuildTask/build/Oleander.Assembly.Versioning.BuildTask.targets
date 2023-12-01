@@ -1,28 +1,20 @@
 <Project>
-  <!--<UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="Oleander.Assembly.Versioning.BuildTask.dll" />-->
+  <PropertyGroup>
+    <BuildTask_TFM Condition="'$(MSBuildRuntimeType)' != 'Core'">netstandard2.0</BuildTask_TFM>
+    <BuildTask_TFM Condition="'$(MSBuildRuntimeType)' == 'Core'">net8.0</BuildTask_TFM>
+    <CustomTasksFolder>$(MSBuildThisFileDirectory)..\tasks\$(BuildTask_TFM)</CustomTasksFolder>
+    <CustomTasksAssembly>$(CustomTasksFolder)\$(MSBuildThisFileName).dll</CustomTasksAssembly>
+  </PropertyGroup>
+  <UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="$(CustomTasksAssembly)"/>
 
   <Target Name="UpdateAssemblyVersion" AfterTargets="Build">
 
     <PropertyGroup>
       <git-repository Condition="Exists('$(SolutionDir)')">$([MSBuild]::GetDirectoryNameOfFileAbove($(SolutionDir), ".git\\HEAD"))</git-repository>
-      <targeDir>$(git-repository)\.targets</targeDir>
     </PropertyGroup>
 
     <VersioningTask
       TargetFileName="$(TargetPath)" ProjectDirName="$(ProjectDir)" ProjectFileName="$(ProjectPath)" GitRepositoryDirName="$(git-repository)">
-      
-      <Output TaskParameter="Message" 
-              PropertyName="MyMessage" />
     </VersioningTask>
   </Target>
-
-
-  <Target Name="PrintOut" AfterTargets="UpdateAssemblyVersion">
-    <Message Text="$(MyMessage)" Importance="high" />
-    <Message Text="ProjectDir:    $(ProjectDir)" Importance="high" />
-    <Message Text="ProjectPath:   $(ProjectPath)" Importance="high" />
-    <Message Text="git-repository:$(git-repository)" Importance="high" />
-  </Target>
-
-
 </Project>
