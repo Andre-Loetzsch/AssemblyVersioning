@@ -8,6 +8,13 @@
     <AssemblyVersion>0.0.8.0</AssemblyVersion>
     <SourceRevisionId>3a24d4d8bcdfaf7d351d9bf4d5aaabd86d1deff0</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
+
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackAsTool>True</PackAsTool>
   </PropertyGroup>
 
   <ItemGroup>
