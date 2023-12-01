@@ -24,7 +24,7 @@
 
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
-    <NoWarn>NU5100</NoWarn>
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
     <GenerateDependencyFile>true</GenerateDependencyFile>
   </PropertyGroup>
 
