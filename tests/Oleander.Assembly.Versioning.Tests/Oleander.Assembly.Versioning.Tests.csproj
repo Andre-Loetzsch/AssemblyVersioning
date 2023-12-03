@@ -4,9 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.26.0</AssemblyVersion>
-    <SourceRevisionId>f05fc9bb398bb82427b7b22872d4d40fc814cfbc</SourceRevisionId>
+    <AssemblyVersion>0.0.28.0</AssemblyVersion>
+    <SourceRevisionId>ac7700459850dd500c756844d7658d9dcf92fd56</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
 
   <ItemGroup>
