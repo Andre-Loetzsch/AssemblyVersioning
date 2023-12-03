@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
+using System.Linq;
 
 namespace Oleander.Assembly.Versioning;
 
@@ -98,6 +99,61 @@ internal class VSProject
             this._hasChanges = this._hasChanges || property.Value != value;
             property.Value = value;
         }
+    }
+
+    public void CreateFileVersionIfNotExist()
+    {
+        var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "FileVersion");
+        if (property != null) return;
+        
+        var propertyGroup = this._projectRootElement.PropertyGroups.FirstOrDefault(x => x.Properties.Any(y => y.Name == "AssemblyVersion"));
+
+        if (propertyGroup != null)
+        {
+            propertyGroup.AddProperty("FileVersion", "$(AssemblyVersion)");
+            return;
+        }
+
+        this._projectRootElement.AddProperty("FileVersion", "$(AssemblyVersion)");
+        this._hasChanges = true;
+    }
+
+    public void CreateInformationalVersionIfNotExist()
+    {
+        var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "InformationalVersion");
+        if (property != null) return;
+
+        var propertyGroup = this._projectRootElement.PropertyGroups.FirstOrDefault(x => x.Properties.Any(y => y.Name == "AssemblyVersion"));
+
+        if (propertyGroup != null)
+        {
+            propertyGroup.AddProperty("InformationalVersion", "$(AssemblyVersion)");
+            return;
+        }
+
+        this._projectRootElement.AddProperty("InformationalVersion", "$(AssemblyVersion)");
+        this._hasChanges = true;
+    }
+
+    public void CreateVersionIfNotExist()
+    {
+        var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "Version");
+        if (property != null) return;
+
+        var propertyGroup = this._projectRootElement.PropertyGroups.FirstOrDefault(x => x.Properties.Any(y => y.Name == "AssemblyVersion"));
+
+        if (propertyGroup != null)
+        {
+            propertyGroup.AddProperty("Version", "$(AssemblyVersion)-$(VersionSuffix)").Condition = "'$(VersionSuffix)' != ''";
+            propertyGroup.AddProperty("Version", "$(AssemblyVersion)").Condition = "'$(VersionSuffix)' == ''";
+            return;
+        }
+
+
+        this._projectRootElement.AddProperty("Version", "$(AssemblyVersion)-$(VersionSuffix)").Condition = "'$(VersionSuffix)' != ''";
+        this._projectRootElement.AddProperty("Version", "$(AssemblyVersion)").Condition = "'$(VersionSuffix)' == ''";
+
+        this._hasChanges = true;
     }
 
     public void SaveChanges()

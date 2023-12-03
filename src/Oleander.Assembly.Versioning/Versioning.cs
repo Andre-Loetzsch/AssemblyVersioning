@@ -494,6 +494,9 @@ public class Versioning
             VersionSuffix = versionSuffix
         };
 
+        vsProject.CreateFileVersionIfNotExist();
+        vsProject.CreateInformationalVersionIfNotExist();
+        vsProject.CreateVersionIfNotExist();
         vsProject.SaveChanges();
     }
 

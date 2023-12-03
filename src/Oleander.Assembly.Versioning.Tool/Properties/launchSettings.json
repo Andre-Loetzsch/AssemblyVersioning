@@ -1,12 +1,20 @@
 {
   "profiles": {
-    "Tool update": {
+    "Tool update D316IT012": {
       "commandName": "Project",
       "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\""
     },
-    "Tool compare": {
+    "Tool compare D316IT012": {
       "commandName": "Project",
       "commandLineArgs": "compare -t1 \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\" -t2 \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\.versioninfo\""
+    },
+    "Tool update L316IT012": {
+      "commandName": "Project",
+      "commandLineArgs": "update -t \"C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\""
+    },
+    "Tool compare L316IT012": {
+      "commandName": "Project",
+      "commandLineArgs": "compare -t1 \"C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\" -t2 \"C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\.versioninfo\""
     }
   }
 }
