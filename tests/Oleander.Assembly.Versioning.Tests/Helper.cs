@@ -8,13 +8,13 @@ internal static class Helper
 {
     public static bool TryFindCsProject(string startDirectory, out string projectDirName, out string projectFileName)
     {
-        return VSProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
+        return MSBuildProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
     }
 
     public static bool TryGetVersionFromProjectFile(string projectFileName, [MaybeNullWhen(false)] out Version version)
     {
         version = null;
-        var project = new VSProject(projectFileName);
+        var project = new MSBuildProject(projectFileName);
         return project.AssemblyVersion != null && Version.TryParse(project.AssemblyVersion, out version);
     }
 

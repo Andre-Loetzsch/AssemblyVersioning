@@ -37,7 +37,7 @@ public class Versioning
             return updateResult;
         }
 
-        if (!VSProject.TryFindVSProject(targetDir, out var projectDirName, out var projectFileName))
+        if (!MSBuildProject.TryFindVSProject(targetDir, out var projectDirName, out var projectFileName))
         {
             updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
             return updateResult;
@@ -331,8 +331,8 @@ public class Versioning
     private bool TryGetProjectFileAssemblyVersion(out Version version)
     {
         version = new Version();
-        var vsProject = new VSProject(this._projectFileName);
-        var projectFileAssemblyVersion = vsProject.AssemblyVersion;
+        var project = new MSBuildProject(this._projectFileName);
+        var projectFileAssemblyVersion = project.AssemblyVersion;
 
         return projectFileAssemblyVersion != null &&
                Version.TryParse(projectFileAssemblyVersion, out version!);
@@ -487,17 +487,14 @@ public class Versioning
 
     private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix, string sourceRevisionId)
     {
-        var vsProject = new VSProject(projectFileName)
+        var project = new MSBuildProject(projectFileName)
         {
             AssemblyVersion = assemblyVersion.ToString(),
             SourceRevisionId = sourceRevisionId,
             VersionSuffix = versionSuffix
         };
-
-        vsProject.CreateFileVersionIfNotExist();
-        vsProject.CreateInformationalVersionIfNotExist();
-        vsProject.CreateVersionIfNotExist();
-        vsProject.SaveChanges();
+       
+        project.SaveChanges();
     }
 
     #endregion
