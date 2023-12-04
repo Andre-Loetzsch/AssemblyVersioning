@@ -7,7 +7,7 @@ public class SimulationTests
     [Fact]
     public void TestAddPrivateMethod()
     {
-        var result = TestRunner.RunSimulation("addPrivateMethod").ToList();
+        var result = new TestRunner("addPrivateMethod").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -17,7 +17,7 @@ public class SimulationTests
     [Fact]
     public void TestAddPublicMethod()
     {
-        var result = TestRunner.RunSimulation("addPublicMethod").ToList();
+        var result = new TestRunner("addPublicMethod").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -27,7 +27,7 @@ public class SimulationTests
     [Fact]
     public void TestGitChangesBuild()
     {
-        var result = TestRunner.RunSimulation("gitChangesBuild").ToList();
+        var result = new TestRunner("gitChangesBuild").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -37,7 +37,7 @@ public class SimulationTests
     [Fact]
     public void TestGitChangesRevision()
     {
-        var result = TestRunner.RunSimulation("gitChangesRevision").ToList();
+        var result = new TestRunner("gitChangesRevision").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -47,7 +47,7 @@ public class SimulationTests
     [Fact]
     public void TestAddInterface()
     {
-        var result = TestRunner.RunSimulation("addInterface").ToList();
+        var result = new TestRunner("addInterface").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -57,7 +57,7 @@ public class SimulationTests
     [Fact]
     public void TestModifyInterface()
     {
-        var result = TestRunner.RunSimulation("modifyInterface").ToList();
+        var result = new TestRunner("modifyInterface").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -67,7 +67,7 @@ public class SimulationTests
     [Fact]
     public void TestRemovePublicMethod()
     {
-        var result = TestRunner.RunSimulation("removePublicMethod").ToList();
+        var result = new TestRunner("removePublicMethod").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -77,7 +77,7 @@ public class SimulationTests
     [Fact]
     public void TestChangeNamespace()
     {
-        var result = TestRunner.RunSimulation("changeNamespace").ToList();
+        var result = new TestRunner("changeNamespace").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -87,7 +87,7 @@ public class SimulationTests
     [Fact]
     public void TestAddParameterToPublicMethod()
     {
-        var result = TestRunner.RunSimulation("addParameterToPublicMethod").ToList();
+        var result = new TestRunner("addParameterToPublicMethod").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -97,7 +97,7 @@ public class SimulationTests
     [Fact]
     public void TestAddAndRemovePublicMethod()
     {
-        var result = TestRunner.RunSimulation("addAndRemovePublicMethod").ToList();
+        var result = new TestRunner("addAndRemovePublicMethod").RunSimulation().ToList();
 
         Assert.Equal(3, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -108,7 +108,7 @@ public class SimulationTests
     [Fact]
     public void TestAddAndRemovePublicMethodWithoutCommit()
     {
-        var result = TestRunner.RunSimulation("addAndRemovePublicMethodWithoutCommit").ToList();
+        var result = new TestRunner("addAndRemovePublicMethodWithoutCommit").RunSimulation().ToList();
 
         Assert.Equal(3, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -119,7 +119,7 @@ public class SimulationTests
     [Fact]
     public void TestAddAnInterfaceToAClass()
     {
-        var result = TestRunner.RunSimulation("addInterfaceToClass").ToList();
+        var result = new TestRunner("addInterfaceToClass").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -129,7 +129,7 @@ public class SimulationTests
     [Fact]
     public void TestRemoveInterfaceFromClass()
     {
-        var result = TestRunner.RunSimulation("removeInterfaceFromClass").ToList();
+        var result = new TestRunner("removeInterfaceFromClass").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
@@ -139,7 +139,7 @@ public class SimulationTests
     [Fact]
     public void TestModifyEnum()
     {
-        var result = TestRunner.RunSimulation("modifyEnum").ToList();
+        var result = new TestRunner("modifyEnum").RunSimulation().ToList();
 
         Assert.Equal(5, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
