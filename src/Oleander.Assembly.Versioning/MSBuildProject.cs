@@ -153,13 +153,10 @@ internal class MSBuildProject
     {
         get
         {
-
             if (this._assemblyInfoPath != null) return this._assemblyInfoPath;
 
-            var projectDir = Path.GetDirectoryName(this._projectRootElement.FullPath);
-            this._assemblyInfoPath = projectDir == null ? string.Empty :
-                Directory.GetFiles(projectDir, "AssemblyInfo.cs", SearchOption.AllDirectories).FirstOrDefault() ?? string.Empty;
-
+            this._assemblyInfoPath =  Path.Combine(
+                Path.GetDirectoryName(this._projectRootElement.FullPath) ?? string.Empty, "Properties", "AssemblyInfo.cs");
             return this._assemblyInfoPath;
         }
         set => this._assemblyInfoPath = value;

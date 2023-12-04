@@ -5,12 +5,12 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.5.0</AssemblyVersion>
+    <AssemblyVersion>0.0.6.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>5bacf07eccc6ec731abfea0e6fb758160e844333</SourceRevisionId>
+    <SourceRevisionId>ab043f5619c26e93887f9710dca41956773a36bc</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
@@ -52,7 +52,7 @@
   </Target>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
+    <Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />
   </Target>
 
 </Project>
