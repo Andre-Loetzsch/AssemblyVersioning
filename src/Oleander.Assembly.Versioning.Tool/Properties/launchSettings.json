@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "Tool update D316IT012": {
+    "Tool update D316IT012 Tool": {
       "commandName": "Project",
-      "commandLineArgs": "update -t "
+      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\""
     },
     "Tool update D316IT012 Tentakel.Database": {
       "commandName": "Project",
