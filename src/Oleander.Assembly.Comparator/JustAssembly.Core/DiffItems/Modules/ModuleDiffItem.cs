@@ -9,10 +9,7 @@ namespace JustAssembly.Core.DiffItems.Modules
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return Core.MetadataType.Module; }
-        }
+        public override MetadataType MetadataType => MetadataType.Module;
 
         protected override string GetElementShortName(ModuleDefinition element)
         {

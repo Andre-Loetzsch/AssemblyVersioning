@@ -124,27 +124,21 @@ namespace Mono.Cecil {
 			}
 		}
 
-		byte [] HashPublicKey ()
+        private byte [] HashPublicKey ()
 		{
 			HashAlgorithm algorithm;
 
 			switch (this.hash_algorithm) {
 			case AssemblyHashAlgorithm.Reserved:
-#if SILVERLIGHT
-				throw new NotSupportedException ();
-#else
+
 				algorithm = MD5.Create ();
 				break;
-#endif
+
 			default:
 				// None default to SHA1
-#if SILVERLIGHT
-				algorithm = new SHA1Managed ();
-				break;
-#else
+
 				algorithm = SHA1.Create ();
 				break;
-#endif
 			}
 
 			using (algorithm)
