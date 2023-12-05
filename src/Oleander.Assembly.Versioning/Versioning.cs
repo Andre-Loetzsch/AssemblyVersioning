@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Oleander.Assembly.Comparator;
+﻿using Oleander.Assembly.Comparator;
 using Oleander.Assembly.Versioning.ExternalProcesses;
 
 namespace Oleander.Assembly.Versioning;
@@ -344,9 +343,7 @@ public class Versioning
         refVersion = new Version();
         lastCalculatedVersion = new Version();
 
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
-        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
-
+        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
         var lastCalculatedVersionPath = Path.Combine(versioningDir,
             string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName));
 
@@ -361,9 +358,7 @@ public class Versioning
 
     private bool TryGetRefAssemblyFileInfo(string gitHash, out FileInfo fileInfo)
     {
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
-        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
-
+        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
         var refAssemblyPath = Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName)));
 
         if (File.Exists(refAssemblyPath))
@@ -391,8 +386,7 @@ public class Versioning
 
     private void SaveRefAndLastCalculatedVersion(string gitHash, Version refVersion, Version calculatedVersion)
     {
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
-        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
+        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
 
         File.WriteAllLines(Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName), versionInfoFileName)),
             new[] { refVersion.ToString(), calculatedVersion.ToString() });
@@ -400,8 +394,7 @@ public class Versioning
 
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
     {
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
-        if (!Directory.Exists(versioningDir)) Directory.CreateDirectory(versioningDir);
+        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
 
         var log = new List<string>
         {
@@ -462,6 +455,28 @@ public class Versioning
     private bool ShouldIncreaseRevisionVersion(IEnumerable<string> gitChanges, VersionChange versionChange)
     {
         return versionChange < VersionChange.Revision && gitChanges.Any(x => x != ".versionInfo");
+    }
+
+
+    private string CreateVersioningDirIfNotExists(string gitHash)
+    {
+        var versioningDir = Path.Combine(this._projectDirName, ".versioning", gitHash);
+        if (!Directory.Exists(versioningDir))
+        {
+            this.AddVersioningDirToGitIgnore();
+            Directory.CreateDirectory(versioningDir);
+        }
+
+        return versioningDir;
+    }
+
+    private void AddVersioningDirToGitIgnore()
+    {
+        var gitIgnorePath = Path.Combine(this._gitRepositoryDirName, ".gitignore");
+
+        if (!File.Exists(gitIgnorePath)) return;
+        if (File.ReadAllLines(gitIgnorePath).Any(x => x == ".[Vv]ersioning/")) return;
+        File.AppendAllLines(gitIgnorePath, new[] { Environment.NewLine, "# Versioning dir", ".[Vv]ersioning/" });
     }
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
