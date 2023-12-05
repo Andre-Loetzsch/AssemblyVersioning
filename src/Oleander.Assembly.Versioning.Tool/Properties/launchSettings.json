@@ -19,6 +19,10 @@
     "Tool compare L316IT012": {
       "commandName": "Project",
       "commandLineArgs": "compare -t1 \"C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tool.dll\" -t2 \"C:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning.Tool\\.versioninfo\""
+    },
+    "Tool compare L316IT012 Test": {
+      "commandName": "Project",
+      "commandLineArgs": "update -t \"C:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\Oleander.Assembly.Versioning.Tests\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tests.dll\""
     }
   }
 }

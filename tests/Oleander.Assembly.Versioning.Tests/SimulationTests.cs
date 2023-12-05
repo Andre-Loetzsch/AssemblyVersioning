@@ -148,4 +148,14 @@ public class SimulationTests
         Assert.Equal(new(2, 1, 0, 0), result[3]);
         Assert.Equal(new(3, 0, 0, 0), result[4]);
     }
+
+    [Fact]
+    public void TestChangeAssemblyReference()
+    {
+        var result = new TestRunner("changeAssemblyReference").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+    }
 }

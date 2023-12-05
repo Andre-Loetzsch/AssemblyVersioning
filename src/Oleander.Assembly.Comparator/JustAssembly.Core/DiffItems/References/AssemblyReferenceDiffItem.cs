@@ -18,5 +18,7 @@ namespace JustAssembly.Core.DiffItems.References
         {
             return element.FullName;
         }
+
+        public override bool IsBreakingChange => false;
     }
 }
