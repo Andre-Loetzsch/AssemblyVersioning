@@ -231,7 +231,7 @@ namespace Mono.Cecil {
 
 					name.PublicKeyToken = new byte [pk_token.Length / 2];
 					for (int j = 0; j < name.PublicKeyToken.Length; j++)
-						name.PublicKeyToken [j] = Byte.Parse (pk_token.Substring (j * 2, 2), NumberStyles.HexNumber);
+						name.PublicKeyToken [j] = byte.Parse (pk_token.Substring (j * 2, 2), NumberStyles.HexNumber);
 
 					break;
 				}

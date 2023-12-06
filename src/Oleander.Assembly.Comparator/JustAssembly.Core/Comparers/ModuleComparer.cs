@@ -13,29 +13,27 @@ namespace JustAssembly.Core.Comparers
 
         protected override IDiffItem GenerateDiffItem(ModuleDefinition oldElement, ModuleDefinition newElement)
         {
-            IEnumerable<IDiffItem> declarationDiffs = EnumerableExtensions.ConcatAll<IDiffItem>(GetCustomAttributeDiffs(oldElement, newElement), GetReferenceDiffs(oldElement, newElement));
-            IEnumerable<IDiffItem> childrenDiffs = GetTypeDiffs(oldElement, newElement);
-            
-            if(declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
-            {
-                return null;
-            }
+            var declarationDiffs = EnumerableExtensions.ConcatAll(
+                GetCustomAttributeDiffs(oldElement, newElement), GetReferenceDiffs(oldElement, newElement)).ToList();
+
+            var childrenDiffs = GetTypeDiffs(oldElement, newElement).ToList();
+
+            if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty()) return null;
+
             return new ModuleDiffItem(oldElement, newElement, declarationDiffs, childrenDiffs.Cast<IMetadataDiffItem<TypeDefinition>>());
         }
 
-        private IEnumerable<IDiffItem> GetCustomAttributeDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
+        private static IEnumerable<IDiffItem> GetCustomAttributeDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
         {
             return new CustomAttributeComparer().GetMultipleDifferences(oldModule.CustomAttributes, newModule.CustomAttributes);
         }
 
-        private IEnumerable<IDiffItem> GetReferenceDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
+        private static IEnumerable<IDiffItem> GetReferenceDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
         {
-
-            //return Enumerable.Empty<IDiffItem>();
             return new ReferenceComparer().GetMultipleDifferences(oldModule.AssemblyReferences, newModule.AssemblyReferences);
         }
 
-        private IEnumerable<IDiffItem> GetTypeDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
+        private static IEnumerable<IDiffItem> GetTypeDiffs(ModuleDefinition oldModule, ModuleDefinition newModule)
         {
             return new TypeComparer().GetMultipleDifferences(oldModule.Types, newModule.Types);
         }
@@ -47,7 +45,7 @@ namespace JustAssembly.Core.Comparers
 
         protected override int CompareElements(ModuleDefinition x, ModuleDefinition y)
         {
-            return x.Name.CompareTo(y.Name);
+            return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(ModuleDefinition element)
