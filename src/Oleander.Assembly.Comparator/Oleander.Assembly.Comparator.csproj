@@ -5,8 +5,8 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <AssemblyVersion>0.0.22.0</AssemblyVersion>
-    <SourceRevisionId>f843f25ca237835754daf2922965676e844e3356</SourceRevisionId>
+    <AssemblyVersion>0.0.22.4</AssemblyVersion>
+    <SourceRevisionId>ad6ae603c04b3dc0238c87895dfc1182f631ea82</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
 
     <FileVersion>$(AssemblyVersion)</FileVersion>

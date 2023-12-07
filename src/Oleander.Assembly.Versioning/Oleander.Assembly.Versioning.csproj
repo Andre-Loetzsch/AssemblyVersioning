@@ -5,8 +5,8 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.44.0</AssemblyVersion>
-    <SourceRevisionId>f843f25ca237835754daf2922965676e844e3356</SourceRevisionId>
+    <AssemblyVersion>0.0.48.0</AssemblyVersion>
+    <SourceRevisionId>ad6ae603c04b3dc0238c87895dfc1182f631ea82</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Build" Version="17.8.3" NoWarn="NU1701" />
     <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.0" />
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
   </ItemGroup>
 
   <ItemGroup>
