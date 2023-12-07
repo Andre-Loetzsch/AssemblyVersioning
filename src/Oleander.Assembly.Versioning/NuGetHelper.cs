@@ -12,6 +12,8 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuGet.Packaging;
+using NuGet.Packaging.Signing;
+using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.Packaging.Core;
 
@@ -84,6 +86,9 @@ public class NuGetHelper
 
         if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
+
+        //var packageZip = Directory.EnumerateFiles(directory, "*.nupkg").First();
+
         XDocument document;
 
         using (var file = File.OpenRead(packageZip))
@@ -100,11 +105,17 @@ public class NuGetHelper
             {
                 var destinationPath = Path.GetFullPath(Path.Combine(directory, zipEntry.FullName));
                 var destinationDir = Path.GetDirectoryName(destinationPath);
+
                 if (destinationDir != null && !Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
 
                 zipEntry.ExtractToFile(destinationPath, true);
             }
+
         }
+
+
+
+
 
 
         if (document == null)
