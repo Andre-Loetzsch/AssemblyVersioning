@@ -1,7 +1,5 @@
 ﻿using Oleander.Assembly.Comparator;
 using Oleander.Assembly.Versioning.ExternalProcesses;
-using System.Runtime.Versioning;
-using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
@@ -389,7 +387,7 @@ public class Versioning
     private void SaveRefAndLastCalculatedVersion(string gitHash, Version refVersion, Version calculatedVersion)
     {
         var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
-        File.WriteAllLines(Path.Combine(versioningDir,  "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
+        File.WriteAllLines(Path.Combine(versioningDir, "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
@@ -527,6 +525,12 @@ public class Versioning
         project.SaveChanges();
     }
 
+
+
+
+
+
+
     private string GetTargetFrameworkPlatformName()
     {
         return !File.Exists(this._targetFileName) ? "" :
@@ -543,42 +547,24 @@ public class Versioning
 
     internal static string GetTargetFrameworkPlatformName(SysAssembly assembly)
     {
-        var (targetFrameworkAttributeValue, targetPlatformAttributeValue) = GetTargetAttributeValues(assembly);
+        var assemblyInfo = new AssemblyFrameworkInfo(assembly);
+        var targetPlatformAttributeValue = assemblyInfo.TargetPlatform;
+        var shortFolderName = assemblyInfo.NuGetFramework?.GetShortFolderName();
 
-        if (targetFrameworkAttributeValue == null)
-        {
-            return targetPlatformAttributeValue ?? string.Empty;
-        }
+        if (shortFolderName == null) return targetPlatformAttributeValue;
 
-        var frameworkName = new FrameworkName(targetFrameworkAttributeValue);
-        var nuGetFramework = NuGetFramework.ParseFrameworkName(frameworkName.FullName, new DefaultFrameworkNameProvider());
-        
         return string.IsNullOrEmpty(targetPlatformAttributeValue) ?
-            nuGetFramework.GetShortFolderName() :
-            $"{nuGetFramework.GetShortFolderName()}-{targetPlatformAttributeValue}";
+            shortFolderName :
+            $"{shortFolderName}-{targetPlatformAttributeValue}";
     }
 
 
-    private static (string?, string?) GetTargetAttributeValues(SysAssembly assembly)
-    {
-        string? targetFrameworkAttributeValue = null;
-        string? targetPlatformAttributeValue = null;
 
-        var targetPlatformAttributeData = assembly.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetPlatformAttribute");
-        var targetFrameworkAttributeAttributeData = assembly.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute");
 
-        if (targetPlatformAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetPlatformAttributeValue = targetPlatformAttributeData.ConstructorArguments[0].Value as string;
-        }
 
-        if (targetFrameworkAttributeAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetFrameworkAttributeValue = targetFrameworkAttributeAttributeData.ConstructorArguments[0].Value as string;
-        }
 
-        return (targetFrameworkAttributeValue, targetPlatformAttributeValue);
-    }
+
+
 
     #endregion
 
