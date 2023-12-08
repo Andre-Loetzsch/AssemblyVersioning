@@ -5,8 +5,8 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.50.0</AssemblyVersion>
-    <SourceRevisionId>78420babbc46f67dfac9eba5168ce76db0d6273b</SourceRevisionId>
+    <AssemblyVersion>0.0.52.0</AssemblyVersion>
+    <SourceRevisionId>c810152ce0b354a5606c6d7a4a74981d1534a6ac</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.0" />
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
     <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>

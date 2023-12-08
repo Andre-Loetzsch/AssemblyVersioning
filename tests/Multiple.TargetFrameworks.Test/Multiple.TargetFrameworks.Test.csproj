@@ -4,8 +4,8 @@
     <TargetFrameworks>net8.0-windows10.0.22621.0;net8.0-windows</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.1.14</AssemblyVersion>
-    <SourceRevisionId>78420babbc46f67dfac9eba5168ce76db0d6273b</SourceRevisionId>
+    <AssemblyVersion>0.0.1.16</AssemblyVersion>
+    <SourceRevisionId>c810152ce0b354a5606c6d7a4a74981d1534a6ac</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>

@@ -13,7 +13,9 @@
     <SourceRevisionId>78420babbc46f67dfac9eba5168ce76db0d6273b</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    
     <IsPackable>true</IsPackable>
+
     <Title>Assembly versioning task</Title>
     <Authors>Oleander</Authors>
     <Description>Compares two assemblies and calculates the current version</Description>

@@ -7,8 +7,8 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackAsTool>True</PackAsTool>
-    <AssemblyVersion>0.0.19.0</AssemblyVersion>
-    <SourceRevisionId>78420babbc46f67dfac9eba5168ce76db0d6273b</SourceRevisionId>
+    <AssemblyVersion>0.0.20.0</AssemblyVersion>
+    <SourceRevisionId>c810152ce0b354a5606c6d7a4a74981d1534a6ac</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>

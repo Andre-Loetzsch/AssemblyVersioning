@@ -1,7 +1,6 @@
-﻿using Oleander.Assembly.Comparator;
+﻿using System.Runtime.CompilerServices;
+using Oleander.Assembly.Comparator;
 using Oleander.Assembly.Versioning.ExternalProcesses;
-using System.Runtime.Versioning;
-using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
@@ -13,6 +12,8 @@ public class Versioning
     private string _projectDirName = string.Empty;
     private string _projectFileName = string.Empty;
     private string _gitRepositoryDirName = string.Empty;
+
+    private MSBuildProject? _msBuildProject;
 
     #region UpdateAssemblyVersion
 
@@ -263,6 +264,17 @@ public class Versioning
         return new[] { ".cs", ".xaml" };
     }
 
+    protected virtual bool TryDownloadNugetPackage(string outDir)
+    {
+        if (this._msBuildProject is not { IsPackable: true }) return false;
+        var packageId = this._msBuildProject.PackageId;
+        var packageSource = this._msBuildProject.PackageSource;
+
+        if (string.IsNullOrEmpty(packageId) || string.IsNullOrEmpty(packageSource)) return false;
+
+        return NuGetDownLoader.DownloadPackageAsync(packageId, outDir, packageSource).GetAwaiter().GetResult();
+    }
+
     #endregion
 
     #region private members
@@ -270,6 +282,7 @@ public class Versioning
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
         var updateResult = new VersioningResult();
+        this._msBuildProject = new MSBuildProject(this._projectFileName);
 
         if (!this.TryGetGitHash(out var result, out var longGtHash))
         {
@@ -289,6 +302,12 @@ public class Versioning
         var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
         var versionChange = VersionChange.None;
 
+
+
+
+
+
+
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
         {
             var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo);
@@ -296,6 +315,10 @@ public class Versioning
 
             this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
         }
+
+
+
+
 
         var projectFileVersion = this.TryGetProjectFileAssemblyVersion(out var v) ? v : new Version(0, 0, 1, 0);
 
@@ -317,7 +340,7 @@ public class Versioning
             var versionSuffix = updateResult.CalculatedVersion.Major == 0 ? "alpha" :
                 updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
 
-            UpdateProjectFile(this._projectFileName, updateResult.CalculatedVersion, versionSuffix, longGtHash);
+            this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, longGtHash);
 
             var gitChangesList = gitChanges.ToList();
             gitChangesList.Add(this._projectFileName);
@@ -325,7 +348,7 @@ public class Versioning
         }
 
         this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, updateResult.CalculatedVersion);
-        this.CopyTargetFileToProjectRefFile(gitChanges.Any());
+        this.CopyTargetFileToRefVersionBin(gitChanges.Any());
 
         return updateResult;
     }
@@ -333,8 +356,7 @@ public class Versioning
     private bool TryGetProjectFileAssemblyVersion(out Version version)
     {
         version = new Version();
-        var project = new MSBuildProject(this._projectFileName);
-        var projectFileAssemblyVersion = project.AssemblyVersion;
+        var projectFileAssemblyVersion = this._msBuildProject?.AssemblyVersion;
 
         return projectFileAssemblyVersion != null &&
                Version.TryParse(projectFileAssemblyVersion, out version!);
@@ -369,6 +391,12 @@ public class Versioning
             return true;
         }
 
+        if (this.TryDownloadNugetPackage(versioningDir) && File.Exists(refAssemblyPath))
+        {
+            fileInfo = new FileInfo(refAssemblyPath);
+            return true;
+        }
+
         var versionBinPath = this.GetVersionBinPath();
 
         if (File.Exists(versionBinPath))
@@ -382,14 +410,14 @@ public class Versioning
         if (!fileInfo.Exists) return false;
 
         File.Copy(this._targetFileName, refAssemblyPath, true);
-        fileInfo = new FileInfo(this._targetFileName);
+        fileInfo = new FileInfo(refAssemblyPath);
         return true;
     }
 
     private void SaveRefAndLastCalculatedVersion(string gitHash, Version refVersion, Version calculatedVersion)
     {
         var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
-        File.WriteAllLines(Path.Combine(versioningDir,  "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
+        File.WriteAllLines(Path.Combine(versioningDir, "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
@@ -406,7 +434,7 @@ public class Versioning
         File.WriteAllLines(Path.Combine(versioningDir, "changelog.txt"), log);
     }
 
-    private void CopyTargetFileToProjectRefFile(bool hasGitChanges)
+    private void CopyTargetFileToRefVersionBin(bool hasGitChanges)
     {
         if (!File.Exists(this._targetFileName)) return;
 
@@ -515,16 +543,13 @@ public class Versioning
         return false;
     }
 
-    private static void UpdateProjectFile(string projectFileName, Version assemblyVersion, string versionSuffix, string sourceRevisionId)
+    private void UpdateProjectFile(Version assemblyVersion, string versionSuffix, string sourceRevisionId)
     {
-        var project = new MSBuildProject(projectFileName)
-        {
-            AssemblyVersion = assemblyVersion.ToString(),
-            SourceRevisionId = sourceRevisionId,
-            VersionSuffix = versionSuffix
-        };
-
-        project.SaveChanges();
+        if (this._msBuildProject == null) return;
+        this._msBuildProject.AssemblyVersion = assemblyVersion.ToString();
+        this._msBuildProject.SourceRevisionId = sourceRevisionId;
+        this._msBuildProject.VersionSuffix = versionSuffix;
+        this._msBuildProject.SaveChanges();
     }
 
     private string GetTargetFrameworkPlatformName()
@@ -540,44 +565,17 @@ public class Versioning
         return targetAttributeValueCache[assemblyLocation];
     }
 
-
-    internal static string GetTargetFrameworkPlatformName(SysAssembly assembly)
+    private static string GetTargetFrameworkPlatformName(SysAssembly assembly)
     {
-        var (targetFrameworkAttributeValue, targetPlatformAttributeValue) = GetTargetAttributeValues(assembly);
+        var assemblyInfo = new AssemblyFrameworkInfo(assembly);
+        var targetPlatformAttributeValue = assemblyInfo.TargetPlatform ?? string.Empty;
+        var shortFolderName = assemblyInfo.NuGetFramework?.GetShortFolderName();
 
-        if (targetFrameworkAttributeValue == null)
-        {
-            return targetPlatformAttributeValue ?? string.Empty;
-        }
+        if (shortFolderName == null) return targetPlatformAttributeValue;
 
-        var frameworkName = new FrameworkName(targetFrameworkAttributeValue);
-        var nuGetFramework = NuGetFramework.ParseFrameworkName(frameworkName.FullName, new DefaultFrameworkNameProvider());
-        
         return string.IsNullOrEmpty(targetPlatformAttributeValue) ?
-            nuGetFramework.GetShortFolderName() :
-            $"{nuGetFramework.GetShortFolderName()}-{targetPlatformAttributeValue}";
-    }
-
-
-    private static (string?, string?) GetTargetAttributeValues(SysAssembly assembly)
-    {
-        string? targetFrameworkAttributeValue = null;
-        string? targetPlatformAttributeValue = null;
-
-        var targetPlatformAttributeData = assembly.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetPlatformAttribute");
-        var targetFrameworkAttributeAttributeData = assembly.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute");
-
-        if (targetPlatformAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetPlatformAttributeValue = targetPlatformAttributeData.ConstructorArguments[0].Value as string;
-        }
-
-        if (targetFrameworkAttributeAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetFrameworkAttributeValue = targetFrameworkAttributeAttributeData.ConstructorArguments[0].Value as string;
-        }
-
-        return (targetFrameworkAttributeValue, targetPlatformAttributeValue);
+            shortFolderName :
+            $"{shortFolderName}-{targetPlatformAttributeValue}";
     }
 
     #endregion
