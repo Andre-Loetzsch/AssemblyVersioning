@@ -1,22 +1,8 @@
-﻿//using NuGet.Common;
-//using NuGet.Configuration;
-//using NuGet.Packaging;
-//using NuGet.Packaging.Core;
-//using NuGet.Protocol;
-//using NuGet.Protocol.Core.Types;
-//using NuGet.Versioning;
-
-using System.IO.Compression;
-using System.Xml.Linq;
+﻿using System.IO.Compression;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
-using NuGet.Packaging;
-using NuGet.Packaging.Signing;
-using NuGet.Configuration;
 using NuGet.Frameworks;
-using NuGet.Packaging.Core;
-
 
 namespace Oleander.Assembly.Versioning;
 
@@ -24,7 +10,6 @@ public class NuGetHelper
 {
     public static async Task DownloadPackageAsync(string packageId)
     {
-        #region DownloadPackage
         var logger = NuGet.Common.NullLogger.Instance;
         var cancellationToken = CancellationToken.None;
         var cache = new SourceCacheContext();
@@ -41,111 +26,60 @@ public class NuGetHelper
         using var packageStream = new MemoryStream();
         await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, cache, logger, cancellationToken);
 
-        using var packageReader = new PackageArchiveReader(packageStream);
-
-        var packageFileName = $"{packageId}.{latestPackageVersion}.nupkg";
-        var packageDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages");
-
-        if (!Directory.Exists(packageDir)) Directory.CreateDirectory(packageDir);
-
-        var packageFilePath = Path.Combine(packageDir, packageFileName);
-
-        File.WriteAllBytes(packageFilePath, packageStream.ToArray());
-
-
-
-        var packagePathResolver = new PackagePathResolver(Path.GetFullPath(packageDir));
-
-        var installedPath = packagePathResolver.GetInstalledPath(new PackageIdentity(packageId, packageVersion));
-
-
-
-
-
-        //var settings = Settings.LoadDefaultSettings(root: null);
-        //var packageExtractionContext = new PackageExtractionContext(
-        //    PackageSaveMode.Nuspec | PackageSaveMode.Files | PackageSaveMode.Nupkg,
-        //    XmlDocFileSaveMode.None, 
-        //    ClientPolicyContext.GetClientPolicy(settings, logger),
-        //    logger);
-
-
-        //packageExtractionContext.PackageSaveMode = PackageSaveMode.Files;
-
-        UnZip(Path.Combine(packageDir, Path.GetFileNameWithoutExtension(packageFilePath)), packageFilePath);
-
-
-        #endregion
+        UnZipStream(packageStream, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages"));
     }
 
-    private static void UnZip(string directory, string packageZip)
+    private static void UnZipStream(Stream packageStream, string outDir)
     {
+        using var archive = new ZipArchive(packageStream, ZipArchiveMode.Read, false);
 
-        if (directory == null)
-            throw new ArgumentNullException(nameof(directory));
-
-        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-
-
-        //var packageZip = Directory.EnumerateFiles(directory, "*.nupkg").First();
-
-        XDocument document;
-
-        using (var file = File.OpenRead(packageZip))
-
-
-        using (var archive = new ZipArchive(file, ZipArchiveMode.Read, false))
+        foreach (var zipEntry in archive.Entries)
         {
-            var entry = archive.Entries.First(e => System.IO.Path.GetExtension(e.FullName) == ".nuspec");
-            using (var nuspec = entry.Open())
-                document = XDocument.Load(nuspec);
+            var fileExtension = Path.GetExtension(zipEntry.FullName).ToLower();
+            if (fileExtension != ".dll" && fileExtension != ".exe") continue;
 
+            using var stream = zipEntry.Open();
+            var ms = new MemoryStream();
 
-            foreach (var zipEntry in archive.Entries)
+            stream.CopyTo(ms);
+
+            try
             {
-                var destinationPath = Path.GetFullPath(Path.Combine(directory, zipEntry.FullName));
-                var destinationDir = Path.GetDirectoryName(destinationPath);
+                var buffer = ms.ToArray();
+                var assembly = SysAssembly.Load(buffer);
 
-                if (destinationDir != null && !Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
+                var split = Versioning.GetTargetFrameworkPlatformName(assembly).Split(new [] {'-'}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                zipEntry.ExtractToFile(destinationPath, true);
+                if (!split.Any())
+                {
+                    var pathItems = zipEntry.FullName.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (pathItems.Length > 1)
+                    {
+                        var nugetFramework = NuGetFramework.ParseFrameworkName(pathItems[pathItems.Length - 2], new DefaultFrameworkNameProvider());
+                        
+                        split.Add(nugetFramework.Framework);
+
+                        if (nugetFramework.HasPlatform)
+                        {
+                            split.Add(nugetFramework.Platform);
+                        }
+                    }
+                }
+
+
+                split.Insert(0, outDir);
+                var libDir = Path.Combine(split.ToArray());
+
+                if (!Directory.Exists(libDir)) Directory.CreateDirectory(libDir);
+                var path = Path.Combine(libDir, zipEntry.Name);
+
+                File.WriteAllBytes(path, buffer);
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
-
-
-
-
-
-
-        if (document == null)
-            throw new Exception($"No nuspec found in {packageZip}");
-
-        var ns = document.Root.Name.Namespace;
-        var metadata = document.Root.Element(ns + "metadata");
-
-        if (metadata == null)
-            throw new Exception($"No metadata found in nuspec document in {packageZip}");
-
-        var id = metadata.Element(ns + "id").Value.Trim();
-        var version = metadata.Element(ns + "version").Value.Trim();
-        var path = directory;
-
-        var libFolder = System.IO.Path.Combine(path, "lib");
-        var toolsFolder = System.IO.Path.Combine(path, "tools");
-
-        IEnumerable<string> EnumDirs(string dir)
-        {
-            if (!Directory.Exists(dir)) return Enumerable.Empty<string>();
-            return Directory.EnumerateDirectories(dir);
-        }
-
-        var FrameworkVersions =
-            EnumDirs(libFolder).Concat(EnumDirs(toolsFolder))
-                .Select(d => NuGetFramework.ParseFolder(System.IO.Path.GetFileName(d)))
-                .ToList();
-
-
     }
-
 }

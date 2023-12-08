@@ -536,19 +536,28 @@ public class Versioning
     private static string GetTargetFrameworkPlatformName(SysAssembly assembly, string assemblyLocation)
     {
         if (targetAttributeValueCache.TryGetValue(assemblyLocation, out var value)) return value;
+        targetAttributeValueCache[assemblyLocation] = GetTargetFrameworkPlatformName(assembly);
+        return targetAttributeValueCache[assemblyLocation];
+    }
 
+
+    internal static string GetTargetFrameworkPlatformName(SysAssembly assembly)
+    {
         var (targetFrameworkAttributeValue, targetPlatformAttributeValue) = GetTargetAttributeValues(assembly);
 
-        if (targetFrameworkAttributeValue == null) return string.Empty;
+        if (targetFrameworkAttributeValue == null)
+        {
+            return targetPlatformAttributeValue ?? string.Empty;
+        }
 
         var frameworkName = new FrameworkName(targetFrameworkAttributeValue);
         var nuGetFramework = NuGetFramework.ParseFrameworkName(frameworkName.FullName, new DefaultFrameworkNameProvider());
-        targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
+        
+        return string.IsNullOrEmpty(targetPlatformAttributeValue) ?
             nuGetFramework.GetShortFolderName() :
             $"{nuGetFramework.GetShortFolderName()}-{targetPlatformAttributeValue}";
-
-        return targetAttributeValueCache[assemblyLocation];
     }
+
 
     private static (string?, string?) GetTargetAttributeValues(SysAssembly assembly)
     {
