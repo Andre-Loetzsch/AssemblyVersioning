@@ -3,7 +3,7 @@ using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
-public class AssemblyFrameworkInfo 
+public class AssemblyFrameworkInfo
 {
     public AssemblyFrameworkInfo(SysAssembly assembly)
     {

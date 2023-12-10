@@ -552,6 +552,12 @@ public class Versioning
         this._msBuildProject.SaveChanges();
     }
 
+
+
+
+
+
+
     private string GetTargetFrameworkPlatformName()
     {
         return !File.Exists(this._targetFileName) ? "" :
