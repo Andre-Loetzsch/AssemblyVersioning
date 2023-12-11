@@ -18,6 +18,16 @@ internal class TestVersioning : Versioning
         return !string.IsNullOrEmpty(this.GitHash);
     }
 
+    //protected override string[] GetGitDiffFilter()
+    //{
+    //    return base.GetGitDiffFilter();
+    //}
+
+    protected override bool TryDownloadNugetPackage(string outDir)
+    {
+        return false;
+    }
+
     public List<string> GitChanges { get; } = new List<string>();
 
     public string? GitHash { get; set; } 

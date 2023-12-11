@@ -59,6 +59,29 @@ internal class MSBuildProject
         set => this.SetAttributeValue("VersionSuffix", value);
     }
 
+    public bool IsPackable => 
+        this.GetAttributeValue("IsPackable") is null or "true";
+
+    public string? PackageId
+    {
+        get
+        {
+            var value = this.GetAttributeValue("PackageId");
+            if (!string.IsNullOrEmpty(value)) return value;
+
+            value = this.GetAttributeValue("AssemblyName");
+            if (!string.IsNullOrEmpty(value)) return value;
+
+            value = this.GetAttributeValue("MSBuildProjectName");
+            if (!string.IsNullOrEmpty(value)) return value;
+
+            return Path.GetFileNameWithoutExtension(this.ProjectFileName);
+        }
+    }
+    
+
+    public string? PackageSource => this.GetAttributeValue("PackageSource");
+
     public bool UseAssemblyInfoFile
     {
         get
@@ -252,7 +275,7 @@ internal class MSBuildProject
             value : this._projectRootElement.Properties.FirstOrDefault(x => x.Name == attribute)?.Value;
 
         this._projectProperties[attribute] = value ?? string.Empty;
-        return this._projectProperties[attribute];
+        return value;
     }
 
     private void SetAttributeValue(string attribute, string? value)

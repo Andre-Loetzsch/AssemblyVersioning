@@ -397,6 +397,11 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Versioning dir
-.[Vv]ersioning/
-/.gitignore
+# Versioning cache
+**/.[Vv]ersioning/[Cc]ache/
+# Oleander.Assembly.Comparator Versioning ref
+**/Oleander.Assembly.Comparator/.[Vv]ersioning/[Rr]ef/
+# Oleander.Assembly.Versioning Versioning ref
+**/Oleander.Assembly.Versioning/.[Vv]ersioning/[Rr]ef/
+# Oleander.Assembly.Versioning.Tool Versioning ref
+**/Oleander.Assembly.Versioning.Tool/.[Vv]ersioning/[Rr]ef/

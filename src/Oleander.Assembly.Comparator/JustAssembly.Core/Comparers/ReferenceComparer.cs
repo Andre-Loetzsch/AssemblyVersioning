@@ -18,12 +18,10 @@ namespace JustAssembly.Core.Comparers
         protected override IDiffItem GetNewDiffItem(AssemblyNameReference element)
         {
             return new AssemblyReferenceDiffItem(null, element, null);
-            //return null;
         }
 
         protected override int CompareElements(AssemblyNameReference x, AssemblyNameReference y)
         {
-            //return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
             return string.Compare(x.FullName, y.FullName, StringComparison.Ordinal);
 
         }
