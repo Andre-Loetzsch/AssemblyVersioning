@@ -1,58 +1,83 @@
 ﻿using System.IO.Compression;
-using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuGet.Frameworks;
 using NuGet.Configuration;
+using NuGet.Common;
 
 namespace Oleander.Assembly.Versioning;
 
-public static class NuGetDownLoader
+internal class NuGetDownLoader : IDisposable
 {
-    public static async Task<bool> DownloadPackageAsync(string packageId, string outDir)
+    private readonly INuGetLogger _logger = NullLogger.Instance;
+    private readonly SourceCacheContext _sourceCacheContext = new() { IgnoreFailedSources = true };
+
+    public NuGetDownLoader(string targetName)
     {
-        return await DownloadPackageAsync(packageId, outDir, "https://api.nuget.org/v3/index.json");
+        this.TargetName = targetName;
     }
 
-    public static async Task<bool> DownloadPackageAsync(string packageId, string outDir, string packageSource)
+    public NuGetDownLoader(string targetName, INuGetLogger logger)
     {
-        var logger = NuGet.Common.NullLogger.Instance;
-        var cancellationToken = CancellationToken.None;
-        var cache = new SourceCacheContext();
-        var repository = Repository.Factory.GetCoreV3(packageSource);
+        this._logger = logger;
+        this.TargetName = targetName;
+    }
 
+    public string TargetName { get; set; }
 
+    public async Task<IReadOnlyList<Tuple<SourceRepository, NuGetVersion>>> GetAllVersionsAsync(IEnumerable<SourceRepository> sources, string packageId, CancellationToken cancellationToken)
+    {
+        var result = new List<Tuple<SourceRepository, NuGetVersion>>();
 
+        foreach (var source in sources)
+        {
+            try
+            {
+                var resource = await source.GetResourceAsync<MetadataResource>(cancellationToken);
+                var versions = await resource.GetVersions(packageId, true, false, this._sourceCacheContext, this._logger, cancellationToken);
+
+                foreach (var version in versions)
+                {
+                    if (result.Any(x => x.Item2.Version == version.Version)) continue;
+                    result.Add(new(source, version));
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError($"Get versions failed! {ex.GetType()} : {ex.Message} PackageId={packageId}, Source name={source.PackageSource.Name}, Source={source.PackageSource.Source}");
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    public IReadOnlyList<SourceRepository> GetNuGetConfigSources()
+    {
         var settings = Settings.LoadDefaultSettings(root: null);
         var sourceRepositoryProvider = new SourceRepositoryProvider(
             new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
 
-       
+        return sourceRepositoryProvider.GetRepositories()
+            .Where(x => x.PackageSource.IsEnabled).ToArray();
+    }
 
-
-
-         var resource = await repository.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
-        var versions = (await resource.GetAllVersionsAsync(packageId, cache, logger, cancellationToken)).ToList();
-        var latestPackageVersion = versions.FirstOrDefault(x => x.Version == versions.Max(x1 => x1.Version));
-
-        if (latestPackageVersion == null) return false;
-
-        var packageVersion = new NuGetVersion(latestPackageVersion);
-
+    public async Task<bool> DownloadPackageAsync(SourceRepository source, string packageId, NuGetVersion packageVersion, string outDir, CancellationToken cancellationToken)
+    {
+        var resource = await source.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
         using var packageStream = new MemoryStream();
-        await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, cache, logger, cancellationToken);
+        await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, this._sourceCacheContext, this._logger, cancellationToken);
 
-        UnZipAssemblies(packageStream, outDir);
+        this.UnZipAssemblies(packageStream, outDir);
 
         return true;
     }
 
-
-    private static void UnZipAssemblies(Stream packageStream, string outDir)
+    private void UnZipAssemblies(Stream packageStream, string outDir)
     {
         using var archive = new ZipArchive(packageStream, ZipArchiveMode.Read, false);
 
-        foreach (var zipEntry in archive.Entries)
+        foreach (var zipEntry in archive.Entries
+                     .Where(x => string.Equals(x.Name, this.TargetName, StringComparison.OrdinalIgnoreCase)))
         {
             var fileExtension = Path.GetExtension(zipEntry.FullName).ToLower();
             if (fileExtension != ".dll" && fileExtension != ".exe") continue;
@@ -79,7 +104,8 @@ public static class NuGetDownLoader
 
                     if (zipEntryPathItems.Length > 1)
                     {
-                        var nugetFramework = NuGetFramework.ParseFrameworkName(zipEntryPathItems[zipEntryPathItems.Length - 2], new DefaultFrameworkNameProvider());
+                        // ReSharper disable once UseIndexFromEndExpression
+                        var nugetFramework = NuGetFramework.ParseFrameworkName(zipEntryPathItems[zipEntryPathItems.Length -2], new DefaultFrameworkNameProvider());
 
                         pathItemsList.Add(nugetFramework.Framework);
 
@@ -98,10 +124,21 @@ public static class NuGetDownLoader
 
                 File.WriteAllBytes(path, buffer);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                this._logger.LogError($"{ex.GetType()}: {ex}");
             }
         }
+    }
+
+    public void Dispose()
+    {
+        this._sourceCacheContext.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    ~NuGetDownLoader()
+    {
+        this._sourceCacheContext.Dispose();
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using NuGet.Common;
-using ILogger = NuGet.Common.ILogger;
-using IMSLogger = Microsoft.Extensions.Logging.ILogger;
-using LogLevel = NuGet.Common.LogLevel;
 
 namespace Oleander.Assembly.Versioning;
 
-public class NuGetLogger(IMSLogger logger) : ILogger
+public class NuGetLogger(ILogger logger) : INuGetLogger
 {
+    public ILogger Logger => logger;
+
     public void LogDebug(string data)
     { 
         logger.LogDebug(data);
@@ -37,7 +36,6 @@ public class NuGetLogger(IMSLogger logger) : ILogger
     public void LogError(string data)
     {
         logger.LogError(data);
-
     }
 
     public void LogInformationSummary(string data)
@@ -45,28 +43,28 @@ public class NuGetLogger(IMSLogger logger) : ILogger
         logger.LogError(data);
     }
 
-    public void Log(LogLevel level, string data)
+    public void Log(NuGetLogLevel level, string data)
     {
         switch (level)
         {
-            case LogLevel.Debug:
-            case LogLevel.Verbose:
-            case LogLevel.Minimal:
+            case NuGetLogLevel.Debug:
+            case NuGetLogLevel.Verbose:
+            case NuGetLogLevel.Minimal:
                 this.LogDebug(data);
                 break;
-            case LogLevel.Information:
+            case NuGetLogLevel.Information:
                 this.LogInformation(data);
                 break;
-            case LogLevel.Warning:
+            case NuGetLogLevel.Warning:
                 this.LogWarning(data);
                 break;
-            case LogLevel.Error:
+            case NuGetLogLevel.Error:
                 this.LogError(data);
                 break;
         }
     }
 
-    public Task LogAsync(LogLevel level, string data)
+    public Task LogAsync(NuGetLogLevel level, string data)
     {
         return Task.Run(() => { this.Log(level, data); });
     }
@@ -75,9 +73,9 @@ public class NuGetLogger(IMSLogger logger) : ILogger
     {
         switch (message.Level)
         {
-            case LogLevel.Debug:
-            case LogLevel.Verbose:
-            case LogLevel.Minimal:
+            case NuGetLogLevel.Debug:
+            case NuGetLogLevel.Verbose:
+            case NuGetLogLevel.Minimal:
                 if (message.ProjectPath == null)
                 {
                     logger.LogDebug("{time} {message} ", message.Time, message.Message);
@@ -87,7 +85,7 @@ public class NuGetLogger(IMSLogger logger) : ILogger
                     logger.LogDebug("{time} {message} {projectPath} ", message.Time, message.Message, message.ProjectPath);
                 }
                 break;
-            case LogLevel.Information:
+            case NuGetLogLevel.Information:
                 if (message.ProjectPath == null)
                 {
                     logger.LogInformation("{time} {message} ", message.Time, message.Message);
@@ -97,7 +95,7 @@ public class NuGetLogger(IMSLogger logger) : ILogger
                     logger.LogInformation("{time} {message} {projectPath} ", message.Time, message.Message, message.ProjectPath);
                 }
                 break;
-            case LogLevel.Warning:
+            case NuGetLogLevel.Warning:
                 if (message.ProjectPath == null)
                 {
                     logger.LogWarning("{time} {message} {warningLevel}", message.Time, message.Message, message.WarningLevel);
@@ -107,7 +105,7 @@ public class NuGetLogger(IMSLogger logger) : ILogger
                     logger.LogWarning("{time} {message} {warningLevel} {projectPath} ", message.Time, message.Message, message.WarningLevel, message.ProjectPath);
                 }
                 break;
-            case LogLevel.Error:
+            case NuGetLogLevel.Error:
                 if (message.ProjectPath == null)
                 {
                     logger.LogWarning("{time} {message} {warningLevel}", message.Time, message.Message, message.WarningLevel);

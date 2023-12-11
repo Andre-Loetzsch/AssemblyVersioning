@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparator;
 using Oleander.Assembly.Versioning.ExternalProcesses;
 
@@ -268,11 +269,20 @@ public class Versioning
     {
         if (this._msBuildProject is not { IsPackable: true }) return false;
         var packageId = this._msBuildProject.PackageId;
+        if (packageId == null) return false;
+
         var packageSource = this._msBuildProject.PackageSource;
+        using var nuGetDownLoader = new NuGetDownLoader(Path.GetFileName(this._targetFileName));
+        var sources = packageSource == null ? nuGetDownLoader.GetNuGetConfigSources() :
+            new[] { Repository.Factory.GetCoreV3(packageSource) };
 
-        if (string.IsNullOrEmpty(packageId) || string.IsNullOrEmpty(packageSource)) return false;
+        var versions = nuGetDownLoader.GetAllVersionsAsync(sources, packageId, CancellationToken.None).GetAwaiter().GetResult();
 
-        return NuGetDownLoader.DownloadPackageAsync(packageId, outDir, packageSource).GetAwaiter().GetResult();
+        if (!versions.Any()) return false;
+
+        var (source, version) = versions.First(x => x.Item2.Version == versions.Max(x1 => x1.Item2.Version));
+
+        return nuGetDownLoader.DownloadPackageAsync(source, packageId, version, outDir, CancellationToken.None).GetAwaiter().GetResult();
     }
 
     #endregion
@@ -302,12 +312,6 @@ public class Versioning
         var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
         var versionChange = VersionChange.None;
 
-
-
-
-
-
-
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
         {
             var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo);
@@ -315,10 +319,6 @@ public class Versioning
 
             this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
         }
-
-
-
-
 
         var projectFileVersion = this.TryGetProjectFileAssemblyVersion(out var v) ? v : new Version(0, 0, 1, 0);
 
@@ -391,12 +391,18 @@ public class Versioning
             return true;
         }
 
-        if (this.TryDownloadNugetPackage(versioningDir) && File.Exists(refAssemblyPath))
+        var projectDirName = new DirectoryInfo(this._projectDirName).Name;
+        var gitIgnore = $"**/{projectDirName}/.[Vv]ersioning/[Rr]ef/";
+
+        if (this.TryDownloadNugetPackage(this.CreateVersioningCacheDirIfNotExists(gitHash)) && File.Exists(refAssemblyPath))
         {
             fileInfo = new FileInfo(refAssemblyPath);
+
+            this.AddToGitIgnore($"{projectDirName} Versioning ref", gitIgnore);
             return true;
         }
 
+        this.RemoveFromGitIgnore(gitIgnore);
         var versionBinPath = this.GetVersionBinPath();
 
         if (File.Exists(versionBinPath))
@@ -495,31 +501,70 @@ public class Versioning
         return Path.Combine(path, "version.bin");
     }
 
+    private string CreateVersioningCacheDirIfNotExists(string gitHash)
+    {
+        var versioningCacheDir = Path.Combine(this._projectDirName, ".versioning", "cache", gitHash);
+        if (Directory.Exists(versioningCacheDir)) return versioningCacheDir;
+
+        return versioningCacheDir;
+    }
+
     private string CreateVersioningDirIfNotExists(string gitHash)
     {
-        var pathItems = new List<string> { this._projectDirName, ".versioning", "cache", gitHash };
+        var pathItems = new List<string> { this.CreateVersioningCacheDirIfNotExists(gitHash) };
+
         pathItems.AddRange(this.GetTargetFrameworkPlatformName().Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
         var versioningDir = Path.Combine(pathItems.ToArray());
 
         if (Directory.Exists(versioningDir)) return versioningDir;
 
-        this.AddVersioningDirToGitIgnore();
+        this.AddToGitIgnore("Versioning cache", "**/.[Vv]ersioning/[Cc]ache/");
+
         Directory.CreateDirectory(versioningDir);
 
         return versioningDir;
     }
 
-    private void AddVersioningDirToGitIgnore()
+    private void AddToGitIgnore(string description, string ignorePattern)
     {
         var gitIgnorePath = Path.Combine(this._gitRepositoryDirName, ".gitignore");
 
         if (!File.Exists(gitIgnorePath)) return;
 
-        var allLines = File.ReadAllLines(gitIgnorePath);
+        var allLines = File.ReadAllLines(gitIgnorePath).ToList();
 
-        if (allLines.Any(x => x == "**/.[Vv]ersioning/[Cc]ache/")) return;
+        if (allLines.Any(x => x == ignorePattern)) return;
 
-        File.AppendAllLines(gitIgnorePath, new[] { "# Versioning cache", "**/.[Vv]ersioning/[Cc]ache/" });
+        if (!description.StartsWith("#")) description = string.Concat("# ", description);
+        File.AppendAllLines(gitIgnorePath, new[] { description, ignorePattern });
+    }
+
+    private void RemoveFromGitIgnore(string ignorePattern)
+    {
+        var gitIgnorePath = Path.Combine(this._gitRepositoryDirName, ".gitignore");
+
+        if (!File.Exists(gitIgnorePath)) return;
+
+        var allLines = File.ReadAllLines(gitIgnorePath).ToList();
+        var index = allLines.IndexOf(ignorePattern);
+
+        if (index == -1) return;
+
+        var descriptionIndex = index - 1;
+
+        if (descriptionIndex > -1 &&
+            descriptionIndex < allLines.Count &&
+            allLines[descriptionIndex].StartsWith("#"))
+        {
+            allLines.RemoveAt(descriptionIndex);
+            allLines.RemoveAt(descriptionIndex);
+        }
+        else
+        {
+            allLines.RemoveAt(index);
+        }
+
+        File.WriteAllLines(gitIgnorePath, allLines);
     }
 
     private static bool TryFindGitRepositoryDirName(string? startDirectory, out string gitRepositoryDirName)
@@ -551,12 +596,6 @@ public class Versioning
         this._msBuildProject.VersionSuffix = versionSuffix;
         this._msBuildProject.SaveChanges();
     }
-
-
-
-
-
-
 
     private string GetTargetFrameworkPlatformName()
     {

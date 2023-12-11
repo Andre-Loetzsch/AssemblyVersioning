@@ -7,8 +7,24 @@ public class NuGetTests
     [Fact]
     public async void TestDownload()
     {
-        await NuGetDownLoader.DownloadPackageAsync("Newtonsoft.Json", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages"));
-        await NuGetDownLoader.DownloadPackageAsync("Oleander.Extensions.Logging.Abstractions", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages"));
+        var packageId = "Oleander.Assembly.Versioning.Tool";//"Newtonsoft.Json";
+        var outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages");
+        using var nuGetDownLoader1 = new NuGetDownLoader("Oleander.Assembly.Versioning.Tool.dll");
+        var sources = nuGetDownLoader1.GetNuGetConfigSources();
+        var versions = await nuGetDownLoader1.GetAllVersionsAsync(sources, packageId, CancellationToken.None);
 
+        if (!versions.Any()) return;
+
+        var (source, version) = versions.First(x => x.Item2.Version == versions.Max(x1 => x1.Item2.Version));
+        Assert.True(await nuGetDownLoader1.DownloadPackageAsync(source, packageId, version, outDir, CancellationToken.None));
+
+        packageId = "Oleander.Extensions.Logging.Abstractions";
+        using var nuGetDownLoader2 = new NuGetDownLoader("Oleander.Extensions.Logging.Abstractions.dll");
+        versions = await nuGetDownLoader2.GetAllVersionsAsync(sources, packageId, CancellationToken.None);
+
+        if (!versions.Any()) return;
+
+        (source, version) = versions.First(x => x.Item2.Version == versions.Max(x1 => x1.Item2.Version));
+        Assert.True(await nuGetDownLoader2.DownloadPackageAsync(source, packageId, version, outDir, CancellationToken.None));
     }
 }
