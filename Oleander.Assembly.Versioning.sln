@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Versionin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Versioning.BuildTask", "src\Oleander.Assembly.Versioning.BuildTask\Oleander.Assembly.Versioning.BuildTask.csproj", "{E5178C9F-FDAB-4FC5-8757-CC354A8B72DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multiple.TargetFrameworks.Test", "tests\Multiple.TargetFrameworks.Test\Multiple.TargetFrameworks.Test.csproj", "{91D30EC1-4BB5-4946-8B3D-5F249BE8549F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multiple.TargetFrameworks.Test", "tests\Multiple.TargetFrameworks.Test\Multiple.TargetFrameworks.Test.csproj", "{91D30EC1-4BB5-4946-8B3D-5F249BE8549F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
