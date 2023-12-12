@@ -368,7 +368,7 @@ public class Versioning
         refVersion = new Version();
         lastCalculatedVersion = new Version();
 
-        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
+        var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
         var lastCalculatedVersionPath = Path.Combine(versioningDir, "versionInfo.txt");
 
         if (!File.Exists(lastCalculatedVersionPath)) return false;
@@ -382,8 +382,8 @@ public class Versioning
 
     private bool TryGetRefAssemblyFileInfo(string gitHash, out FileInfo fileInfo)
     {
-        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
-        var refAssemblyPath = Path.Combine(versioningDir, string.Concat(Path.GetFileName(this._targetFileName)));
+        var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
+        var refAssemblyPath = Path.Combine(versioningDir, Path.GetFileName(this._targetFileName));
 
         if (File.Exists(refAssemblyPath))
         {
@@ -391,19 +391,28 @@ public class Versioning
             return true;
         }
 
-        var projectDirName = new DirectoryInfo(this._projectDirName).Name;
-        var gitIgnore = $"**/{projectDirName}/.[Vv]ersioning/[Rr]ef/";
+        //var projectDirName = new DirectoryInfo(this._projectDirName).Name;
+        //var gitIgnore = $"**/{projectDirName}/.[Vv]ersioning/[Rr]ef/";
+
+
+        //var gitIgnore = $"**/{projectDirName}/.[Vv]ersioning/[Rr]ef/";
+        var versionBinPath = this.GetVersioningRefBinPath();
 
         if (this.TryDownloadNugetPackage(this.CreateVersioningCacheDirIfNotExists(gitHash)) && File.Exists(refAssemblyPath))
         {
+
+            if (File.Exists(versionBinPath)) File.Delete(versionBinPath);
             fileInfo = new FileInfo(refAssemblyPath);
 
-            this.AddToGitIgnore($"{projectDirName} Versioning ref", gitIgnore);
+            this.VersioningNuGetDirExist = true;
+
+            //this.AddToGitIgnore($"{projectDirName} Versioning ref", gitIgnore);
+
             return true;
         }
 
-        this.RemoveFromGitIgnore(gitIgnore);
-        var versionBinPath = this.GetVersionBinPath();
+        //this.RemoveFromGitIgnore(gitIgnore);
+        this.VersioningNuGetDirExist = false;
 
         if (File.Exists(versionBinPath))
         {
@@ -422,13 +431,13 @@ public class Versioning
 
     private void SaveRefAndLastCalculatedVersion(string gitHash, Version refVersion, Version calculatedVersion)
     {
-        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
+        var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
         File.WriteAllLines(Path.Combine(versioningDir, "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
     private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
     {
-        var versioningDir = this.CreateVersioningDirIfNotExists(gitHash);
+        var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
 
         var log = new List<string>
         {
@@ -442,9 +451,10 @@ public class Versioning
 
     private void CopyTargetFileToRefVersionBin(bool hasGitChanges)
     {
+        if (this.VersioningNuGetDirExist) return;
         if (!File.Exists(this._targetFileName)) return;
 
-        var versionBinPath = this.GetVersionBinPath();
+        var versionBinPath = this.GetVersioningRefBinPath();
 
         if (File.Exists(versionBinPath))
         {
@@ -491,14 +501,50 @@ public class Versioning
         return versionChange < VersionChange.Revision && gitChanges.Any(x => !x.EndsWith("version.bin"));
     }
 
-    private string GetVersionBinPath()
+
+    private bool VersioningNuGetDirExist
+    {
+
+        get => Directory.Exists(Path.Combine(this.CreateVersioningDirIfNotExists(), "nuget"));
+        set
+        {
+            var nuGetDir = Path.Combine(this.CreateVersioningDirIfNotExists(), "nuget");
+
+            switch (value)
+            {
+                case true when !Directory.Exists(nuGetDir):
+                    Directory.CreateDirectory(nuGetDir);
+                    break;
+                case false when Directory.Exists(nuGetDir):
+                    Directory.Delete(nuGetDir, true);
+                    break;
+            }
+        }
+    }
+
+
+
+
+
+
+
+    private string GetVersioningRefBinPath()
     {
         var pathItems = new List<string> { this._projectDirName, ".versioning", "ref" };
+        
         pathItems.AddRange(this.GetTargetFrameworkPlatformName().Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
         var path = Path.Combine(pathItems.ToArray());
 
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         return Path.Combine(path, "version.bin");
+    }
+
+    private string CreateVersioningDirIfNotExists()
+    {
+        var versioningDir = Path.Combine(this._projectDirName, ".versioning", "cache");
+        if (Directory.Exists(versioningDir)) return versioningDir;
+
+        return versioningDir;
     }
 
     private string CreateVersioningCacheDirIfNotExists(string gitHash)
@@ -509,7 +555,7 @@ public class Versioning
         return versioningCacheDir;
     }
 
-    private string CreateVersioningDirIfNotExists(string gitHash)
+    private string CreateVersioningCacheTargetDirIfNotExists(string gitHash)
     {
         var pathItems = new List<string> { this.CreateVersioningCacheDirIfNotExists(gitHash) };
 
@@ -524,6 +570,11 @@ public class Versioning
 
         return versioningDir;
     }
+
+
+
+
+
 
     private void AddToGitIgnore(string description, string ignorePattern)
     {
