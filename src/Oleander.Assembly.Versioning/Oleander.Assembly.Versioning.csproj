@@ -16,6 +16,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\Common\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <NoWarn>$(NoWarn);nullable</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Build" Version="17.8.3" NoWarn="NU1701" />
     <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.0" />
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
@@ -25,6 +33,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Oleander.Assembly.Comparator\Oleander.Assembly.Comparator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
   </ItemGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">

@@ -6,7 +6,7 @@ namespace Oleander.Assembly.Versioning.Tests;
 
 internal static class Helper
 {
-    public static bool TryFindCsProject(string startDirectory, out string projectDirName, out string projectFileName)
+    public static bool TryFindCsProject(string startDirectory, [MaybeNullWhen(false)] out string projectDirName, [MaybeNullWhen(false)] out string projectFileName)
     {
         return MSBuildProject.TryFindVSProject(startDirectory, out projectDirName, out projectFileName);
     }

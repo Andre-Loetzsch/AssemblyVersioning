@@ -5,6 +5,8 @@ namespace Oleander.Assembly.Versioning;
 
 public class NuGetLogger(ILogger logger) : INuGetLogger
 {
+    #pragma warning disable CA2254
+
     public ILogger Logger => logger;
 
     public void LogDebug(string data)
@@ -20,7 +22,6 @@ public class NuGetLogger(ILogger logger) : INuGetLogger
     public void LogInformation(string data)
     {
         logger.LogInformation(data);
-
     }
 
     public void LogMinimal(string data)
