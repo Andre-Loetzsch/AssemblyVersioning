@@ -1,6 +1,6 @@
 ﻿namespace Oleander.Assembly.Versioning;
 
-public enum VersioningErrorCodes : int
+internal enum VersioningErrorCodes : int
 {
     Success = 0,
     TargetFileNotExist = -1,

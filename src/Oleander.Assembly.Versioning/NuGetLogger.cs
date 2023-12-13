@@ -3,7 +3,7 @@ using NuGet.Common;
 
 namespace Oleander.Assembly.Versioning;
 
-public class NuGetLogger(ILogger logger) : INuGetLogger
+internal class NuGetLogger(ILogger logger) : INuGetLogger
 {
     #pragma warning disable CA2254
 

@@ -2,7 +2,7 @@
 
 namespace Oleander.Assembly.Versioning;
 
-public class VersioningResult
+internal class VersioningResult
 {
     public VersioningErrorCodes ErrorCode { get; internal set; } = VersioningErrorCodes.Success;
 

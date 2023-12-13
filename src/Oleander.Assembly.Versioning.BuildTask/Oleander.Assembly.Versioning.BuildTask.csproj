@@ -5,12 +5,12 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.16.0</AssemblyVersion>
+    <AssemblyVersion>0.0.16.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>2dc5d0849d508aad27635d559e4f02e77528f8f1</SourceRevisionId>
+    <SourceRevisionId>d6e23b5947d484cade12605df981c682be7f4d3e</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     
@@ -55,7 +55,7 @@
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
-    <!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
+    <Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />
   </Target>
 
 </Project>

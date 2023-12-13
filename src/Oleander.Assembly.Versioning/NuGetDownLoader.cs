@@ -9,7 +9,7 @@ namespace Oleander.Assembly.Versioning;
 
 internal class NuGetDownLoader : IDisposable
 {
-    private readonly INuGetLogger _logger = NullLogger.Instance;
+    private readonly INuGetLogger _logger = NuGetNullLogger.Instance;
     private readonly SourceCacheContext _sourceCacheContext = new() { IgnoreFailedSources = true };
 
     public NuGetDownLoader(string targetName)

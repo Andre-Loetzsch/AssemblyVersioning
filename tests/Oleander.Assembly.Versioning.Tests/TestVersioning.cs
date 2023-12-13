@@ -32,3 +32,4 @@ internal class TestVersioning : Versioning
 
     public string? GitHash { get; set; } 
 }
+

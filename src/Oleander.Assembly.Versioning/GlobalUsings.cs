@@ -7,3 +7,4 @@ global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 global using INuGetLogger = NuGet.Common.ILogger;
 global using NuGetLogLevel = NuGet.Common.LogLevel;
+global using NuGetNullLogger = NuGet.Common.NullLogger;

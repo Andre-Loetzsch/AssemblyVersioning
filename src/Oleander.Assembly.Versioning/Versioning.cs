@@ -1,15 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Logging;
-using System.Net.Sockets;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparator;
 using Oleander.Assembly.Versioning.ExternalProcesses;
-using LoggerFactory = Oleander.Extensions.Logging.Abstractions.LoggerFactory;
 
 namespace Oleander.Assembly.Versioning;
 
-public class Versioning
+internal class Versioning
 {
     private readonly ILogger _logger;
     private static readonly Dictionary<string, string> targetAttributeValueCache = new();
@@ -23,7 +20,7 @@ public class Versioning
 
     public Versioning()
     {
-        this._logger = LoggerFactory.CreateLogger<Versioning>();
+        this._logger = new NullLogger();
     }
 
     public Versioning(ILogger logger)

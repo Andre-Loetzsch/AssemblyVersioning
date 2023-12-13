@@ -4,9 +4,9 @@ using Oleander.Assembly.Versioning.Tool.Options;
 
 namespace Oleander.Assembly.Versioning.Tool.Commands;
 
-internal class CompareAssemblyCommand : CommandBase
+internal class CompareAssembliesCommand : CompareAssembliesCommandBase
 {
-    public CompareAssemblyCommand(ILogger logger, AssemblyVersioningTool tool) : base(logger, tool, "compare", "Compares the public API of two assemblies")
+    public CompareAssembliesCommand(ILogger logger, CompareAssembliesTool tool) : base(logger, tool, "compare", "Compares the public API of two assemblies")
     {
         var target1FileOption = new Target1FileOption().ExistingOnly();
         var target2FileOption = new Target2FileOption().ExistingOnly();
