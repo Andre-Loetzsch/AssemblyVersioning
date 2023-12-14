@@ -5,31 +5,41 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.16.1</AssemblyVersion>
+    <AssemblyVersion>0.0.16.6</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <SourceRevisionId>d6e23b5947d484cade12605df981c682be7f4d3e</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    
-    <IsPackable>false</IsPackable>
-
     <Title>Assembly versioning task</Title>
     <Authors>Oleander</Authors>
     <Description>Compares two assemblies and calculates the current version</Description>
     <PackageTags>Oleander; C#; MSBuild Task</PackageTags>
     <Copyright>Copyright © Oleander 2023</Copyright>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    
+    <!--<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>-->
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
     <NoWarn>$(NoWarn);NU5100</NoWarn>
+
+    <!--<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPackable>false</IsPackable>
+    <GenerateDependencyFile>true</GenerateDependencyFile>-->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
     <GenerateDependencyFile>true</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <NoWarn>$(NoWarn);nullable</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3" PrivateAssets="all" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

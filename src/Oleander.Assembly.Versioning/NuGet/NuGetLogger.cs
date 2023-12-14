@@ -1,16 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using NuGet.Common;
 
-namespace Oleander.Assembly.Versioning;
+namespace Oleander.Assembly.Versioning.NuGet;
 
-internal class NuGetLogger(ILogger logger) : INuGetLogger
+internal class NuGetLogger(ILogger logger) : INuGetLogger, ILogger
 {
-    #pragma warning disable CA2254
-
-    public ILogger Logger => logger;
-
     public void LogDebug(string data)
-    { 
+    {
         logger.LogDebug(data);
     }
 
@@ -122,5 +118,20 @@ internal class NuGetLogger(ILogger logger) : INuGetLogger
     public Task LogAsync(ILogMessage message)
     {
         return Task.Run(() => this.Log(message));
+    }
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        logger.Log(logLevel, eventId, state, exception, formatter);
+    }
+
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logger.IsEnabled(logLevel);
+    }
+
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    {
+        return logger.BeginScope(state);
     }
 }

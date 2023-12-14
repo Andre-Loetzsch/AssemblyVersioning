@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using TargetTask = Microsoft.Build.Utilities.Task;
+using NuGet.Common;
 
 namespace Oleander.Assembly.Versioning.BuildTask
 {
@@ -12,7 +12,12 @@ namespace Oleander.Assembly.Versioning.BuildTask
         public string? ProjectFileName { get; set; }
         public string? GitRepositoryDirName { get; set; }
 
-        private readonly Versioning _versioning = new();
+        private readonly Versioning _versioning;
+
+        public VersioningTask()
+        {
+            this._versioning = new(new TaskLogger(this));
+        }
 
         public override bool Execute()
         {

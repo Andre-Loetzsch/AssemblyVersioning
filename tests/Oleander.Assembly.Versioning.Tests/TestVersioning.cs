@@ -2,7 +2,7 @@
 
 namespace Oleander.Assembly.Versioning.Tests;
 
-internal class TestVersioning : Versioning
+internal class TestVersioning() : Versioning(new NullLogger())
 {
     protected override bool TryGetGitChanges(string gitHash, out ExternalProcessResult result, out string[] gitChanges)
     {
