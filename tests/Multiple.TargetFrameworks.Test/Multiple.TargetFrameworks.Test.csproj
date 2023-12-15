@@ -5,11 +5,12 @@
     <!--<TargetFramework>netstandard2.0</TargetFramework>-->
     <TargetFramework>net8.0</TargetFramework>
 
+    
 
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
-    <SourceRevisionId>07d4f9d30216d3c84d6ab979f83d6b68370cdd8e</SourceRevisionId>
+    <AssemblyVersion>0.0.2.1</AssemblyVersion>
+    <SourceRevisionId>de96dbda38116d4a292609e4d4dce6aaa820b42b</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -19,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.25" />
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.33" />
   </ItemGroup>
 
 

@@ -10,6 +10,9 @@ public class TaskLogger(VersioningTask task) : ILogger
     {
         var msg = formatter(state, exception);
 
+        File.AppendAllLines(Path.Combine("C:\\dev\\git\\oleander\\AssemblyVersioning", "versioning.log"),
+            new []{ task.GitRepositoryDirName ?? "1", task.ProjectDirName ?? "2", task.ProjectFileName ?? "3", task.TargetFileName ?? "4"});
+
         if (task.ProjectDirName != null)
         {
             var path = Path.Combine(task.ProjectDirName, ".versioning", "cache");
@@ -17,14 +20,14 @@ public class TaskLogger(VersioningTask task) : ILogger
             
             if (Directory.Exists(path))
             {
-                File.AppendAllText(Path.Combine(path, "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg}");
+                File.AppendAllText(Path.Combine(path, "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg}{Environment.NewLine}");
             }
             else
             {
+                File.AppendAllText(Path.Combine("C:\\dev\\git\\oleander\\AssemblyVersioning", "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg} - {task.ProjectDirName}{Environment.NewLine}");
             }
         }
 
-        File.AppendAllText(Path.Combine("D:\\dev\\git\\oleander\\AssemblyVersioning", "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg} - {task.ProjectDirName}");
 
 
         switch (logLevel)

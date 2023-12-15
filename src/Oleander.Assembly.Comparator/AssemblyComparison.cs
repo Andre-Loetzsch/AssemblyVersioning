@@ -1,5 +1,6 @@
 ﻿using JustAssembly.Core;
 using Mono.Cecil;
+using Mono.Cecil.AssemblyResolver;
 
 namespace Oleander.Assembly.Comparator;
 
@@ -7,12 +8,23 @@ public class AssemblyComparison
 {
     private readonly IMetadataDiffItem _diffItem;
 
-    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly)
+    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly, bool clearCache)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
 
-        this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
+        var tempRefAssembly = Path.GetTempFileName();
+        var tempNewAssembly = Path.GetTempFileName();
+
+        File.Copy(refAssembly.FullName, tempRefAssembly, true);
+        File.Copy(newAssembly.FullName, tempNewAssembly, true);
+
+        if (clearCache) TargetPlatformResolver.Instance.ResolverCache.Clear();
+
+        this._diffItem = APIDiffHelper.GetAPIDifferences(tempRefAssembly, tempNewAssembly);
+
+        File.Delete(tempRefAssembly);
+        File.Delete(tempNewAssembly);
     }
 
     public string ToXml()

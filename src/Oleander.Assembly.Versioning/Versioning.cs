@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Mono.Cecil.AssemblyResolver;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparator;
@@ -10,7 +11,7 @@ namespace Oleander.Assembly.Versioning;
 
 internal class Versioning(ILogger logger)
 {
-    private static readonly Dictionary<string, string> targetAttributeValueCache = new();
+    private readonly Dictionary<string, string> _targetAttributeValueCache = new();
 
     private string _targetFileName = string.Empty;
     private string _projectDirName = string.Empty;
@@ -321,6 +322,7 @@ internal class Versioning(ILogger logger)
     {
         var updateResult = new VersioningResult();
         this._msBuildProject = new MSBuildProject(this._projectFileName);
+        this._targetAttributeValueCache.Clear();
 
         if (!this.TryGetGitHash(out var result, out var longGtHash))
         {
@@ -346,10 +348,16 @@ internal class Versioning(ILogger logger)
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
         {
-            var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo);
+            logger.LogInformation("Assembly Comparison reference: {refAssemblyFileInfo}", refAssemblyFileInfo);
+            logger.LogInformation("Assembly comparison target:    {targetAssemblyFileInfo}", targetAssemblyFileInfo);
+
+
+            var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo, true);
             versionChange = comparison.VersionChange;
 
             logger.LogInformation("Assembly comparison result is: {versionChange}", versionChange);
+            logger.LogInformation("Xml: {xml}", comparison.ToXml());
+
             this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
         }
 
@@ -657,13 +665,12 @@ internal class Versioning(ILogger logger)
 
     private string GetTargetFrameworkPlatformName()
     {
-        return !File.Exists(this._targetFileName) ? "" :
-            GetTargetFrameworkPlatformName(this._targetFileName);
+        return !File.Exists(this._targetFileName) ? "" : this.GetTargetFrameworkPlatformName(this._targetFileName);
     }
 
-    private static string GetTargetFrameworkPlatformName(string assemblyLocation)
+    private string GetTargetFrameworkPlatformName(string assemblyLocation)
     {
-        if (targetAttributeValueCache.TryGetValue(assemblyLocation, out var value)) return value;
+        if (this._targetAttributeValueCache.TryGetValue(assemblyLocation, out var value)) return value;
 
         var assemblyInfo = new AssemblyFrameworkInfo(assemblyLocation);
         var targetPlatformAttributeValue = assemblyInfo.TargetPlatform ?? string.Empty;
@@ -671,11 +678,11 @@ internal class Versioning(ILogger logger)
 
         if (shortFolderName == null) return targetPlatformAttributeValue;
 
-        targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
+        this._targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
             shortFolderName :
             $"{shortFolderName}-{targetPlatformAttributeValue}";
        
-        return targetAttributeValueCache[assemblyLocation];
+        return this._targetAttributeValueCache[assemblyLocation];
     }
 
     #endregion

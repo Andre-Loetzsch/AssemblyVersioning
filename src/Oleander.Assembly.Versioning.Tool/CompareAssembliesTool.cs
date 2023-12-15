@@ -10,7 +10,7 @@ internal class CompareAssembliesTool(ILogger<CompareAssembliesTool> logger)
         if (!target1.Exists) return -1;
         if (!target2.Exists) return -2;
 
-        var assemblyComparison = new AssemblyComparison(target1, target2);
+        var assemblyComparison = new AssemblyComparison(target1, target2, true);
 
         logger.LogInformation("recommended version change: {versionChange}", assemblyComparison.VersionChange);
 
