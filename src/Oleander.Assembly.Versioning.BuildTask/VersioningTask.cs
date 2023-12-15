@@ -22,23 +22,6 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
         public override bool Execute()
         {
-            try
-            {
-                File.AppendAllText(@"D:\dev\git\oleander\AssemblyVersioning\TargetTask.txt", "this.InnerExecute()");
-
-                return this.InnerExecute();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                File.AppendAllText(@"D:\dev\git\oleander\AssemblyVersioning\TargetTask.txt", ex.ToString());
-                return false;
-            }
-        }
-
-
-        private bool InnerExecute()
-        {
             VersioningResult result;
           
             if (this.TargetFileName == null) return false;
@@ -91,6 +74,8 @@ namespace Oleander.Assembly.Versioning.BuildTask
             }
 
             this.Log.LogMessage(MessageImportance.Normal, $"OAVT: Version: {result.CalculatedVersion}");
+            MSBuildLogFormatter.CreateMSBuildMessage("AVTM", $"VersioningTask -> {result}", "VersioningTask");
+
             return true;
         }
     }

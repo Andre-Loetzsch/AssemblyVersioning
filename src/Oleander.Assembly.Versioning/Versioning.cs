@@ -353,7 +353,6 @@ internal class Versioning(ILogger logger)
             this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
         }
 
-
         if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
         {
             projectFileVersion = new Version(0, 0, 1, 0);
@@ -450,7 +449,7 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("The file '{refAssemblyPath}' could not be downloaded from NuGet.", refAssemblyPath);
         this.VersioningNuGetFileExist = false;
 
-        if (File.Exists(versionBinPath))
+        if (File.Exists(versionBinPath))                    
         {
             File.Copy(versionBinPath, refAssemblyPath);
             fileInfo = new FileInfo(refAssemblyPath);

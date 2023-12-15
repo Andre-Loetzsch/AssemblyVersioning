@@ -8,17 +8,18 @@
 
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
-    <AssemblyVersion>0.0.1.36</AssemblyVersion>
-    <SourceRevisionId>2935406de8ccecd7c686623a786c0d24c4dbd97b</SourceRevisionId>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <SourceRevisionId>07d4f9d30216d3c84d6ab979f83d6b68370cdd8e</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.15" />
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.25" />
   </ItemGroup>
 
 

@@ -7,7 +7,7 @@
   </PropertyGroup>
   <UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="$(CustomTasksAssembly)"/>
 
-  <Target Name="UpdateAssemblyVersion" AfterTargets="Build">
+  <Target Name="UpdateAssemblyVersion" AfterTargets="PostBuild">
 
     <PropertyGroup>
       <git-repository Condition="Exists('$(SolutionDir)')">$([MSBuild]::GetDirectoryNameOfFileAbove($(SolutionDir), ".git\\HEAD"))</git-repository>
