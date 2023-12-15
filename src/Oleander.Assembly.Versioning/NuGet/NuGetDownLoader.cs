@@ -84,10 +84,12 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
 
             try
             {
-                var buffer = ms.ToArray();
-                var assembly = SysAssembly.Load(buffer);
+                var tempFilename = Path.GetTempFileName();
+
+                File.WriteAllBytes(tempFilename, ms.ToArray());
+
                 var pathItemsList = new List<string>();
-                var assemblyInfo = new AssemblyFrameworkInfo(assembly);
+                var assemblyInfo = new AssemblyFrameworkInfo(tempFilename);
                 var shortFolderName = assemblyInfo.ShortFolderName;
 
                 if (shortFolderName != null) pathItemsList.Add(shortFolderName);
@@ -119,7 +121,9 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (!Directory.Exists(libDir)) Directory.CreateDirectory(libDir);
                 var path = Path.Combine(libDir, zipEntry.Name);
 
-                File.WriteAllBytes(path, buffer);
+                if (File.Exists(path)) File.Delete(path);
+                File.Move(tempFilename, path);
+
                 logger.LogInformation("File '{path}' created.", path);
 
             }

@@ -19,10 +19,28 @@ namespace Oleander.Assembly.Versioning.BuildTask
             this._versioning = new(new TaskLogger(this));
         }
 
+
         public override bool Execute()
         {
-            VersioningResult result;
+            try
+            {
+                File.AppendAllText(@"D:\dev\git\oleander\AssemblyVersioning\TargetTask.txt", "this.InnerExecute()");
 
+                return this.InnerExecute();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                File.AppendAllText(@"D:\dev\git\oleander\AssemblyVersioning\TargetTask.txt", ex.ToString());
+                return false;
+            }
+        }
+
+
+        private bool InnerExecute()
+        {
+            VersioningResult result;
+          
             if (this.TargetFileName == null) return false;
 
             if (this.ProjectDirName != null && this.ProjectFileName != null && this.GitRepositoryDirName != null)

@@ -659,27 +659,24 @@ internal class Versioning(ILogger logger)
     private string GetTargetFrameworkPlatformName()
     {
         return !File.Exists(this._targetFileName) ? "" :
-            GetTargetFrameworkPlatformName(SysAssembly.Load(File.ReadAllBytes(this._targetFileName)), this._targetFileName);
+            GetTargetFrameworkPlatformName(this._targetFileName);
     }
 
-    private static string GetTargetFrameworkPlatformName(SysAssembly assembly, string assemblyLocation)
+    private static string GetTargetFrameworkPlatformName(string assemblyLocation)
     {
         if (targetAttributeValueCache.TryGetValue(assemblyLocation, out var value)) return value;
-        targetAttributeValueCache[assemblyLocation] = GetTargetFrameworkPlatformName(assembly);
-        return targetAttributeValueCache[assemblyLocation];
-    }
 
-    private static string GetTargetFrameworkPlatformName(SysAssembly assembly)
-    {
-        var assemblyInfo = new AssemblyFrameworkInfo(assembly);
+        var assemblyInfo = new AssemblyFrameworkInfo(assemblyLocation);
         var targetPlatformAttributeValue = assemblyInfo.TargetPlatform ?? string.Empty;
         var shortFolderName = assemblyInfo.NuGetFramework?.GetShortFolderName();
 
         if (shortFolderName == null) return targetPlatformAttributeValue;
 
-        return string.IsNullOrEmpty(targetPlatformAttributeValue) ?
+        targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
             shortFolderName :
             $"{shortFolderName}-{targetPlatformAttributeValue}";
+       
+        return targetAttributeValueCache[assemblyLocation];
     }
 
     #endregion

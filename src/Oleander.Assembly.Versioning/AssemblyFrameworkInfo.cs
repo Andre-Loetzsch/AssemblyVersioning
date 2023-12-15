@@ -1,15 +1,17 @@
 ﻿using System.Runtime.Versioning;
+using Mono.Cecil;
 using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
 public class AssemblyFrameworkInfo
 {
-    public AssemblyFrameworkInfo(SysAssembly assembly)
+    public AssemblyFrameworkInfo(string assemblyLocation)
     {
-        this.TargetFramework = GetTargetFramework(assembly);
-        this.TargetPlatform = GetTargetPlatform(assembly);
-        this.ImageRuntimeVersion = assembly.ImageRuntimeVersion;
+        var assemblyDefinition = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(assemblyLocation);
+
+        this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
 
         if (this.TargetFramework == null) return;
         this.FrameworkName = new FrameworkName(this.TargetFramework);
@@ -21,41 +23,9 @@ public class AssemblyFrameworkInfo
 
     public string? TargetPlatform { get; }
 
-    public string ImageRuntimeVersion { get; }
-
     public FrameworkName? FrameworkName { get; }
     
     public NuGetFramework? NuGetFramework { get; }
 
     public string? ShortFolderName { get; }
-
-
-    private static string? GetTargetFramework(SysAssembly assembly)
-    {
-        string? targetFrameworkAttributeValue = null;
-
-        var targetFrameworkAttributeAttributeData = assembly.CustomAttributes
-            .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute");
-
-        if (targetFrameworkAttributeAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetFrameworkAttributeValue = targetFrameworkAttributeAttributeData.ConstructorArguments[0].Value as string;
-        }
-
-        return targetFrameworkAttributeValue;
-    }
-
-    private static string? GetTargetPlatform(SysAssembly assembly)
-    {
-        string? targetPlatformAttributeValue = null;
-
-        var targetPlatformAttributeData = assembly.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.Versioning.TargetPlatformAttribute");
-
-        if (targetPlatformAttributeData is { ConstructorArguments.Count: > 0 })
-        {
-            targetPlatformAttributeValue = targetPlatformAttributeData.ConstructorArguments[0].Value as string;
-        }
-
-        return targetPlatformAttributeValue;
-    }
 }

@@ -93,7 +93,7 @@ namespace Mono.Cecil
             {
                 if (this._targetFrameworkAttributeValue == null)
                 {
-                    this._targetFrameworkAttributeValue = this.GetTargetFrameworkAttributeValue();
+                    this._targetFrameworkAttributeValue = this.GetAttributeValue("System.Runtime.Versioning.TargetFrameworkAttribute");
                 }
 
                 if (this._targetFrameworkAttributeValue == string.Empty)
@@ -106,15 +106,36 @@ namespace Mono.Cecil
         }
 
         /*Telerik Authorship*/
+        private string _targetPlatformAttributeValue;
+        /*Telerik Authorship*/
+        public string TargetPlatformAttributeValue
+        {
+            get
+            {
+                if (this._targetPlatformAttributeValue == null)
+                {
+                    this._targetPlatformAttributeValue = this.GetAttributeValue("System.Runtime.Versioning.TargetPlatformAttribute");
+                }
+
+                if (this._targetPlatformAttributeValue == string.Empty)
+                {
+                    return null;
+                }
+
+                return this._targetPlatformAttributeValue;
+            }
+        }
+
+        /*Telerik Authorship*/
         /// <summary>
-        /// Get the value of assembly's target framework attribute.
+        /// Get the value of assembly's attribute.
         /// </summary>
         /// <returns>Returns string.Empty if the attribute is not present or with invalid value. Otherwise returns it's value.</returns>
-        private string GetTargetFrameworkAttributeValue()
+        private string GetAttributeValue(string attributeTypeFullName)
         {
             foreach (var customAttr in this.CustomAttributes)
             {
-                if (customAttr.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute")
+                if (customAttr.AttributeType.FullName == attributeTypeFullName)
                 {
                     if (!customAttr.IsResolved)
                     {
@@ -139,6 +160,11 @@ namespace Mono.Cecil
 
             return string.Empty;
         }
+
+
+
+
+
 
         public Collection<CustomAttribute> CustomAttributes
         {
