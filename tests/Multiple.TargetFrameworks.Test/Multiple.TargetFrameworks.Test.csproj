@@ -9,8 +9,8 @@
 
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
-    <AssemblyVersion>0.0.2.1</AssemblyVersion>
-    <SourceRevisionId>de96dbda38116d4a292609e4d4dce6aaa820b42b</SourceRevisionId>
+    <AssemblyVersion>0.0.2.2</AssemblyVersion>
+    <SourceRevisionId>9937dee71c3067d918042663c022fc4fda132251</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.33" />
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.16.40" />
   </ItemGroup>
 
 

@@ -1,34 +1,35 @@
-﻿using Microsoft.Build.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Oleander.Assembly.Versioning.BuildTask;
 
-public class TaskLogger(VersioningTask task) : ILogger
+internal class TaskLogger : ILogger
 {
+    private readonly VersioningTask _task;
+    private string? _logFilePath;
+
+    public TaskLogger(VersioningTask task)
+    {
+        this._task = task;
+        this.InitNewSession();
+    }
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         var msg = formatter(state, exception);
 
-        File.AppendAllLines(Path.Combine("C:\\dev\\git\\oleander\\AssemblyVersioning", "versioning.log"),
-            new []{ task.GitRepositoryDirName ?? "1", task.ProjectDirName ?? "2", task.ProjectFileName ?? "3", task.TargetFileName ?? "4"});
-
-        if (task.ProjectDirName != null)
+        if (this._task.ProjectDirName != null)
         {
-            var path = Path.Combine(task.ProjectDirName, ".versioning", "cache");
-            
-            
+            var path = Path.Combine(this._task.ProjectDirName, ".versioning", "cache");
+
             if (Directory.Exists(path))
             {
-                File.AppendAllText(Path.Combine(path, "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg}{Environment.NewLine}");
-            }
-            else
-            {
-                File.AppendAllText(Path.Combine("C:\\dev\\git\\oleander\\AssemblyVersioning", "versioning.log"), $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] {logLevel,12} {msg} - {task.ProjectDirName}{Environment.NewLine}");
+                this._logFilePath = Path.Combine(path, "versioning.log");
+                File.AppendAllText(this._logFilePath, $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] - {logLevel,12} - {msg}{Environment.NewLine}");
             }
         }
-
-
 
         switch (logLevel)
         {
@@ -36,20 +37,20 @@ public class TaskLogger(VersioningTask task) : ILogger
                 return;
             case LogLevel.Debug:
             case LogLevel.Trace:
-                task.Log.LogMessage(MessageImportance.Low, msg);
+                this._task.Log.LogMessage(MessageImportance.Low, msg);
                 MSBuildLogFormatter.CreateMSBuildMessage("AVTL", msg, "VersioningTask");
                 break;
             case LogLevel.Information:
-                task.Log.LogMessage(MessageImportance.Normal, msg);
+                this._task.Log.LogMessage(MessageImportance.Normal, msg);
                 MSBuildLogFormatter.CreateMSBuildMessage("AVTN", msg, "VersioningTask");
                 break;
             case LogLevel.Warning:
-                task.Log.LogWarning(msg);
+                this._task.Log.LogWarning(msg);
                 MSBuildLogFormatter.CreateMSBuildWarning("AVTW", msg, "VersioningTask");
                 break;
             case LogLevel.Critical:
             case LogLevel.Error:
-                task.Log.LogError(msg);
+                this._task.Log.LogError(msg);
                 MSBuildLogFormatter.CreateMSBuildError("AVTE", msg, "VersioningTask");
                 break;
             default:
@@ -64,13 +65,13 @@ public class TaskLogger(VersioningTask task) : ILogger
             case LogLevel.None:
             case LogLevel.Debug:
             case LogLevel.Trace:
-                return task.Log.LogsMessagesOfImportance(MessageImportance.Low);
+                return this._task.Log.LogsMessagesOfImportance(MessageImportance.Low);
             case LogLevel.Information:
-                return task.Log.LogsMessagesOfImportance(MessageImportance.Normal);
+                return this._task.Log.LogsMessagesOfImportance(MessageImportance.Normal);
             case LogLevel.Warning:
             case LogLevel.Critical:
             case LogLevel.Error:
-                return task.Log.LogsMessagesOfImportance(MessageImportance.High);
+                return this._task.Log.LogsMessagesOfImportance(MessageImportance.High);
             default:
                 throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
         }
@@ -79,5 +80,17 @@ public class TaskLogger(VersioningTask task) : ILogger
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
         return null;
+    }
+
+    private void InitNewSession()
+    {
+        if (this._logFilePath == null && this._task.ProjectDirName != null)
+        {
+            this._logFilePath = Path.Combine(this._task.ProjectDirName, ".versioning", "cache", "versioning.log");
+        }
+
+        if (this._logFilePath == null) return;
+        
+        File.WriteAllText(this._logFilePath, $"[{DateTime.Now:yyyy.MM.dd HH:mm:ss}] - Information - New session created. { Process.GetCurrentProcess().ProcessName } { Process.GetCurrentProcess().Id }{Environment.NewLine}");
     }
 }

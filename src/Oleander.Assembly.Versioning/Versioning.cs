@@ -351,7 +351,6 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Assembly Comparison reference: {refAssemblyFileInfo}", refAssemblyFileInfo);
             logger.LogInformation("Assembly comparison target:    {targetAssemblyFileInfo}", targetAssemblyFileInfo);
 
-
             var comparison = new AssemblyComparison(refAssemblyFileInfo, targetAssemblyFileInfo, true);
             versionChange = comparison.VersionChange;
 

@@ -5,12 +5,10 @@ namespace Multiple.TargetFrameworks.Test
     {
         public void Test(int i1, int i2)
         {
-
-
             //
         }
 
-        //public int Test2()
+        //public int Test3(string text, string text2)
         //{
         //    return 0;
         //}
