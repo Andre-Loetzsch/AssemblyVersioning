@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Mono.Cecil.AssemblyResolver;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparator;
@@ -13,8 +12,8 @@ internal class Versioning(ILogger logger)
 {
     private readonly Dictionary<string, string> _targetAttributeValueCache = new();
 
-    private string _targetFileName = string.Empty;
-    private string _projectDirName = string.Empty;
+    private string _targetFileName  = string.Empty;
+    private string _projectDirName  = string.Empty;
     private string _projectFileName = string.Empty;
     private string _gitRepositoryDirName = string.Empty;
 
@@ -320,7 +319,14 @@ internal class Versioning(ILogger logger)
 
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
-        var updateResult = new VersioningResult();
+        var updateResult = new VersioningResult
+        {
+            GitRepositoryDirName = this._gitRepositoryDirName,
+            ProjectDirName = this._projectDirName,
+            ProjectFileName = this._projectFileName,
+            TargetFileName = this._targetFileName
+        };
+
         this._msBuildProject = new MSBuildProject(this._projectFileName);
         this._targetAttributeValueCache.Clear();
 
@@ -333,6 +339,9 @@ internal class Versioning(ILogger logger)
             return updateResult;
         }
 
+        var shortGitHash = longGtHash.Substring(0, 8);
+        updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+
         if (!this.TryGetGitChanges(longGtHash, out result, out var gitChanges))
         {
             updateResult.ExternalProcessResult = result;
@@ -342,12 +351,14 @@ internal class Versioning(ILogger logger)
             return updateResult;
         }
 
-        var shortGitHash = longGtHash.Substring(0, 8);
-        var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
+        
+        
         var versionChange = VersionChange.None;
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
         {
+            var targetAssemblyFileInfo = new FileInfo(this._targetFileName);
+
             logger.LogInformation("Assembly Comparison reference: {refAssemblyFileInfo}", refAssemblyFileInfo);
             logger.LogInformation("Assembly comparison target:    {targetAssemblyFileInfo}", targetAssemblyFileInfo);
 
@@ -355,9 +366,10 @@ internal class Versioning(ILogger logger)
             versionChange = comparison.VersionChange;
 
             logger.LogInformation("Assembly comparison result is: {versionChange}", versionChange);
-            logger.LogInformation("Xml: {xml}", comparison.ToXml());
 
-            this.WriteChangeLog(shortGitHash, versionChange, comparison.ToXml());
+            var xml = comparison.ToXml() ?? "Xml is (null)";
+            logger.LogInformation("{xml}", xml);
+            this.WriteChangeLog(shortGitHash, versionChange, xml);
         }
 
         if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
@@ -498,18 +510,17 @@ internal class Versioning(ILogger logger)
         File.WriteAllLines(Path.Combine(versioningDir, "versionInfo.txt"), new[] { refVersion.ToString(), calculatedVersion.ToString() });
     }
 
-    private void WriteChangeLog(string gitHash, VersionChange versionChange, string? xmlDiff)
+    private void WriteChangeLog(string gitHash, VersionChange versionChange, string xmlDiff)
     {
         var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
-
         var log = new List<string>
         {
-            $"[{DateTime.Now:yyyy:MM:dd HH:mm:ss}] {versionChange}"
+            $"[{DateTime.Now:yyyy:MM:dd HH:mm:ss}] {versionChange}",
+            xmlDiff,
+            " "
         };
 
-        if (xmlDiff != null) log.Add(xmlDiff);
-
-        File.WriteAllLines(Path.Combine(versioningDir, "changelog.txt"), log);
+        File.AppendAllLines(Path.Combine(versioningDir, "changelog.log"), log);
     }
 
     private void CopyTargetFileToRefVersionBin(bool hasGitChanges)
@@ -578,17 +589,17 @@ internal class Versioning(ILogger logger)
 
     private string CreateVersioningDirIfNotExists()
     {
-        var versioningDir = Path.Combine(this._projectDirName, ".versioning", "cache");
-        if (Directory.Exists(versioningDir)) return versioningDir;
-
-        return versioningDir;
+        var versioningCacheDir = Path.Combine(this._projectDirName, ".versioning", "cache");
+        if (Directory.Exists(versioningCacheDir)) return versioningCacheDir;
+        Directory.CreateDirectory(versioningCacheDir);
+        return versioningCacheDir;
     }
 
     private string CreateVersioningCacheDirIfNotExists(string gitHash)
     {
         var versioningCacheDir = Path.Combine(this._projectDirName, ".versioning", "cache", gitHash);
         if (Directory.Exists(versioningCacheDir)) return versioningCacheDir;
-
+        Directory.CreateDirectory(versioningCacheDir);
         return versioningCacheDir;
     }
 

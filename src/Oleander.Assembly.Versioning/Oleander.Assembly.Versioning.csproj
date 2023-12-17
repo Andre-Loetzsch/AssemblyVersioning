@@ -5,8 +5,8 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.69.0</AssemblyVersion>
-    <SourceRevisionId>d6e23b5947d484cade12605df981c682be7f4d3e</SourceRevisionId>
+    <AssemblyVersion>0.0.71.0</AssemblyVersion>
+    <SourceRevisionId>f3f02d518df0e6e61445bc5fa45b7528e1b6aed2</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
