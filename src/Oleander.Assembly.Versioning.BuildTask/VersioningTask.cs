@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
-using TargetTask = Microsoft.Build.Utilities.Task;
+using MSBuildTask = Microsoft.Build.Utilities.Task;
 
 namespace Oleander.Assembly.Versioning.BuildTask
 {
-    public class VersioningTask : TargetTask
+    public class VersioningTask : MSBuildTask
     {
         [Required]
         public string? TargetFileName { get; set; }
@@ -16,20 +15,21 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
         private readonly Versioning _versioning;
         private readonly TaskLogger _taskLogger;
-        private string _tempExceptionLogFile = Path.GetTempFileName();
+        private readonly string _tempExceptionLogFile = Path.GetTempFileName();
+        
         public VersioningTask()
         {
             this._taskLogger = new TaskLogger(this);
             this._versioning = new(this._taskLogger);
         }
 
-
         public override bool Execute()
         {
             try
             {
+                if (!this.ValidateProperties()) return false;
+
                 var result = this.InnerExecute();
-                if (result == null) return !this.Log.HasLoggedErrors;
 
                 if (Directory.Exists(result.VersioningCacheDir))
                 {
@@ -37,18 +37,20 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 }
                 else if (Directory.Exists(result.ProjectDirName))
                 {
+                    this._taskLogger.LogWarning(EventIds.VersioningCacheDirNotExist, "Versioning cache dir '{cacheDir}' does not exist!", result.VersioningCacheDir);
+
                     var cacheDir = Path.Combine(result.ProjectDirName, ".versioning", "cache");
                     if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
 
-                    this._taskLogger.LogWarning("Versioning cache dir '{cacheDir}' does not exist!", result.VersioningCacheDir);
                     File.AppendAllLines(Path.Combine(cacheDir, "versioning.log"), this._taskLogger.GetLogs());
                 }
-
-                return !this.Log.HasLoggedErrors;
+                else
+                {
+                    this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", result.ProjectDirName);
+                }
             }
             catch (Exception ex)
             {
-
                 var process = Process.GetCurrentProcess();
                 var lines = new List<string>
                 {
@@ -57,36 +59,38 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 };
 
                 lines.AddRange(this._taskLogger.GetLogs());
-                lines.Add($"Exeption: {ex}");
+                lines.Add($"Exception: {ex}");
                 lines.Add($" ");
 
                 File.AppendAllLines(this._tempExceptionLogFile, lines);
-                throw new ApplicationException($"An '{ex.GetType()}' exception has occurred. Further information can be found in the file '{this._tempExceptionLogFile}'.", ex);
-                throw;
+
+                this._taskLogger.LogError(EventIds.AnExceptionHasOccurred,
+                    "An exception has occurred: {exMessage}. Further information can be found in the file '{tempExceptionLogFile}'.", 
+                    ex.Message, this._tempExceptionLogFile);
             }
+
+            return !this.Log.HasLoggedErrors;
+
         }
 
-        private VersioningResult? InnerExecute()
+        private VersioningResult InnerExecute()
         {
-            VersioningResult result = null;
-
-            if (this.TargetFileName == null)
-            {
-                this._taskLogger.CreateMSBuildError("1", "Property TargetFileName is null!", "OAVT");
-                return result;
-            }
+            VersioningResult result;
 
             var now = DateTime.Now;
             var process = Process.GetCurrentProcess();
             var assemblyName = this.GetType().Assembly.GetName();
 
-            this._taskLogger.LogInformation("Task started at {time}: Version={version}, process name={processName}, process id={processId}.",
+            this._taskLogger.LogInformation(EventIds.TaskStarted,
+                "Task started at {time}: Version={version}, process name={processName}, process id={processId}.",
                 DateTime.Now.ToString("HH:mm:ss"), assemblyName.Version, process.ProcessName, process.Id);
 
-            this._taskLogger.LogDebug("TargetFileName:       {targetFileName}", this.TargetFileName);
-            this._taskLogger.LogDebug("ProjectDirName:       {ProjectDirName}", this.ProjectDirName);
-            this._taskLogger.LogDebug("ProjectFileName:      {ProjectFileName}", this.ProjectFileName);
-            this._taskLogger.LogDebug("GitRepositoryDirName: {GitRepositoryDirName}", this.GitRepositoryDirName);
+            this._taskLogger.LogDebug(EventIds.DebugTargetFileName,       "TargetFileName:       {targetFileName}", this.TargetFileName);
+            this._taskLogger.LogDebug(EventIds.DebugProjectDirName,       "ProjectDirName:       {projectDirName}", this.ProjectDirName);
+            this._taskLogger.LogDebug(EventIds.DebugProjectFileName,      "ProjectFileName:      {projectFileName}", this.ProjectFileName);
+            this._taskLogger.LogDebug(EventIds.DebugGitRepositoryDirName, "GitRepositoryDirName: {gitRepositoryDirName}", this.GitRepositoryDirName);
+
+            this.TargetFileName ??= string.Empty;
 
             if (this.ProjectDirName != null && this.ProjectFileName != null && this.GitRepositoryDirName != null)
             {
@@ -107,19 +111,48 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
             if (result.ErrorCode != VersioningErrorCodes.Success)
             {
-                this._taskLogger.CreateMSBuildError($"{(int)result.ErrorCode:000}", $"ERROR: {result.ErrorCode}", "OAVT");
+                this._taskLogger.LogError(EventIds.VersioningFailed, "Versioning failed with error code {errorCode}!", $"{(int)result.ErrorCode}-{result.ErrorCode}");
                 return result;
             }
 
             if (result.ExternalProcessResult != null && result.ExternalProcessResult.ExitCode != 0)
             {
-                this._taskLogger.CreateMSBuildError($"{result.ExternalProcessResult.ExitCode:000}", $"ERROR: {result.ExternalProcessResult}", "OAVT");
+                this._taskLogger.LogError(EventIds.ExternalProcessFailed, "External process failed with exit code {exitCode}! {externalResult}", 
+                    result.ExternalProcessResult.ExitCode, result.ExternalProcessResult);
+
                 return result;
             }
 
-            this._taskLogger.LogInformation("CalculatedVersion: {calculatedVersion}", result.CalculatedVersion);
-            this._taskLogger.LogInformation("Task completed at {time} and took {seconds} seconds.", now.ToString("HH:mm:ss"), (DateTime.Now - now).TotalSeconds.ToString("F"));
+            this._taskLogger.LogInformation(EventIds.CalculatedVersion, "CalculatedVersion: {calculatedVersion}", result.CalculatedVersion);
+            this._taskLogger.LogInformation(EventIds.TaskCompleted, "Task completed at {time} and took {seconds} seconds.", 
+                now.ToString("HH:mm:ss"), (DateTime.Now - now).TotalSeconds.ToString("F"));
             return result;
         }
+
+        private bool ValidateProperties()
+        {
+            if (this.TargetFileName == null)
+            {
+                this._taskLogger.LogError(EventIds.PropertyTargetFileNameIsNull, "Property TargetFileName is null!");
+            }
+
+            if (this.ProjectDirName == null)
+            {
+                this._taskLogger.LogWarning(EventIds.PropertyProjectDirNameIsNull, "Property ProjectDirName is null!");
+            }
+
+            if (this.ProjectFileName == null)
+            {
+                this._taskLogger.LogWarning(EventIds.PropertyProjectFileNameIsNull, "Property ProjectFileName is null!");
+            }
+
+            if (this.GitRepositoryDirName == null)
+            {
+                this._taskLogger.LogWarning(EventIds.PropertyGitRepositoryDirNameIsNull, "Property GitRepositoryDirName is null!");
+            }
+
+            return !this.Log.HasLoggedErrors;
+        }
+
     }
 }

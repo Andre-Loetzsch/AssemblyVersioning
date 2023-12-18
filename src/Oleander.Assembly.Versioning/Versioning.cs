@@ -19,7 +19,6 @@ internal class Versioning(ILogger logger)
 
     private MSBuildProject? _msBuildProject;
 
-
     #region UpdateAssemblyVersion
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName)
@@ -92,12 +91,10 @@ internal class Versioning(ILogger logger)
     public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectFileName)
     {
         this._targetFileName = targetFileName;
-
         this._projectFileName = projectFileName;
         this._gitRepositoryDirName = string.Empty;
 
         var updateResult = new VersioningResult();
-
 
         if (!File.Exists(this._projectFileName))
         {
@@ -228,15 +225,18 @@ internal class Versioning(ILogger logger)
 
     #region protected virtual
 
-    protected virtual bool TryGetGitHash(out ExternalProcessResult result, [MaybeNullWhen(false)] out string hash)
+    protected virtual bool TryGetGitHash(out ExternalProcessResult result, 
+        [MaybeNullWhen(false)] out string gitHash, [MaybeNullWhen(false)] out string shortGitHash)
     {
-        hash = null;
+        gitHash = null;
+        shortGitHash = null;
         result = new GitGetHash(this._gitRepositoryDirName).Start();
 
         if (result.ExitCode != 0) return false;
         if (string.IsNullOrEmpty(result.StandardOutput)) return false;
 
-        hash = result.StandardOutput!.Trim();
+        gitHash = result.StandardOutput!.Trim();
+        shortGitHash = gitHash.Length > 8 ? gitHash.Substring(0, 8) : gitHash;
 
         return true;
     }
@@ -330,7 +330,7 @@ internal class Versioning(ILogger logger)
         this._msBuildProject = new MSBuildProject(this._projectFileName);
         this._targetAttributeValueCache.Clear();
 
-        if (!this.TryGetGitHash(out var result, out var longGtHash))
+        if (!this.TryGetGitHash(out var result, out var longGtHash, out var shortGitHash))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitHashFailed;
@@ -338,8 +338,7 @@ internal class Versioning(ILogger logger)
             logger.LogWarning("TryGetGitHash failed! {externalProcessResult}", result);
             return updateResult;
         }
-
-        var shortGitHash = longGtHash.Substring(0, 8);
+        
         updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
 
         if (!this.TryGetGitChanges(longGtHash, out result, out var gitChanges))
@@ -350,8 +349,6 @@ internal class Versioning(ILogger logger)
             logger.LogWarning("TryGetGitChanges failed! {externalProcessResult}", result);
             return updateResult;
         }
-
-        
         
         var versionChange = VersionChange.None;
 
@@ -425,7 +422,8 @@ internal class Versioning(ILogger logger)
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash, [MaybeNullWhen(false)] out Version refVersion, [MaybeNullWhen(false)] out Version lastCalculatedVersion)
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash, 
+        [MaybeNullWhen(false)] out Version refVersion, [MaybeNullWhen(false)] out Version lastCalculatedVersion)
     {
         refVersion = null;
         lastCalculatedVersion = null;
@@ -632,34 +630,6 @@ internal class Versioning(ILogger logger)
         if (!description.StartsWith("#")) description = string.Concat("# ", description);
         File.AppendAllLines(gitIgnorePath, new[] { description, ignorePattern });
         logger.LogInformation("Add '{ignorePattern} to '{gitIgnorePath}'.", ignorePattern, gitIgnorePath);
-    }
-
-    private void RemoveFromGitIgnore(string ignorePattern)
-    {
-        var gitIgnorePath = Path.Combine(this._gitRepositoryDirName, ".gitignore");
-
-        if (!File.Exists(gitIgnorePath)) return;
-
-        var allLines = File.ReadAllLines(gitIgnorePath).ToList();
-        var index = allLines.IndexOf(ignorePattern);
-
-        if (index == -1) return;
-
-        var descriptionIndex = index - 1;
-
-        if (descriptionIndex > -1 &&
-            descriptionIndex < allLines.Count &&
-            allLines[descriptionIndex].StartsWith("#"))
-        {
-            allLines.RemoveAt(descriptionIndex);
-            allLines.RemoveAt(descriptionIndex);
-        }
-        else
-        {
-            allLines.RemoveAt(index);
-        }
-
-        File.WriteAllLines(gitIgnorePath, allLines);
     }
 
     private void UpdateProjectFile(Version assemblyVersion, string versionSuffix, string sourceRevisionId)

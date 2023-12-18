@@ -5,8 +5,8 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.71.0</AssemblyVersion>
-    <SourceRevisionId>f3f02d518df0e6e61445bc5fa45b7528e1b6aed2</SourceRevisionId>
+    <AssemblyVersion>0.0.73.0</AssemblyVersion>
+    <SourceRevisionId>75289a5394b6dbb9911ac5405ff6dd5124844f81</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
@@ -30,6 +30,7 @@
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
     <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +43,7 @@
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
-    <Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />
+    <!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
   </Target>
 
 </Project>

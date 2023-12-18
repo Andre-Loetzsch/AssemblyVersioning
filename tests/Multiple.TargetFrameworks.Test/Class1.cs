@@ -11,9 +11,9 @@ namespace Multiple.TargetFrameworks.Test
             //
         }
 
-        //public int Test3(string text, string text2)
-        //{
-        //    return 0;
-        //}
+        public int Test3(string text, string text2)
+        {
+            return 0;
+        }
     }
 }

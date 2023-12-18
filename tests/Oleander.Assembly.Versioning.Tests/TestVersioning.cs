@@ -11,12 +11,15 @@ internal class TestVersioning() : Versioning(new NullLogger())
         return true;
     }
 
-    protected override bool TryGetGitHash(out ExternalProcessResult result, out string hash)
+    protected override bool TryGetGitHash(out ExternalProcessResult result, out string gitHash, out string shortGitHash)
     {
         result = new ExternalProcessResult("test.exe", "get git-hash");
-        hash = this.GitHash ?? string.Empty;
+        gitHash = this.GitHash ?? string.Empty;
+        shortGitHash = gitHash.Length > 8 ? gitHash.Substring(0, 8) : gitHash;
+
         return !string.IsNullOrEmpty(this.GitHash);
     }
+
 
     //protected override string[] GetGitDiffFilter()
     //{

@@ -43,8 +43,6 @@ namespace Oleander.Assembly.Versioning.Tool
             var console = new ToolConsole(logger);
             var assemblyVersioningTool = host.Services.GetRequiredService<AssemblyVersioningTool>();
             var compareAssembliesTool = host.Services.GetRequiredService<CompareAssembliesTool>();
-
-
             var rootCommand = new RootCommand("assembly-versioning-tool");
             var commandLine = new CommandLineBuilder(rootCommand)
                 .UseDefaults() // automatically configures dotnet-suggest
