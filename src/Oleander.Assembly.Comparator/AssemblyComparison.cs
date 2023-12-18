@@ -1,15 +1,18 @@
 ﻿using JustAssembly.Core;
+using Mono.Cecil.AssemblyResolver;
+
 namespace Oleander.Assembly.Comparator;
 
 public class AssemblyComparison
 {
     private readonly IMetadataDiffItem _diffItem;
 
-    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly)
+    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly, bool clearCache)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
 
+        if (clearCache ) { APIDiffHelper.ClearCache();}
         this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
     }
 

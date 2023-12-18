@@ -1,29 +1,15 @@
 ﻿using System.IO.Compression;
+using Microsoft.Extensions.Logging;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuGet.Frameworks;
 using NuGet.Configuration;
-using NuGet.Common;
 
-namespace Oleander.Assembly.Versioning;
+namespace Oleander.Assembly.Versioning.NuGet;
 
-internal class NuGetDownLoader : IDisposable
+internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposable
 {
-    private readonly INuGetLogger _logger = NullLogger.Instance;
     private readonly SourceCacheContext _sourceCacheContext = new() { IgnoreFailedSources = true };
-
-    public NuGetDownLoader(string targetName)
-    {
-        this.TargetName = targetName;
-    }
-
-    public NuGetDownLoader(string targetName, INuGetLogger logger)
-    {
-        this._logger = logger;
-        this.TargetName = targetName;
-    }
-
-    public string TargetName { get; set; }
 
     public async Task<IReadOnlyList<Tuple<SourceRepository, NuGetVersion>>> GetAllVersionsAsync(IEnumerable<SourceRepository> sources, string packageId, CancellationToken cancellationToken)
     {
@@ -33,8 +19,11 @@ internal class NuGetDownLoader : IDisposable
         {
             try
             {
+                logger.LogInformation("Get version: PackageId={packageId}, Source name={packageName}, Source={packageSource}",
+                     packageId, source.PackageSource.Name, source.PackageSource.Source);
+
                 var resource = await source.GetResourceAsync<MetadataResource>(cancellationToken);
-                var versions = await resource.GetVersions(packageId, true, false, this._sourceCacheContext, this._logger, cancellationToken);
+                var versions = await resource.GetVersions(packageId, true, false, this._sourceCacheContext, logger, cancellationToken);
 
                 foreach (var version in versions)
                 {
@@ -44,7 +33,8 @@ internal class NuGetDownLoader : IDisposable
             }
             catch (Exception ex)
             {
-                this._logger.LogError($"Get versions failed! {ex.GetType()} : {ex.Message} PackageId={packageId}, Source name={source.PackageSource.Name}, Source={source.PackageSource.Source}");
+                logger.LogError("Get versions failed! ({type} : {message}) PackageId={packageId}, Source name={packageName}, Source={packageSource}", 
+                    ex.GetType(), ex.Message, packageId, source.PackageSource.Name, source.PackageSource.Source);
             }
         }
 
@@ -63,25 +53,30 @@ internal class NuGetDownLoader : IDisposable
 
     public async Task<bool> DownloadPackageAsync(SourceRepository source, string packageId, NuGetVersion packageVersion, string outDir, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Download package: PackageId={packageId}, Source name={packageName}, Source={packageSource}, Version={version}",
+            packageId, source.PackageSource.Name, source.PackageSource.Source, packageVersion.Version);
+
         var resource = await source.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
         using var packageStream = new MemoryStream();
-        await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, this._sourceCacheContext, this._logger, cancellationToken);
+        await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, this._sourceCacheContext, logger, cancellationToken);
 
-        this.UnZipAssemblies(packageStream, outDir);
-
-        return true;
+        return this.UnZipAssemblies(packageStream, outDir);
     }
 
-    private void UnZipAssemblies(Stream packageStream, string outDir)
+    private bool UnZipAssemblies(Stream packageStream, string outDir)
     {
         using var archive = new ZipArchive(packageStream, ZipArchiveMode.Read, false);
+        var filteredZipEntries = archive.Entries
+            .Where(x => string.Equals(x.Name, targetName, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        foreach (var zipEntry in archive.Entries
-                     .Where(x => string.Equals(x.Name, this.TargetName, StringComparison.OrdinalIgnoreCase)))
+        if (!filteredZipEntries.Any())
         {
-            var fileExtension = Path.GetExtension(zipEntry.FullName).ToLower();
-            if (fileExtension != ".dll" && fileExtension != ".exe") continue;
+            logger.LogWarning("Package does not contain any content with target name '{targetName}'!", targetName);
+            return false;
+        }
 
+        foreach (var zipEntry in filteredZipEntries)
+        {
             using var stream = zipEntry.Open();
             var ms = new MemoryStream();
 
@@ -89,10 +84,12 @@ internal class NuGetDownLoader : IDisposable
 
             try
             {
-                var buffer = ms.ToArray();
-                var assembly = SysAssembly.Load(buffer);
+                var tempFilename = Path.GetTempFileName();
+
+                File.WriteAllBytes(tempFilename, ms.ToArray());
+
                 var pathItemsList = new List<string>();
-                var assemblyInfo = new AssemblyFrameworkInfo(assembly);
+                var assemblyInfo = new AssemblyFrameworkInfo(tempFilename);
                 var shortFolderName = assemblyInfo.ShortFolderName;
 
                 if (shortFolderName != null) pathItemsList.Add(shortFolderName);
@@ -105,7 +102,9 @@ internal class NuGetDownLoader : IDisposable
                     if (zipEntryPathItems.Length > 1)
                     {
                         // ReSharper disable once UseIndexFromEndExpression
-                        var nugetFramework = NuGetFramework.ParseFrameworkName(zipEntryPathItems[zipEntryPathItems.Length -2], new DefaultFrameworkNameProvider());
+                        var nugetFramework = NuGetFramework.ParseFrameworkName(zipEntryPathItems[zipEntryPathItems.Length - 2], new DefaultFrameworkNameProvider());
+
+                        logger.LogInformation("NuGet framework '{nugetFramework}' parsed from zip full name.", nugetFramework.Framework);
 
                         pathItemsList.Add(nugetFramework.Framework);
 
@@ -122,13 +121,20 @@ internal class NuGetDownLoader : IDisposable
                 if (!Directory.Exists(libDir)) Directory.CreateDirectory(libDir);
                 var path = Path.Combine(libDir, zipEntry.Name);
 
-                File.WriteAllBytes(path, buffer);
+                if (File.Exists(path)) File.Delete(path);
+                File.Move(tempFilename, path);
+
+                logger.LogInformation("File '{path}' created.", path);
+
             }
             catch (Exception ex)
             {
-                this._logger.LogError($"{ex.GetType()}: {ex}");
+                logger.LogError("Unzip assemblies failed! ({type} : {message})", ex.GetType(), ex.Message);
+                throw;
             }
         }
+
+        return true;
     }
 
     public void Dispose()

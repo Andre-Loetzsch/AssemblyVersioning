@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.Construction;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 
 namespace Oleander.Assembly.Versioning;
@@ -120,9 +121,9 @@ internal class MSBuildProject
         this._projectFileChanged = false;
     }
 
-    public bool TryGetAssemblyInfoFileAttributeValue(string attribute, out string value)
+    public bool TryGetAssemblyInfoFileAttributeValue(string attribute, [MaybeNullWhen(false)] out string value)
     {
-        value = string.Empty;
+        value = null;
 
         if (!this.AssemblyInfoExist) return false;
         var line = this._assemblyInfoContent.FirstOrDefault(x => x.Contains(attribute));
@@ -186,10 +187,11 @@ internal class MSBuildProject
     }
 
     // ReSharper disable once InconsistentNaming
-    public static bool TryFindVSProject(string startDirectory, out string projectDirName, out string projectFileName)
+    public static bool TryFindVSProject(string startDirectory, 
+        [MaybeNullWhen(false)] out string projectDirName, [MaybeNullWhen(false)] out string projectFileName)
     {
-        projectFileName = string.Empty;
-        projectDirName = string.Empty;
+        projectFileName = null;
+        projectDirName = null;
 
         var dirInfo = new DirectoryInfo(startDirectory);
         var parentDir = dirInfo;

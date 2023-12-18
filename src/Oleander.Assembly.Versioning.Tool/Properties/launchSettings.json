@@ -10,7 +10,7 @@
     },
     "Tool update D316IT012 Multiple.TargetFrameworks": {
       "commandName": "Project",
-      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\Multiple.TargetFrameworks.Test\\bin\\Debug\\net8.0-windows\\Multiple.TargetFrameworks.Test.dll\""
+      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\Multiple.TargetFrameworks.Test\\bin\\Debug\\net8.0\\Multiple.TargetFrameworks.Test.dll\""
     },
     "Tool compare D316IT012": {
       "commandName": "Project",

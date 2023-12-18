@@ -27,6 +27,7 @@ namespace Oleander.Assembly.Versioning.Tool
 
             builder.Services
                 .AddSingleton<AssemblyVersioningTool>()
+                .AddSingleton<CompareAssembliesTool>()
                 .AddConfiguredTypes("loggerTypes");
 
             builder.Logging
@@ -40,9 +41,8 @@ namespace Oleander.Assembly.Versioning.Tool
 
             var logger = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
             var console = new ToolConsole(logger);
-            var tool = host.Services.GetRequiredService<AssemblyVersioningTool>();
-            
-            
+            var assemblyVersioningTool = host.Services.GetRequiredService<AssemblyVersioningTool>();
+            var compareAssembliesTool = host.Services.GetRequiredService<CompareAssembliesTool>();
             var rootCommand = new RootCommand("assembly-versioning-tool");
             var commandLine = new CommandLineBuilder(rootCommand)
                 .UseDefaults() // automatically configures dotnet-suggest
@@ -50,8 +50,8 @@ namespace Oleander.Assembly.Versioning.Tool
 
             TabCompletions.Logger = logger;
 
-            rootCommand.AddCommand(new UpdateAssemblyVersionCommand(logger, tool));
-            rootCommand.AddCommand(new CompareAssemblyCommand(logger, tool));
+            rootCommand.AddCommand(new UpdateAssemblyVersionCommand(logger, assemblyVersioningTool));
+            rootCommand.AddCommand(new CompareAssembliesCommand(logger, compareAssembliesTool));
 
             var exitCode = await commandLine.InvokeAsync(args, console);
 

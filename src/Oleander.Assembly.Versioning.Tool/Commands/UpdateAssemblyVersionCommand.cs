@@ -4,7 +4,7 @@ using Oleander.Assembly.Versioning.Tool.Options;
 
 namespace Oleander.Assembly.Versioning.Tool.Commands;
 
-internal class UpdateAssemblyVersionCommand : CommandBase
+internal class UpdateAssemblyVersionCommand : UpdateAssemblyVersionCommandBase
 {
     public UpdateAssemblyVersionCommand(ILogger logger, AssemblyVersioningTool tool) : base(logger, tool, "update", "Compares the public API of two assemblies and updates the calculated version in the project file")
     {
