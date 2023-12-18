@@ -30,7 +30,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />-->
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

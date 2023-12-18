@@ -29,7 +29,7 @@
     <PackageReference Include="Oleander.Extensions.Logging.TextFormatters" Version="1.1.23254.10530" />
     <PackageReference Include="Oleander.Extensions.Logging.TextFormatters.Abstractions" Version="1.1.23254.10530" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>-->
   </ItemGroup>
 
   <ItemGroup>

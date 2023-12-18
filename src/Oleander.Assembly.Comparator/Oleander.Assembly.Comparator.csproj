@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>-->
   </ItemGroup>
 
 

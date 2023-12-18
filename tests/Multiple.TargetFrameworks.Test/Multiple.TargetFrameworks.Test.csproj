@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" />
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" />-->
   </ItemGroup>
 
 
