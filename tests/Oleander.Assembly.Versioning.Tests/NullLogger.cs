@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Oleander.Assembly.Versioning;
+namespace Oleander.Assembly.Versioning.Tests;
 
-public class NullLogger : ILogger
+internal class NullLogger : ILogger
 {
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {

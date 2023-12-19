@@ -12,8 +12,8 @@ internal class Versioning(ILogger logger)
 {
     private readonly Dictionary<string, string> _targetAttributeValueCache = new();
 
-    private string _targetFileName  = string.Empty;
-    private string _projectDirName  = string.Empty;
+    private string _targetFileName = string.Empty;
+    private string _projectDirName = string.Empty;
     private string _projectFileName = string.Empty;
     private string _gitRepositoryDirName = string.Empty;
 
@@ -225,7 +225,7 @@ internal class Versioning(ILogger logger)
 
     #region protected virtual
 
-    protected virtual bool TryGetGitHash(out ExternalProcessResult result, 
+    protected virtual bool TryGetGitHash(out ExternalProcessResult result,
         [MaybeNullWhen(false)] out string gitHash, [MaybeNullWhen(false)] out string shortGitHash)
     {
         gitHash = null;
@@ -295,7 +295,6 @@ internal class Versioning(ILogger logger)
 
     private bool VersioningNuGetFileExist
     {
-
         get => File.Exists(Path.Combine(this.CreateVersioningDirIfNotExists(), ".nuget"));
         set
         {
@@ -319,6 +318,8 @@ internal class Versioning(ILogger logger)
 
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
+        #region initialisation s
+
         var updateResult = new VersioningResult
         {
             GitRepositoryDirName = this._gitRepositoryDirName,
@@ -330,26 +331,41 @@ internal class Versioning(ILogger logger)
         this._msBuildProject = new MSBuildProject(this._projectFileName);
         this._targetAttributeValueCache.Clear();
 
+        #endregion
+
+        #region TryGetGitHash
+
         if (!this.TryGetGitHash(out var result, out var longGtHash, out var shortGitHash))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitHashFailed;
-            
+
             logger.LogWarning("TryGetGitHash failed! {externalProcessResult}", result);
             return updateResult;
         }
-        
+
         updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+
+        #endregion
+
+        #region TryGetGitChanges
 
         if (!this.TryGetGitChanges(longGtHash, out result, out var gitChanges))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitDiffNameOnlyFailed;
-            
+
             logger.LogWarning("TryGetGitChanges failed! {externalProcessResult}", result);
             return updateResult;
         }
-        
+
+        #endregion
+
+
+
+
+        #region TryGetRefAssemblyFileInfo
+
         var versionChange = VersionChange.None;
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
@@ -369,6 +385,10 @@ internal class Versioning(ILogger logger)
             this.WriteChangeLog(shortGitHash, versionChange, xml);
         }
 
+        #endregion
+
+        #region TryGetProjectFileAssemblyVersion
+
         if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
         {
             projectFileVersion = new Version(0, 0, 1, 0);
@@ -379,6 +399,10 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Use project file assembly version '{projectFileVersion}'.", projectFileVersion);
         }
 
+        #endregion
+
+        #region TryGetRefAndLastCalculatedVersion
+
         if (!this.TryGetRefAndLastCalculatedVersion(shortGitHash, out var refVersion, out var lastCalculatedVersion))
         {
             refVersion = projectFileVersion;
@@ -388,11 +412,28 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Reference version was not found. Use version from project file.");
         }
 
+        #endregion
+
+
+
+
+
+
+        #region Increase Build- Revision- Version
+
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
         if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
 
+        #endregion
+
+        #region CalculateVersion
+
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
+
+        #endregion
+
+        #region Update new version
 
         if (projectFileVersion <= lastCalculatedVersion && projectFileVersion != updateResult.CalculatedVersion)
         {
@@ -409,6 +450,8 @@ internal class Versioning(ILogger logger)
         this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, updateResult.CalculatedVersion);
         this.CopyTargetFileToRefVersionBin(gitChanges.Any());
 
+        #endregion
+
         return updateResult;
     }
 
@@ -422,7 +465,7 @@ internal class Versioning(ILogger logger)
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash, 
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash,
         [MaybeNullWhen(false)] out Version refVersion, [MaybeNullWhen(false)] out Version lastCalculatedVersion)
     {
         refVersion = null;
@@ -466,7 +509,7 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("The file '{refAssemblyPath}' could not be downloaded from NuGet.", refAssemblyPath);
         this.VersioningNuGetFileExist = false;
 
-        if (File.Exists(versionBinPath))                    
+        if (File.Exists(versionBinPath))
         {
             File.Copy(versionBinPath, refAssemblyPath);
             fileInfo = new FileInfo(refAssemblyPath);
@@ -661,7 +704,7 @@ internal class Versioning(ILogger logger)
         this._targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
             shortFolderName :
             $"{shortFolderName}-{targetPlatformAttributeValue}";
-       
+
         return this._targetAttributeValueCache[assemblyLocation];
     }
 
