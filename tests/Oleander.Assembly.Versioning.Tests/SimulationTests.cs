@@ -156,6 +156,36 @@ public class SimulationTests
 
         Assert.Equal(2, result.Count);
         Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestChangeMajorAssemblyReference()
+    {
+        var result = new TestRunner("changeMajorAssemblyReference").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestRemoveAssemblyReference()
+    {
+        var result = new TestRunner("removeAssemblyReference").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 1, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestAddAssemblyReference()
+    {
+        var result = new TestRunner("addAssemblyReference").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
         Assert.Equal(new(1, 1, 0, 0), result[1]);
     }
 }
