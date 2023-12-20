@@ -413,8 +413,9 @@ internal class Versioning(ILogger logger)
 
         #region Increase Build- Revision- Version
 
+
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
-        if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+        //if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
 
         #endregion
 
@@ -423,6 +424,14 @@ internal class Versioning(ILogger logger)
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
+        if (versionChange < VersionChange.Build && this.ShouldIncreaseRevisionVersion(gitChanges, versionChange))
+        {
+            updateResult.CalculatedVersion = new Version(
+                updateResult.CalculatedVersion.Major,
+                updateResult.CalculatedVersion.Minor,
+                updateResult.CalculatedVersion.Build,
+                projectFileVersion.Revision + 1);
+        }
         #endregion
 
         #region Update new version
