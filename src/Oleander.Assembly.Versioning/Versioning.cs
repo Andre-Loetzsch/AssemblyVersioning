@@ -699,13 +699,6 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("Project file was updated.");
     }
 
-
-
-
-
-
-
-
     private IEnumerable<string> GetTargetFrameworkPlatformName()
     {
         if (!this.TryGetAssemblyFrameworkInfo(this._targetFileName, out var assemblyFrameworkInfo)) return Enumerable.Empty<string>();
@@ -724,13 +717,6 @@ internal class Versioning(ILogger logger)
 
         return result.ToArray();
     }
-
-
-
-
-
-
-
 
     private bool TryGetAssemblyFrameworkInfo(string assemblyLocation, out AssemblyFrameworkInfo assemblyFrameworkInfo)
     {

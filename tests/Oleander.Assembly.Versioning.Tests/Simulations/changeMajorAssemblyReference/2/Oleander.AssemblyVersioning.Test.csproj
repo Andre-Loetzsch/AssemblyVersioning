@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <Reference Include="dependency2.0.0.10">
+      <HintPath>..\createAssemblyReferenceDependencies\out\2.0.0.10\dependency.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>

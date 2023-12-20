@@ -51,7 +51,8 @@ internal class ExternalProcess(string exeName, string arguments, string? working
             return epr;
         }
 
-      
+        epr.StandardOutput = p.StandardOutput.ReadToEnd();
+        epr.StandardErrorOutput = p.StandardError.ReadToEnd();
 
         if (!p.HasExited && !p.WaitForExit(3000))
         {
@@ -60,9 +61,6 @@ internal class ExternalProcess(string exeName, string arguments, string? working
             {
                 try
                 {
-                    epr.StandardOutput = p1.StandardOutput.ReadToEnd();
-                    epr.StandardErrorOutput = p1.StandardError.ReadToEnd();
-
                     epr.ExitCode = p1.ExitCode;
                     p1.Close();
                     p1.Dispose();

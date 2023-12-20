@@ -38,7 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>
- 
+
   <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
     <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
     <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />

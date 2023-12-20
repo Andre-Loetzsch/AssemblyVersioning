@@ -21,14 +21,12 @@ internal static class Helper
     public static void CopyFilesRecursively(string sourcePath, string targetPath)
     {
         if (!Directory.Exists(targetPath)) Directory.CreateDirectory(targetPath);
-
-        //Now Create all of the directories
+       
         foreach (var dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
         {
             Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
         }
 
-        //Copy all the files & Replaces any files with the same name
         foreach (var sourceFile in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
         {
             var targetFile = sourceFile.Replace(sourcePath, targetPath);
@@ -64,6 +62,11 @@ internal static class Helper
             throw new Win32Exception("The process did not start!");
         }
 
+
+        var error = p.StandardError.ReadToEnd();
+        var msg = p.StandardOutput.ReadToEnd();
+
+
         if (!p.WaitForExit(30000))
         {
             p.Kill();
@@ -71,7 +74,8 @@ internal static class Helper
         }
 
         if (p.ExitCode == 0) return;
-        var error = p.StandardError.ReadToEnd();
+
+        error = string.IsNullOrEmpty(error) ? msg : error;
         throw new Win32Exception(p.ExitCode, error);
     }
 }

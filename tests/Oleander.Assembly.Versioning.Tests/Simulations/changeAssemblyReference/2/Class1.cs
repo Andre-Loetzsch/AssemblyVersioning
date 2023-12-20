@@ -1,14 +1,12 @@
 ﻿namespace Oleander.AssemblyVersioning.Test
 {
-    using System.Text.Json;
-    using AutoMapper;
+    using dependency;
 
     public class Class1
     {
         public void Method1()
         {
-            var options = new JsonSerializerOptions();
-            var autoMapAttribute = new AutoMapAttribute(typeof(int));
+            var classA = new ClassA();
         }
     }
 }

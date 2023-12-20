@@ -1,4 +1,6 @@
 ﻿using Xunit;
+// ReSharper disable ReturnValueOfPureMethodIsNotUsed
+// ReSharper disable IteratorMethodResultIsIgnored
 
 namespace Oleander.Assembly.Versioning.Tests;
 
@@ -152,6 +154,7 @@ public class SimulationTests
     [Fact]
     public void TestChangeAssemblyReference()
     {
+        new TestRunner("createAssemblyReferenceDependencies").RunSimulation().ToList();
         var result = new TestRunner("changeAssemblyReference").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
@@ -162,6 +165,7 @@ public class SimulationTests
     [Fact]
     public void TestChangeMajorAssemblyReference()
     {
+        new TestRunner("createAssemblyReferenceDependencies").RunSimulation().ToList();
         var result = new TestRunner("changeMajorAssemblyReference").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
@@ -172,6 +176,7 @@ public class SimulationTests
     [Fact]
     public void TestRemoveAssemblyReference()
     {
+        new TestRunner("createAssemblyReferenceDependencies").RunSimulation().ToList();
         var result = new TestRunner("removeAssemblyReference").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
@@ -182,6 +187,7 @@ public class SimulationTests
     [Fact]
     public void TestAddAssemblyReference()
     {
+        new TestRunner("createAssemblyReferenceDependencies").RunSimulation().ToList();
         var result = new TestRunner("addAssemblyReference").RunSimulation().ToList();
 
         Assert.Equal(2, result.Count);
