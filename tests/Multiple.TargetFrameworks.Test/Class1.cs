@@ -1,8 +1,4 @@
-﻿
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-
-namespace Multiple.TargetFrameworks.Test
+﻿namespace Multiple.TargetFrameworks.Test
 {
     public class Class1
     {
@@ -11,9 +7,9 @@ namespace Multiple.TargetFrameworks.Test
             //
         }
 
-        public int Test3(string text, string text2)
-        {
-            return 0;
-        }
+        //public int Test3(string text, string text2)
+        //{
+        //    return 0;
+        //}
     }
 }

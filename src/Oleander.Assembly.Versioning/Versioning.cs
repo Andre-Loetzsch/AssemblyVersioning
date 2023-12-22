@@ -18,6 +18,7 @@ internal class Versioning(ILogger logger)
     private string _gitRepositoryDirName = string.Empty;
 
     private MSBuildProject? _msBuildProject;
+    private VersioningDirectories? _versioningDirectories;
 
     #region UpdateAssemblyVersion
 
@@ -344,7 +345,13 @@ internal class Versioning(ILogger logger)
             return updateResult;
         }
 
-        updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+        //updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+
+        this._versioningDirectories = new VersioningDirectories(this._projectDirName, shortGitHash);
+
+        updateResult.VersioningCacheDir = this._versioningDirectories.CacheBaseDir;
+
+
 
         #endregion
 
@@ -455,6 +462,8 @@ internal class Versioning(ILogger logger)
 
         return updateResult;
     }
+
+
 
     private bool TryGetProjectFileAssemblyVersion([MaybeNullWhen(false)] out Version version)
     {
@@ -727,7 +736,7 @@ internal class Versioning(ILogger logger)
         return result.ToArray();
     }
 
-    private bool TryGetAssemblyFrameworkInfo(string assemblyLocation, out AssemblyFrameworkInfo assemblyFrameworkInfo)
+    private bool TryGetAssemblyFrameworkInfo(string assemblyLocation, [MaybeNullWhen(false)] out AssemblyFrameworkInfo assemblyFrameworkInfo)
     {
         if (this._assemblyFrameworkInfoCache.TryGetValue(assemblyLocation, out assemblyFrameworkInfo)) return true;
         if (!File.Exists(assemblyLocation)) return false;
