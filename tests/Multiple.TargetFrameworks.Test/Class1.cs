@@ -2,10 +2,12 @@
 {
     public class Class1
     {
-        public void Test(int i1, int i2 )
+        public void Test(int i1, int i2)
         {
             //
         }
+
+
 
         //public int Test3(string text, string text2)
         //{
