@@ -16,12 +16,10 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" />-->
-  </ItemGroup>
+
 
   <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" />
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.21-alpha" />
   </ItemGroup>
 
 

@@ -5,7 +5,7 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.18.0</AssemblyVersion>
+    <AssemblyVersion>0.0.21.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
@@ -17,7 +17,9 @@
     <Description>Compares two assemblies and calculates the current version</Description>
     <PackageTags>Oleander; C#; MSBuild Task</PackageTags>
     <Copyright>Copyright © Oleander 2023</Copyright>
-    
+    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+    <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
+
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
