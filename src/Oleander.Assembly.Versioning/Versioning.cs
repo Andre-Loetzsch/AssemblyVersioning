@@ -422,7 +422,7 @@ internal class Versioning(ILogger logger)
 
 
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
-        //if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+        if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
 
         #endregion
 
@@ -431,22 +431,26 @@ internal class Versioning(ILogger logger)
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
-        if (versionChange < VersionChange.Build && this.ShouldIncreaseRevisionVersion(gitChanges, versionChange))
-        {
-            updateResult.CalculatedVersion = new Version(
-                updateResult.CalculatedVersion.Major,
-                updateResult.CalculatedVersion.Minor,
-                updateResult.CalculatedVersion.Build,
-                projectFileVersion.Revision + 1);
-        }
+        //if (versionChange < VersionChange.Build && this.ShouldIncreaseRevisionVersion(gitChanges, versionChange))
+        //{
+        //    updateResult.CalculatedVersion = new Version(
+        //        updateResult.CalculatedVersion.Major,
+        //        updateResult.CalculatedVersion.Minor,
+        //        updateResult.CalculatedVersion.Build,
+        //        projectFileVersion.Revision + 1);
+        //}
         #endregion
 
         #region Update new version
 
         if (projectFileVersion <= lastCalculatedVersion && projectFileVersion != updateResult.CalculatedVersion)
         {
-            var versionSuffix = updateResult.CalculatedVersion.Major == 0 ? "alpha" :
-                updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
+            var versionSuffix = string.Empty;
+
+            if (updateResult.CalculatedVersion.Major == 0)
+            {
+                versionSuffix = updateResult.CalculatedVersion.Minor == 0 ? "alpha" :"beta";
+            }
 
             this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, longGtHash);
 
@@ -459,7 +463,7 @@ internal class Versioning(ILogger logger)
         this.CopyTargetFileToRefVersionBin(gitChanges.Any());
 
         #endregion
-
+        
         return updateResult;
     }
 
