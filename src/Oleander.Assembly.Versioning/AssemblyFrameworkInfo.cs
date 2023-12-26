@@ -12,12 +12,15 @@ public class AssemblyFrameworkInfo
 
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
         this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
         this.FrameworkName = new FrameworkName(this.TargetFramework);
         this.NuGetFramework = NuGetFramework.ParseFrameworkName(this.FrameworkName.FullName, new DefaultFrameworkNameProvider());
         this.ShortFolderName = this.NuGetFramework.GetShortFolderName();
     }
+
+    public Version Version { get; }
 
     public string? TargetFramework { get; }
 

@@ -24,10 +24,16 @@ internal class MSBuildProject
         }
 
         this.ProjectFileName = projectFileName;
+        //this._projectRootElement = ProjectRootElement.Open(
+        //    this.ProjectFileName, 
+        //    ProjectCollection.GlobalProjectCollection,
+        //    preserveFormatting: true);
+
         this._projectRootElement = ProjectRootElement.Open(
             this.ProjectFileName,
-            ProjectCollection.GlobalProjectCollection,
+            new ProjectCollection(),
             preserveFormatting: true);
+
 
         this.IsDotnetCoreProject = !string.IsNullOrEmpty(this._projectRootElement.Sdk) &&
                                    string.IsNullOrEmpty(this._projectRootElement.ToolsVersion);
@@ -35,7 +41,6 @@ internal class MSBuildProject
         this._assemblyInfoContent = this.AssemblyInfoExist ?
             new(File.ReadAllLines(this.AssemblyInfoPath)) :
             new List<string>();
-
     }
 
     public string ProjectFileName { get; }

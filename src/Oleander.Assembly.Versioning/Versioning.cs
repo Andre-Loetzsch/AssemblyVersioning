@@ -10,14 +10,15 @@ namespace Oleander.Assembly.Versioning;
 
 internal class Versioning(ILogger logger)
 {
-    private readonly Dictionary<string, string> _targetAttributeValueCache = new();
+    private readonly Dictionary<string, AssemblyFrameworkInfo> _assemblyFrameworkInfoCache = new();
 
-    private string _targetFileName  = string.Empty;
-    private string _projectDirName  = string.Empty;
+    private string _targetFileName = string.Empty;
+    private string _projectDirName = string.Empty;
     private string _projectFileName = string.Empty;
     private string _gitRepositoryDirName = string.Empty;
 
     private MSBuildProject? _msBuildProject;
+    private VersioningDirectories? _versioningDirectories;
 
     #region UpdateAssemblyVersion
 
@@ -225,7 +226,7 @@ internal class Versioning(ILogger logger)
 
     #region protected virtual
 
-    protected virtual bool TryGetGitHash(out ExternalProcessResult result, 
+    protected virtual bool TryGetGitHash(out ExternalProcessResult result,
         [MaybeNullWhen(false)] out string gitHash, [MaybeNullWhen(false)] out string shortGitHash)
     {
         gitHash = null;
@@ -295,7 +296,6 @@ internal class Versioning(ILogger logger)
 
     private bool VersioningNuGetFileExist
     {
-
         get => File.Exists(Path.Combine(this.CreateVersioningDirIfNotExists(), ".nuget"));
         set
         {
@@ -319,6 +319,8 @@ internal class Versioning(ILogger logger)
 
     private VersioningResult PrivateUpdateAssemblyVersion()
     {
+        #region initialisation s
+
         var updateResult = new VersioningResult
         {
             GitRepositoryDirName = this._gitRepositoryDirName,
@@ -328,28 +330,46 @@ internal class Versioning(ILogger logger)
         };
 
         this._msBuildProject = new MSBuildProject(this._projectFileName);
-        this._targetAttributeValueCache.Clear();
+        this._assemblyFrameworkInfoCache.Clear();
+
+        #endregion
+
+        #region TryGetGitHash
 
         if (!this.TryGetGitHash(out var result, out var longGtHash, out var shortGitHash))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitHashFailed;
-            
+
             logger.LogWarning("TryGetGitHash failed! {externalProcessResult}", result);
             return updateResult;
         }
-        
-        updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+
+        //updateResult.VersioningCacheDir = this.CreateVersioningCacheTargetDirIfNotExists(shortGitHash);
+
+        this._versioningDirectories = new VersioningDirectories(this._projectDirName, shortGitHash);
+
+        updateResult.VersioningCacheDir = this._versioningDirectories.CacheBaseDir;
+
+
+
+        #endregion
+
+        #region TryGetGitChanges
 
         if (!this.TryGetGitChanges(longGtHash, out result, out var gitChanges))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitDiffNameOnlyFailed;
-            
+
             logger.LogWarning("TryGetGitChanges failed! {externalProcessResult}", result);
             return updateResult;
         }
-        
+
+        #endregion
+
+        #region TryGetRefAssemblyFileInfo
+
         var versionChange = VersionChange.None;
 
         if (this.TryGetRefAssemblyFileInfo(shortGitHash, out var refAssemblyFileInfo))
@@ -369,6 +389,10 @@ internal class Versioning(ILogger logger)
             this.WriteChangeLog(shortGitHash, versionChange, xml);
         }
 
+        #endregion
+
+        #region TryGetProjectFileAssemblyVersion
+
         if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
         {
             projectFileVersion = new Version(0, 0, 1, 0);
@@ -379,6 +403,10 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Use project file assembly version '{projectFileVersion}'.", projectFileVersion);
         }
 
+        #endregion
+
+        #region TryGetRefAndLastCalculatedVersion
+
         if (!this.TryGetRefAndLastCalculatedVersion(shortGitHash, out var refVersion, out var lastCalculatedVersion))
         {
             refVersion = projectFileVersion;
@@ -388,16 +416,41 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Reference version was not found. Use version from project file.");
         }
 
+        #endregion
+
+        #region Increase Build- Revision- Version
+
+
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
         if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+
+        #endregion
+
+        #region CalculateVersion
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
+        //if (versionChange < VersionChange.Build && this.ShouldIncreaseRevisionVersion(gitChanges, versionChange))
+        //{
+        //    updateResult.CalculatedVersion = new Version(
+        //        updateResult.CalculatedVersion.Major,
+        //        updateResult.CalculatedVersion.Minor,
+        //        updateResult.CalculatedVersion.Build,
+        //        projectFileVersion.Revision + 1);
+        //}
+        #endregion
+
+        #region Update new version
+
         if (projectFileVersion <= lastCalculatedVersion && projectFileVersion != updateResult.CalculatedVersion)
         {
-            var versionSuffix = updateResult.CalculatedVersion.Major == 0 ? "alpha" :
-                updateResult.CalculatedVersion.Minor == 0 ? "beta" : string.Empty;
+            var versionSuffix = string.Empty;
+
+            if (updateResult.CalculatedVersion.Major == 0)
+            {
+                versionSuffix = updateResult.CalculatedVersion.Minor == 0 ? "alpha" :"beta";
+            }
 
             this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, longGtHash);
 
@@ -409,8 +462,12 @@ internal class Versioning(ILogger logger)
         this.SaveRefAndLastCalculatedVersion(shortGitHash, refVersion, updateResult.CalculatedVersion);
         this.CopyTargetFileToRefVersionBin(gitChanges.Any());
 
+        #endregion
+        
         return updateResult;
     }
+
+
 
     private bool TryGetProjectFileAssemblyVersion([MaybeNullWhen(false)] out Version version)
     {
@@ -422,7 +479,7 @@ internal class Versioning(ILogger logger)
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion(string gitHash, 
+    private bool TryGetRefAndLastCalculatedVersion(string gitHash,
         [MaybeNullWhen(false)] out Version refVersion, [MaybeNullWhen(false)] out Version lastCalculatedVersion)
     {
         refVersion = null;
@@ -431,7 +488,27 @@ internal class Versioning(ILogger logger)
         var versioningDir = this.CreateVersioningCacheTargetDirIfNotExists(gitHash);
         var lastCalculatedVersionPath = Path.Combine(versioningDir, "versionInfo.txt");
 
-        if (!File.Exists(lastCalculatedVersionPath)) return false;
+        if (!File.Exists(lastCalculatedVersionPath))
+        {
+            if (!this.TryGetRefAssemblyFileInfo(gitHash, out var fileInfo)) return false;
+
+            if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
+            {
+                projectFileVersion = new Version(0, 0, 0, 0);
+            }
+
+            if (this.VersioningNuGetFileExist)
+            {
+                if (!this.TryGetAssemblyFrameworkInfo(fileInfo.FullName, out var assemblyFrameworkInfo)) return false;
+                refVersion = assemblyFrameworkInfo.Version;
+            }
+            else
+            {
+                refVersion = projectFileVersion;
+            }
+            
+            this.SaveRefAndLastCalculatedVersion(gitHash, refVersion, projectFileVersion);
+        }
 
         var fileContent = File.ReadAllLines(lastCalculatedVersionPath).ToList();
 
@@ -466,7 +543,7 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("The file '{refAssemblyPath}' could not be downloaded from NuGet.", refAssemblyPath);
         this.VersioningNuGetFileExist = false;
 
-        if (File.Exists(versionBinPath))                    
+        if (File.Exists(versionBinPath))
         {
             File.Copy(versionBinPath, refAssemblyPath);
             fileInfo = new FileInfo(refAssemblyPath);
@@ -578,7 +655,8 @@ internal class Versioning(ILogger logger)
     {
         var pathItems = new List<string> { this._projectDirName, ".versioning", "ref" };
 
-        pathItems.AddRange(this.GetTargetFrameworkPlatformName().Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
+        pathItems.AddRange(this.GetTargetFrameworkPlatformName());
+
         var path = Path.Combine(pathItems.ToArray());
 
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -605,7 +683,7 @@ internal class Versioning(ILogger logger)
     {
         var pathItems = new List<string> { this.CreateVersioningCacheDirIfNotExists(gitHash) };
 
-        pathItems.AddRange(this.GetTargetFrameworkPlatformName().Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
+        pathItems.AddRange(this.GetTargetFrameworkPlatformName());
         var versioningDir = Path.Combine(pathItems.ToArray());
 
         if (Directory.Exists(versioningDir)) return versioningDir;
@@ -643,26 +721,34 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("Project file was updated.");
     }
 
-    private string GetTargetFrameworkPlatformName()
+    private IEnumerable<string> GetTargetFrameworkPlatformName()
     {
-        return !File.Exists(this._targetFileName) ? "" : this.GetTargetFrameworkPlatformName(this._targetFileName);
+        if (!this.TryGetAssemblyFrameworkInfo(this._targetFileName, out var assemblyFrameworkInfo)) return Enumerable.Empty<string>();
+
+        var result = new List<string>();
+
+        if (!string.IsNullOrEmpty(assemblyFrameworkInfo.ShortFolderName))
+        {
+            result.Add(assemblyFrameworkInfo.ShortFolderName);
+        }
+
+        if (!string.IsNullOrEmpty(assemblyFrameworkInfo.TargetPlatform))
+        {
+            result.Add(assemblyFrameworkInfo.TargetPlatform);
+        }
+
+        return result.ToArray();
     }
 
-    private string GetTargetFrameworkPlatformName(string assemblyLocation)
+    private bool TryGetAssemblyFrameworkInfo(string assemblyLocation, [MaybeNullWhen(false)] out AssemblyFrameworkInfo assemblyFrameworkInfo)
     {
-        if (this._targetAttributeValueCache.TryGetValue(assemblyLocation, out var value)) return value;
+        if (this._assemblyFrameworkInfoCache.TryGetValue(assemblyLocation, out assemblyFrameworkInfo)) return true;
+        if (!File.Exists(assemblyLocation)) return false;
 
-        var assemblyInfo = new AssemblyFrameworkInfo(assemblyLocation);
-        var targetPlatformAttributeValue = assemblyInfo.TargetPlatform ?? string.Empty;
-        var shortFolderName = assemblyInfo.NuGetFramework?.GetShortFolderName();
+        assemblyFrameworkInfo = new AssemblyFrameworkInfo(assemblyLocation);
+        this._assemblyFrameworkInfoCache.Add(assemblyLocation, assemblyFrameworkInfo);
 
-        if (shortFolderName == null) return targetPlatformAttributeValue;
-
-        this._targetAttributeValueCache[assemblyLocation] = string.IsNullOrEmpty(targetPlatformAttributeValue) ?
-            shortFolderName :
-            $"{shortFolderName}-{targetPlatformAttributeValue}";
-       
-        return this._targetAttributeValueCache[assemblyLocation];
+        return true;
     }
 
     #endregion

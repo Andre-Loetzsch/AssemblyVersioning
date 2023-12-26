@@ -6,11 +6,5 @@
     <Nullable>enable</Nullable>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Reference Include="dependency1.0.24.1">
-      <HintPath>..\createAssemblyReferenceDependencies\out\1.0.24.1\dependency.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
+
 </Project>

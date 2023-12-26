@@ -4,7 +4,7 @@
     {
         public void Method1()
         {
-            var cA = new dependency.ClassA();
+            //var cA = new dependency.ClassA();
         }
     }
 }

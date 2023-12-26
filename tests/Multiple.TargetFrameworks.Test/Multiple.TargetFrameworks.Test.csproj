@@ -4,14 +4,12 @@
     <!--<TargetFrameworks>net8.0-windows10.0.22621.0;net8.0-windows</TargetFrameworks>-->
     <!--<TargetFramework>netstandard2.0</TargetFramework>-->
     <TargetFramework>net8.0</TargetFramework>
-
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     
-
-    <!--<ImplicitUsings>enable</ImplicitUsings>-->
-    <!--<Nullable>enable</Nullable>-->
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
-    <SourceRevisionId>75289a5394b6dbb9911ac5405ff6dd5124844f81</SourceRevisionId>
-    <VersionSuffix>alpha</VersionSuffix>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <SourceRevisionId>ad68f64e29b5a2697292fefb5c13d2c560d24bd0</SourceRevisionId>
+    <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
@@ -19,8 +17,10 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+
+
   <ItemGroup>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" />-->
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.25-alpha" />-->
   </ItemGroup>
 
 

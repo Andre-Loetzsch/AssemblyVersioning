@@ -1,5 +1,4 @@
 ﻿using JustAssembly.Core;
-using Mono.Cecil.AssemblyResolver;
 
 namespace Oleander.Assembly.Comparator;
 
