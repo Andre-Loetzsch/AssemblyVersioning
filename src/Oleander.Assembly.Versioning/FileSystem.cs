@@ -1,0 +1,175 @@
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+
+namespace Oleander.Assembly.Versioning;
+
+internal class FileSystem(ILogger logger)
+{
+
+    #region GiTHash
+
+
+    public string GitHash { get; set; } = string.Empty;
+
+    #endregion
+
+    #region TargetFileName
+
+    public string TargetFileName { get; set; } = string.Empty;
+
+    #endregion
+
+    #region GitRepositoryDirName
+
+    private string _gitRepositoryDirName = string.Empty;
+    public string GitRepositoryDirName
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(this._gitRepositoryDirName) &&
+                TryFindGitRepositoryDirName(this.ProjectDirName, out var gitRepositoryDirName))
+            {
+                this._gitRepositoryDirName = gitRepositoryDirName;
+            }
+
+            return this._gitRepositoryDirName;
+
+        }
+        set => this._gitRepositoryDirName = value;
+    }
+
+    #endregion
+
+    #region ProjectDirName
+
+    private string _projectDirName = string.Empty;
+    public string ProjectDirName
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(this._projectDirName)) return this._projectDirName;
+
+            var targetDirName = Path.GetDirectoryName(this.TargetFileName);
+
+            if (targetDirName == null || !MSBuildProject.TryFindVSProject(targetDirName, out var projectDirName, out var projectFileName))
+                return this._projectDirName;
+
+            this._projectDirName = projectDirName;
+            if (string.IsNullOrEmpty(this._projectFileName)) this._projectFileName = projectFileName;
+            return this._projectDirName;
+
+        }
+        set => this._projectDirName = value;
+    }
+
+    #endregion
+
+    #region ProjectFileName
+
+    private string _projectFileName = string.Empty;
+    public string ProjectFileName
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(this._projectFileName)) return this._projectFileName;
+
+            var targetDirName = Path.GetDirectoryName(this.TargetFileName);
+
+            if (targetDirName == null || !MSBuildProject.TryFindVSProject(targetDirName, out var projectDirName, out var projectFileName))
+                return this._projectFileName;
+
+            this._projectFileName = projectFileName;
+
+
+            if (string.IsNullOrEmpty(this._projectDirName)) this._projectDirName = projectDirName;
+
+            return this._projectFileName;
+
+        }
+        set => this._projectFileName = value;
+    }
+
+    #endregion
+
+
+
+
+
+
+    public string VersioningDir => this.CreateDirectoryInfo(true, this.ProjectDirName, ".versioning").FullName;
+
+    public string ProjectRefDir => this.CreateDirectoryInfo(true, this.VersioningDir, "ref").FullName;
+
+    public string TargetFramework { get; set; } = string.Empty;
+
+    public string TargetPlatform { get; set; } = string.Empty;
+
+    public string CacheDir
+    {
+        get
+        {
+            var dirInfo = this.CreateDirectoryInfo(false, this.VersioningDir, "cache", this.GitHash, this.TargetFramework, this.TargetPlatform);
+
+            if (dirInfo.Exists) return dirInfo.FullName;
+
+            this.AddToGitIgnore("Versioning cache", "**/.[Vv]ersioning/[Cc]ache/");
+
+            dirInfo.Create();
+            return dirInfo.FullName;
+        }
+    }
+
+
+    #region private members
+
+    private void AddToGitIgnore(string description, string ignorePattern)
+    {
+        var gitIgnorePath = Path.Combine(this.GitRepositoryDirName, ".gitignore");
+
+        if (!File.Exists(gitIgnorePath)) return;
+
+        var allLines = File.ReadAllLines(gitIgnorePath).ToList();
+
+        if (allLines.Any(x => x == ignorePattern)) return;
+
+        if (!description.StartsWith("#")) description = string.Concat("# ", description);
+        File.AppendAllLines(gitIgnorePath, new[] { description, ignorePattern });
+        logger.LogInformation("Add '{ignorePattern} to '{gitIgnorePath}'.", ignorePattern, gitIgnorePath);
+    }
+
+    private static bool TryFindGitRepositoryDirName(string? startDirectory, [MaybeNullWhen(false)] out string gitRepositoryDirName)
+    {
+        gitRepositoryDirName = null;
+        if (string.IsNullOrEmpty(startDirectory)) return false;
+        var dirInfo = new DirectoryInfo(startDirectory);
+        var parentDir = dirInfo;
+
+        while (parentDir != null)
+        {
+            if (parentDir.GetDirectories(".git").Any())
+            {
+                gitRepositoryDirName = parentDir.FullName;
+                return true;
+            }
+
+            parentDir = parentDir.Parent;
+        }
+
+        return false;
+    }
+
+
+    private DirectoryInfo CreateDirectoryInfo(bool createDirectoryIfNotExist, params string[] paths)
+    {
+        var dir = Path.Combine(paths.Where(x => !string.IsNullOrEmpty(x)).ToArray());
+        var dirInfo = new DirectoryInfo(dir);
+
+        if (!createDirectoryIfNotExist || dirInfo.Exists) return dirInfo;
+        logger.LogInformation("Create directory '{dir}'.", dir);
+        dirInfo.Create();
+
+        return dirInfo;
+    }
+
+    #endregion
+}
