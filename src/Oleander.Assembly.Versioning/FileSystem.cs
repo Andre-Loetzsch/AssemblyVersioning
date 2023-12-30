@@ -8,7 +8,6 @@ internal class FileSystem(ILogger logger)
 
     #region GiTHash
 
-
     public string GitHash { get; set; } = string.Empty;
 
     #endregion
@@ -16,6 +15,12 @@ internal class FileSystem(ILogger logger)
     #region TargetFileName
 
     public string TargetFileName { get; set; } = string.Empty;
+
+    #endregion
+
+    #region RefTargetFileName
+
+    public string RefTargetFileName => Path.Combine(this.CacheDir, Path.GetFileName(this.TargetFileName));
 
     #endregion
 
@@ -91,24 +96,35 @@ internal class FileSystem(ILogger logger)
 
     #endregion
 
-
-
-
-
+    #region VersioningDir
 
     public string VersioningDir => this.CreateDirectoryInfo(true, this.ProjectDirName, ".versioning").FullName;
 
-    public string ProjectRefDir => this.CreateDirectoryInfo(true, this.VersioningDir, "ref").FullName;
+    #endregion
+
+    #region TargetFramework
 
     public string TargetFramework { get; set; } = string.Empty;
 
+    #endregion
+
+    #region TargetPlatform
     public string TargetPlatform { get; set; } = string.Empty;
+
+    #endregion
+
+    #region CacheBaseDir
+    public string CacheBaseDir => this.CreateDirectoryInfo(true, this.VersioningDir, "cache").FullName;
+
+    #endregion
+
+    #region CacheDir
 
     public string CacheDir
     {
         get
         {
-            var dirInfo = this.CreateDirectoryInfo(false, this.VersioningDir, "cache", this.GitHash, this.TargetFramework, this.TargetPlatform);
+            var dirInfo = this.CreateDirectoryInfo(false, this.CacheBaseDir, this.GitHash, this.TargetFramework, this.TargetPlatform);
 
             if (dirInfo.Exists) return dirInfo.FullName;
 
@@ -119,6 +135,25 @@ internal class FileSystem(ILogger logger)
         }
     }
 
+    #endregion
+
+    #region ProjectRefBaseDir
+
+    public string ProjectRefBaseDir => this.CreateDirectoryInfo(true, this.VersioningDir, "ref").FullName;
+
+    #endregion
+
+    #region ProjectRefDir
+
+    public string ProjectRefDir => this.CreateDirectoryInfo(true, this.ProjectRefBaseDir, this.TargetFramework, this.TargetPlatform).FullName;
+
+    #endregion
+
+    #region ProjectRefFileName
+
+    public string ProjectRefFileName => Path.Combine(this.ProjectRefDir, "version.bin");
+
+    #endregion
 
     #region private members
 
