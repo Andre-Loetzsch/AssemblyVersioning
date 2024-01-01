@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.45.0</AssemblyVersion>
-    <SourceRevisionId>e77e541219f8f4fbeea2e81779300a821dc8c376</SourceRevisionId>
+    <AssemblyVersion>0.0.46.0</AssemblyVersion>
+    <SourceRevisionId>f1acb99cd1b11f5415690d5ea7372d7410289e93</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>

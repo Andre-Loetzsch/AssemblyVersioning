@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <SourceRevisionId>ad68f64e29b5a2697292fefb5c13d2c560d24bd0</SourceRevisionId>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <SourceRevisionId>f1acb99cd1b11f5415690d5ea7372d7410289e93</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -21,6 +21,12 @@
 
   <ItemGroup>
     <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.25-alpha" />-->
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.26-alpha" />-->
   </ItemGroup>
 
 

@@ -193,7 +193,6 @@ internal class FileSystem(ILogger logger)
         return false;
     }
 
-
     private DirectoryInfo CreateDirectoryInfo(bool createDirectoryIfNotExist, params string[] paths)
     {
         var dir = Path.Combine(paths.Where(x => !string.IsNullOrEmpty(x)).ToArray());

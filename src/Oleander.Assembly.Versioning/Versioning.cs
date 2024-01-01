@@ -252,7 +252,7 @@ internal class Versioning(ILogger logger)
         }
 
         this.SaveRefAndLastCalculatedVersion(refVersion, updateResult.CalculatedVersion);
-        this.CopyTargetFileToRefVersionBin(gitChanges.Any());
+        this.CopyTargetFileToProjectRefDir(gitChanges.Any());
 
         #endregion
 
@@ -352,7 +352,7 @@ internal class Versioning(ILogger logger)
         File.AppendAllLines(Path.Combine(this.FileSystem.CacheDir, "changelog.log"), log);
     }
 
-    private void CopyTargetFileToRefVersionBin(bool hasGitChanges)
+    private void CopyTargetFileToProjectRefDir(bool hasGitChanges)
     {
         if (!Directory.Exists(this.FileSystem.ProjectRefDir)) return;
 
