@@ -93,7 +93,10 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 var shortFolderName = assemblyInfo.FrameworkShortFolderName;
 
                 if (shortFolderName != null) pathItemsList.Add(shortFolderName);
-                if (assemblyInfo.TargetPlatform != null) pathItemsList.Add(assemblyInfo.TargetPlatform);
+
+                pathItemsList.Add(string.IsNullOrEmpty(assemblyInfo.TargetPlatform)
+                    ? "Any"
+                    : assemblyInfo.TargetPlatform);
 
                 if (!pathItemsList.Any())
                 {

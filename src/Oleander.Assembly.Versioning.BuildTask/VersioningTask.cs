@@ -128,7 +128,6 @@ namespace Oleander.Assembly.Versioning.BuildTask
             this._taskLogger.LogInformation(EventIds.CalculatedVersion, "CalculatedVersion: {calculatedVersion}", result.CalculatedVersion);
             this._taskLogger.LogInformation(EventIds.TaskCompleted, "Task completed at {time} and took {seconds} seconds.", 
                 now.ToString("HH:mm:ss"), (DateTime.Now - now).TotalSeconds.ToString("F"));
-            return;
         }
 
         private bool ValidateProperties()

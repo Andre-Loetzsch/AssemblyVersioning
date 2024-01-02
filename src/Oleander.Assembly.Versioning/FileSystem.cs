@@ -109,7 +109,16 @@ internal class FileSystem(ILogger logger)
 
     #region TargetPlatform
 
-    public string TargetPlatform { get; set; } = string.Empty;
+    private string _targetPlatform = "Any";
+    public string TargetPlatform
+    {
+        get => this._targetPlatform;
+        set
+        {
+            if (string.IsNullOrEmpty(value)) value = "Any";
+            this._targetPlatform = value;
+        }
+    }
 
     #endregion
 

@@ -21,47 +21,46 @@ internal class Versioning(ILogger logger)
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName)
     {
-        var fileSystem = new FileSystem(logger)
+        this.FileSystem = new FileSystem(logger)
         {
             TargetFileName = targetFileName
         };
 
-        var updateResult = this.ValidateFileSystem(fileSystem);
+        var updateResult = this.ValidateFileSystem();
         return updateResult.ErrorCode != VersioningErrorCodes.Success ?
-            updateResult : this.PrivateUpdateAssemblyVersion(fileSystem);
+            updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectFileName)
     {
-        var fileSystem = new FileSystem(logger)
+        this.FileSystem = new FileSystem(logger)
         {
             TargetFileName = targetFileName,
             ProjectFileName = projectFileName
         };
 
-        var updateResult = this.ValidateFileSystem(fileSystem);
+        var updateResult = this.ValidateFileSystem();
         return updateResult.ErrorCode != VersioningErrorCodes.Success ?
-            updateResult : this.PrivateUpdateAssemblyVersion(fileSystem);
+            updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectDirName, string projectFileName)
     {
-        var fileSystem = new FileSystem(logger)
+        this.FileSystem = new FileSystem(logger)
         {
             TargetFileName = targetFileName,
             ProjectDirName = projectDirName,
             ProjectFileName = projectFileName
         };
 
-        var updateResult = this.ValidateFileSystem(fileSystem);
+        var updateResult = this.ValidateFileSystem();
         return updateResult.ErrorCode != VersioningErrorCodes.Success ?
-            updateResult : this.PrivateUpdateAssemblyVersion(fileSystem);
+            updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
     public VersioningResult UpdateAssemblyVersion(string targetFileName, string projectDirName, string projectFileName, string gitRepositoryDirName)
     {
-
-        var fileSystem = new FileSystem(logger)
+        this.FileSystem = new FileSystem(logger)
         {
             TargetFileName = targetFileName,
             ProjectDirName = projectDirName,
@@ -69,9 +68,9 @@ internal class Versioning(ILogger logger)
             GitRepositoryDirName = gitRepositoryDirName
         };
 
-        var updateResult = this.ValidateFileSystem(fileSystem);
+        var updateResult = this.ValidateFileSystem();
         return updateResult.ErrorCode != VersioningErrorCodes.Success ?
-            updateResult : this.PrivateUpdateAssemblyVersion(fileSystem);
+            updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
     #endregion
@@ -145,21 +144,19 @@ internal class Versioning(ILogger logger)
 
     #region private members
 
-    private VersioningResult PrivateUpdateAssemblyVersion(FileSystem fileSystem)
+    private VersioningResult PrivateUpdateAssemblyVersion()
     {
         #region initialisations
 
         var updateResult = new VersioningResult();
-
-        this._msBuildProject = new MSBuildProject(fileSystem.ProjectFileName);
-        this.FileSystem = fileSystem;
+        this._msBuildProject = new MSBuildProject(this.FileSystem.ProjectFileName);
         this._assemblyFrameworkInfoCache.Clear();
 
         #endregion
 
         #region TryGetGitChanges
 
-        if (!this.TryGetGitChanges(fileSystem.GitHash, out var result, out var gitChanges))
+        if (!this.TryGetGitChanges(this.FileSystem.GitHash, out var result, out var gitChanges))
         {
             updateResult.ExternalProcessResult = result;
             updateResult.ErrorCode = VersioningErrorCodes.GetGitDiffNameOnlyFailed;
@@ -174,8 +171,8 @@ internal class Versioning(ILogger logger)
 
         this.ResolveRefTargetFile();
 
-        var targetFileInfo = new FileInfo(fileSystem.TargetFileName);
-        var refTargetFileInfo = new FileInfo(fileSystem.RefTargetFileName);
+        var targetFileInfo = new FileInfo(this.FileSystem.TargetFileName);
+        var refTargetFileInfo = new FileInfo(this.FileSystem.RefTargetFileName);
 
         logger.LogInformation("Assembly comparison target:    {targetFileInfo}", targetFileInfo);
         logger.LogInformation("Assembly Comparison reference: {refTargetFileInfo}", refTargetFileInfo);
@@ -239,12 +236,13 @@ internal class Versioning(ILogger logger)
         {
             var versionSuffix = string.Empty;
 
+            // TODO use project value if not alfa or beta
             if (updateResult.CalculatedVersion.Major == 0)
             {
                 versionSuffix = updateResult.CalculatedVersion.Minor == 0 ? "alpha" : "beta";
             }
 
-            this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, fileSystem.GitHash);
+            this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, this.FileSystem.GitHash);
 
             var gitChangesList = gitChanges.ToList();
             gitChangesList.Add(this.FileSystem.ProjectFileName);
@@ -428,29 +426,29 @@ internal class Versioning(ILogger logger)
         return true;
     }
 
-    private VersioningResult ValidateFileSystem(FileSystem fileSystem)
+    private VersioningResult ValidateFileSystem()
     {
         var updateResult = new VersioningResult();
 
-        if (!File.Exists(fileSystem.TargetFileName))
+        if (!File.Exists(this.FileSystem.TargetFileName))
         {
             updateResult.ErrorCode = VersioningErrorCodes.TargetFileNotExist;
             return updateResult;
         }
 
-        if (!Directory.Exists(fileSystem.ProjectDirName))
+        if (!Directory.Exists(this.FileSystem.ProjectDirName))
         {
             updateResult.ErrorCode = VersioningErrorCodes.ProjectDirNotExist;
             return updateResult;
         }
 
-        if (!File.Exists(fileSystem.ProjectFileName))
+        if (!File.Exists(this.FileSystem.ProjectFileName))
         {
             updateResult.ErrorCode = VersioningErrorCodes.ProjectFileNotExist;
             return updateResult;
         }
 
-        if (!Directory.Exists(fileSystem.GitRepositoryDirName))
+        if (!Directory.Exists(this.FileSystem.GitRepositoryDirName))
         {
             updateResult.ErrorCode = VersioningErrorCodes.GitRepositoryDirNotExist;
             return updateResult;
@@ -465,12 +463,12 @@ internal class Versioning(ILogger logger)
             return updateResult;
         }
 
-        fileSystem.GitHash = gitHash;
+        this.FileSystem.GitHash = gitHash;
 
-        if (this.TryGetAssemblyFrameworkInfo(fileSystem.TargetFileName, out var assemblyFrameworkInfo))
+        if (this.TryGetAssemblyFrameworkInfo(this.FileSystem.TargetFileName, out var assemblyFrameworkInfo))
         {
-            fileSystem.TargetFramework = assemblyFrameworkInfo.FrameworkShortFolderName ?? string.Empty;
-            fileSystem.TargetPlatform = assemblyFrameworkInfo.TargetPlatform ?? string.Empty;
+            this.FileSystem.TargetFramework = assemblyFrameworkInfo.FrameworkShortFolderName ?? string.Empty;
+            this.FileSystem.TargetPlatform = assemblyFrameworkInfo.TargetPlatform ?? string.Empty;
         }
 
         updateResult.ErrorCode = VersioningErrorCodes.Success;

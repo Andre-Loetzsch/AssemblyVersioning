@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>2.0.0.2</AssemblyVersion>
-    <SourceRevisionId>171dd18fc0e2a267c53f478ed332c59e2e1827a9</SourceRevisionId>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <SourceRevisionId>374b71201c6adce4eb567a1380ce09dca321ca41</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -17,16 +17,11 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.26-alpha" />-->
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.38-alpha" />-->
   </ItemGroup>
 
-
-  <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.28-alpha" />
-  </ItemGroup>
-
+  
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->

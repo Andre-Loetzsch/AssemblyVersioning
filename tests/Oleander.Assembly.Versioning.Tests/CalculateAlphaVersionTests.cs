@@ -92,7 +92,10 @@ public class FileSystemTests
             ProjectDirName = AppDomain.CurrentDomain.BaseDirectory
         };
 
+        
         Directory.Delete(fileSystem.CacheDir, true);
+
+        Assert.False(string.IsNullOrEmpty(fileSystem.CacheDir));
       
         Assert.Contains("**/.[Vv]ersioning/[Cc]ache/", File.ReadAllLines(gitignorFileName));
     }

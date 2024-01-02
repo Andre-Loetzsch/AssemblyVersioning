@@ -4,14 +4,14 @@ using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
-public class AssemblyFrameworkInfo
+internal class AssemblyFrameworkInfo
 {
     public AssemblyFrameworkInfo(string assemblyLocation)
     {
         var assemblyDefinition = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(assemblyLocation);
 
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "Any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
@@ -22,7 +22,7 @@ public class AssemblyFrameworkInfo
 
     public Version Version { get; }
 
-    public string? TargetFramework { get; }
+    public string? TargetFramework { get; } 
 
     public string? TargetPlatform { get; }
 
