@@ -5,7 +5,6 @@ namespace Oleander.Assembly.Versioning;
 
 internal class FileSystem(ILogger logger)
 {
-
     #region GiTHash
 
     public string GitHash { get; set; } = string.Empty;
@@ -109,12 +108,14 @@ internal class FileSystem(ILogger logger)
     #endregion
 
     #region TargetPlatform
+
     public string TargetPlatform { get; set; } = string.Empty;
 
     #endregion
 
     #region CacheBaseDir
-    public string CacheBaseDir => this.CreateDirectoryInfo(true, this.VersioningDir, "cache").FullName;
+
+    public string CacheBaseDir => this.CreateDirectoryInfo(true, this.VersioningDir, "cache", this.GitHash).FullName;
 
     #endregion
 
@@ -124,13 +125,12 @@ internal class FileSystem(ILogger logger)
     {
         get
         {
-            var dirInfo = this.CreateDirectoryInfo(false, this.CacheBaseDir, this.GitHash, this.TargetFramework, this.TargetPlatform);
-
+            var dirInfo = this.CreateDirectoryInfo(false, this.CacheBaseDir, this.TargetFramework, this.TargetPlatform);
             if (dirInfo.Exists) return dirInfo.FullName;
+            dirInfo.Create();
 
             this.AddToGitIgnore("Versioning cache", "**/.[Vv]ersioning/[Cc]ache/");
 
-            dirInfo.Create();
             return dirInfo.FullName;
         }
     }
@@ -141,11 +141,21 @@ internal class FileSystem(ILogger logger)
 
     public string ProjectRefBaseDir => this.CreateDirectoryInfo(true, this.VersioningDir, "ref").FullName;
 
+
     #endregion
 
     #region ProjectRefDir
 
-    public string ProjectRefDir => this.CreateDirectoryInfo(true, this.ProjectRefBaseDir, this.TargetFramework, this.TargetPlatform).FullName;
+    private string PrivateProjectRefDirName => this.CreateDirectoryInfo(false, this.VersioningDir, "ref", this.TargetFramework, this.TargetPlatform).FullName;
+
+    public bool ExistProjectRefDir => Directory.Exists(this.PrivateProjectRefDirName);
+
+    public void DeleteProjectRefDirIfExist()
+    {
+        if (Directory.Exists(this.PrivateProjectRefDirName)) Directory.Delete(this.PrivateProjectRefDirName, true);
+    }
+
+    public string ProjectRefDir => this.CreateDirectoryInfo(true, this.PrivateProjectRefDirName).FullName;
 
     #endregion
 

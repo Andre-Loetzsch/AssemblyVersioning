@@ -147,7 +147,7 @@ internal class Versioning(ILogger logger)
 
     private VersioningResult PrivateUpdateAssemblyVersion(FileSystem fileSystem)
     {
-        #region initialisation s
+        #region initialisations
 
         var updateResult = new VersioningResult();
 
@@ -283,7 +283,7 @@ internal class Versioning(ILogger logger)
                 projectFileVersion = new Version(0, 0, 0, 0);
             }
 
-            if (!Directory.Exists(this.FileSystem.ProjectRefDir))
+            if (!this.FileSystem.ExistProjectRefDir)
             {
                 if (!this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileName, out var assemblyFrameworkInfo)) return false;
                 refVersion = assemblyFrameworkInfo.Version;
@@ -307,14 +307,12 @@ internal class Versioning(ILogger logger)
     {
         var refTargetFileName = this.FileSystem.RefTargetFileName;
         var cacheBaseDir = this.FileSystem.CacheBaseDir;
-        var projectRefDir = this.FileSystem.ProjectRefDir;
 
         if (File.Exists(refTargetFileName)) return;
 
         if (this.TryDownloadNugetPackage(cacheBaseDir) && File.Exists(refTargetFileName))
         {
-            if (Directory.Exists(projectRefDir)) Directory.Delete(projectRefDir, true);
-
+            this.FileSystem.DeleteProjectRefDirIfExist();
             logger.LogInformation("File '{refAssemblyPath}' was downloaded from NuGet.", refTargetFileName);
             return;
         }
@@ -354,7 +352,7 @@ internal class Versioning(ILogger logger)
 
     private void CopyTargetFileToProjectRefDir(bool hasGitChanges)
     {
-        if (!Directory.Exists(this.FileSystem.ProjectRefDir)) return;
+        if (!this.FileSystem.ExistProjectRefDir) return;
 
         var targetFileName = this.FileSystem.TargetFileName;
 
