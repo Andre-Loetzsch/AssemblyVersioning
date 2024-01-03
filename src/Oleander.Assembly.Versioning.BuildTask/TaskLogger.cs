@@ -79,7 +79,7 @@ internal class TaskLogger(VersioningTask task) : ILogger
 
     bool ILogger.IsEnabled(LogLevel logLevel)
     {
-        #if DEBUG1
+        #if DEBUG
         return true;
         #else
         return logLevel

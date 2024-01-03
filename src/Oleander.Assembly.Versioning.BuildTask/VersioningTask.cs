@@ -29,24 +29,26 @@ namespace Oleander.Assembly.Versioning.BuildTask
             {
                 if (!this.ValidateProperties()) return false;
 
-                var result = this.InnerExecute();
+                this.InnerExecute();
+                var cacheDirName = this._versioning.FileSystem.CacheDir;
+                var projectDirName = this._versioning.FileSystem.ProjectDirName;
 
-                if (Directory.Exists(result.VersioningCacheDir))
+                if (Directory.Exists(cacheDirName))
                 {
-                    File.AppendAllLines(Path.Combine(result.VersioningCacheDir, "versioning.log"), this._taskLogger.GetLogs());
+                    File.AppendAllLines(Path.Combine(cacheDirName, "versioning.log"), this._taskLogger.GetLogs());
                 }
-                else if (Directory.Exists(result.ProjectDirName))
+                else if (Directory.Exists(projectDirName))
                 {
-                    this._taskLogger.LogWarning(EventIds.VersioningCacheDirNotExist, "Versioning cache dir '{cacheDir}' does not exist!", result.VersioningCacheDir);
+                    this._taskLogger.LogWarning(EventIds.VersioningCacheDirNotExist, "Versioning cache dir '{cacheDir}' does not exist!", cacheDirName);
 
-                    var cacheDir = Path.Combine(result.ProjectDirName, ".versioning", "cache");
+                    var cacheDir = Path.Combine(projectDirName, ".versioning", "cache");
                     if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
 
                     File.AppendAllLines(Path.Combine(cacheDir, "versioning.log"), this._taskLogger.GetLogs());
                 }
                 else
                 {
-                    this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", result.ProjectDirName);
+                    this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", projectDirName);
                 }
             }
             catch (Exception ex)
@@ -65,7 +67,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 File.AppendAllLines(this._tempExceptionLogFile, lines);
 
                 this._taskLogger.LogError(EventIds.AnExceptionHasOccurred,
-                    "An exception has occurred: {exMessage}. Further information can be found in the file '{tempExceptionLogFile}'.", 
+                    "An exception has occurred: {exMessage} Further information can be found in the file '{tempExceptionLogFile}'.", 
                     ex.Message, this._tempExceptionLogFile);
             }
 
@@ -73,7 +75,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
         }
 
-        private VersioningResult InnerExecute()
+        private void InnerExecute()
         {
             VersioningResult result;
 
@@ -112,7 +114,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
             if (result.ErrorCode != VersioningErrorCodes.Success)
             {
                 this._taskLogger.LogError(EventIds.VersioningFailed, "Versioning failed with error code {errorCode}!", $"{(int)result.ErrorCode}-{result.ErrorCode}");
-                return result;
+                return;
             }
 
             if (result.ExternalProcessResult != null && result.ExternalProcessResult.ExitCode != 0)
@@ -120,13 +122,12 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 this._taskLogger.LogError(EventIds.ExternalProcessFailed, "External process failed with exit code {exitCode}! {externalResult}", 
                     result.ExternalProcessResult.ExitCode, result.ExternalProcessResult);
 
-                return result;
+                return;
             }
 
             this._taskLogger.LogInformation(EventIds.CalculatedVersion, "CalculatedVersion: {calculatedVersion}", result.CalculatedVersion);
             this._taskLogger.LogInformation(EventIds.TaskCompleted, "Task completed at {time} and took {seconds} seconds.", 
                 now.ToString("HH:mm:ss"), (DateTime.Now - now).TotalSeconds.ToString("F"));
-            return result;
         }
 
         private bool ValidateProperties()

@@ -4,25 +4,25 @@ using NuGet.Frameworks;
 
 namespace Oleander.Assembly.Versioning;
 
-public class AssemblyFrameworkInfo
+internal class AssemblyFrameworkInfo
 {
     public AssemblyFrameworkInfo(string assemblyLocation)
     {
         var assemblyDefinition = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(assemblyLocation);
 
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
         this.FrameworkName = new FrameworkName(this.TargetFramework);
         this.NuGetFramework = NuGetFramework.ParseFrameworkName(this.FrameworkName.FullName, new DefaultFrameworkNameProvider());
-        this.ShortFolderName = this.NuGetFramework.GetShortFolderName();
+        this.FrameworkShortFolderName = this.NuGetFramework.GetShortFolderName();
     }
 
     public Version Version { get; }
 
-    public string? TargetFramework { get; }
+    public string? TargetFramework { get; } 
 
     public string? TargetPlatform { get; }
 
@@ -30,5 +30,5 @@ public class AssemblyFrameworkInfo
     
     public NuGetFramework? NuGetFramework { get; }
 
-    public string? ShortFolderName { get; }
+    public string? FrameworkShortFolderName { get; }
 }

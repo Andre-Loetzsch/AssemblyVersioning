@@ -90,10 +90,13 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
 
                 var pathItemsList = new List<string>();
                 var assemblyInfo = new AssemblyFrameworkInfo(tempFilename);
-                var shortFolderName = assemblyInfo.ShortFolderName;
+                var shortFolderName = assemblyInfo.FrameworkShortFolderName;
 
                 if (shortFolderName != null) pathItemsList.Add(shortFolderName);
-                if (assemblyInfo.TargetPlatform != null) pathItemsList.Add(assemblyInfo.TargetPlatform);
+
+                pathItemsList.Add(string.IsNullOrEmpty(assemblyInfo.TargetPlatform)
+                    ? "any"
+                    : assemblyInfo.TargetPlatform);
 
                 if (!pathItemsList.Any())
                 {
@@ -124,7 +127,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (File.Exists(path)) File.Delete(path);
                 File.Move(tempFilename, path);
 
-                logger.LogInformation("File '{path}' created.", path);
+                logger.LogInformation("Unzip '{zipEntryName}' entry to file '{path}'.", zipEntry.Name, path);
 
             }
             catch (Exception ex)
