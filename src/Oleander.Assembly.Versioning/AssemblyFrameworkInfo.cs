@@ -11,7 +11,7 @@ internal class AssemblyFrameworkInfo
         var assemblyDefinition = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(assemblyLocation);
 
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "Any";
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;

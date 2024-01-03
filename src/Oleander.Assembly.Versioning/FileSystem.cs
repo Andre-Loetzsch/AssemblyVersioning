@@ -23,6 +23,18 @@ internal class FileSystem(ILogger logger)
 
     #endregion
 
+    #region VersionInfoFileName
+
+    public string VersionInfoFileName => Path.Combine(this.CacheDir, "versionInfo.txt");
+
+    #endregion
+
+    #region ChangelogFileName
+
+    public string ChangelogFileName => Path.Combine(this.CacheDir, "changelog.log");
+
+    #endregion
+
     #region GitRepositoryDirName
 
     private string _gitRepositoryDirName = string.Empty;
@@ -108,17 +120,8 @@ internal class FileSystem(ILogger logger)
     #endregion
 
     #region TargetPlatform
-
-    private string _targetPlatform = "Any";
-    public string TargetPlatform
-    {
-        get => this._targetPlatform;
-        set
-        {
-            if (string.IsNullOrEmpty(value)) value = "Any";
-            this._targetPlatform = value;
-        }
-    }
+    
+    public string TargetPlatform { get; set; } = string.Empty;
 
     #endregion
 
@@ -170,7 +173,9 @@ internal class FileSystem(ILogger logger)
 
     #region ProjectRefFileName
 
-    public string ProjectRefFileName => Path.Combine(this.ProjectRefDir, "version.bin");
+    public string ProjectRefFile => Path.Combine(this.ProjectRefDir, "version.bin");
+
+    public string ProjectRefFileName => Path.Combine(this.PrivateProjectRefDirName, "version.bin");
 
     #endregion
 

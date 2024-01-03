@@ -7,18 +7,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <SourceRevisionId>374b71201c6adce4eb567a1380ce09dca321ca41</SourceRevisionId>
-    <VersionSuffix></VersionSuffix>
+    <AssemblyVersion>1.4.3.0</AssemblyVersion>
+    <SourceRevisionId>f257a9c03ef13d64902206f57b44b5a0df7c6836</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <VersionSuffix>beta</VersionSuffix>
   </PropertyGroup>
 
+ 
+
+  
   <ItemGroup>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.38-alpha" />-->
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.52-alpha" />-->
   </ItemGroup>
 
   

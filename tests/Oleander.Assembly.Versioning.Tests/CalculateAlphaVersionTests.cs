@@ -88,13 +88,13 @@ public class FileSystemTests
         var fileSystem = new FileSystem(new NullLogger())
         {
             GitHash = "122ce327",
+            TargetPlatform = "any",
             GitRepositoryDirName = AppDomain.CurrentDomain.BaseDirectory,
             ProjectDirName = AppDomain.CurrentDomain.BaseDirectory
         };
 
         
         Directory.Delete(fileSystem.CacheDir, true);
-
         Assert.False(string.IsNullOrEmpty(fileSystem.CacheDir));
       
         Assert.Contains("**/.[Vv]ersioning/[Cc]ache/", File.ReadAllLines(gitignorFileName));

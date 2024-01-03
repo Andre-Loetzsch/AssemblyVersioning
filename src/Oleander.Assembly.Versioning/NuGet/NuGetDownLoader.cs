@@ -95,7 +95,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (shortFolderName != null) pathItemsList.Add(shortFolderName);
 
                 pathItemsList.Add(string.IsNullOrEmpty(assemblyInfo.TargetPlatform)
-                    ? "Any"
+                    ? "any"
                     : assemblyInfo.TargetPlatform);
 
                 if (!pathItemsList.Any())
@@ -127,7 +127,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (File.Exists(path)) File.Delete(path);
                 File.Move(tempFilename, path);
 
-                logger.LogInformation("File '{path}' created.", path);
+                logger.LogInformation("Unzip '{zipEntryName}' entry to file '{path}'.", zipEntry.Name, path);
 
             }
             catch (Exception ex)

@@ -2,17 +2,11 @@
 
 namespace Oleander.Assembly.Versioning.ExternalProcesses
 {
-    public class ExternalProcessResult
+    public class ExternalProcessResult(string exeFileName, string arguments)
     {
-        public ExternalProcessResult(string exeFileName, string arguments)
-        {
-            this.ExeFileName = Path.GetFileName(exeFileName);
-            this.CommandLine = string.Concat(exeFileName, " ", arguments);
-        }
+        public string ExeFileName { get; } = Path.GetFileName(exeFileName);
 
-        public string ExeFileName { get; }
-
-        public string CommandLine { get; }
+        public string CommandLine { get; } = string.Concat(exeFileName, " ", arguments);
 
         public Win32ExitCodes Win32ExitCode { get; internal set; } = Win32ExitCodes.ERROR_SUCCESS;
         public int ExitCode { get; internal set; }

@@ -30,7 +30,7 @@
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
     <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.38-alpha" />-->
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.41-alpha" />-->
   </ItemGroup>
 
   <ItemGroup>
