@@ -316,9 +316,11 @@ internal class Versioning(ILogger logger)
         this.CopyTargetFileToProjectRefDir(gitChanges.Any());
 
         #endregion
-
+        
         return updateResult;
     }
+
+
 
     private bool TryGetProjectFileAssemblyVersion([MaybeNullWhen(false)] out Version version)
     {
@@ -470,7 +472,7 @@ internal class Versioning(ILogger logger)
         var projectFiles = Directory.GetFiles(this.FileSystem.ProjectDirName, "*.*", SearchOption.AllDirectories)
           .Select(x => x.Substring(gitRepositoryDirNameLength).Replace('\\', '/')).ToList();
 
-        return projectFiles.Where(projectFile => gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase))).ToList();
+        return projectFiles.Where(projectFile => gitChanges.Any(x => string.Equals(x, projectFile, StringComparison.InvariantCultureIgnoreCase)));
     }
 
     private bool ShouldIncreaseBuildVersion(IEnumerable<string> gitChanges, VersionChange versionChange)
