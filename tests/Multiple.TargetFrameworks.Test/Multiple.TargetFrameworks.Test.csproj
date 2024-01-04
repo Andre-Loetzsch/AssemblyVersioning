@@ -15,6 +15,8 @@
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <VersionSuffix>beta</VersionSuffix>
+    <IsPublishable>False</IsPublishable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
