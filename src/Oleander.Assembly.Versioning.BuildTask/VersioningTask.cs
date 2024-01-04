@@ -30,25 +30,25 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 if (!this.ValidateProperties()) return false;
 
                 this.InnerExecute();
-                var cacheDirName = this._versioning.FileSystem.CacheDir;
-                var projectDirName = this._versioning.FileSystem.ProjectDirName;
+                var cacheDirInfo = this._versioning.FileSystem.CacheDirInfo;
+                var projectDirInfo = this._versioning.FileSystem.ProjectDirInfo;
 
-                if (Directory.Exists(cacheDirName))
+                if (cacheDirInfo.Exists)
                 {
-                    File.AppendAllLines(Path.Combine(cacheDirName, "versioning.log"), this._taskLogger.GetLogs());
+                    File.AppendAllLines(Path.Combine(cacheDirInfo.FullName, "versioning.log"), this._taskLogger.GetLogs());
                 }
-                else if (Directory.Exists(projectDirName))
+                else if (projectDirInfo.Exists)
                 {
-                    this._taskLogger.LogWarning(EventIds.VersioningCacheDirNotExist, "Versioning cache dir '{cacheDir}' does not exist!", cacheDirName);
+                    this._taskLogger.LogWarning(EventIds.VersioningCacheDirNotExist, "Versioning cache dir '{cacheDir}' does not exist!", projectDirInfo.FullName);
 
-                    var cacheDir = Path.Combine(projectDirName, ".versioning", "cache");
+                    var cacheDir = Path.Combine(projectDirInfo.FullName, ".versioning", "cache");
                     if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
 
                     File.AppendAllLines(Path.Combine(cacheDir, "versioning.log"), this._taskLogger.GetLogs());
                 }
                 else
                 {
-                    this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", projectDirName);
+                    this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", projectDirInfo.FullName);
                 }
             }
             catch (Exception ex)

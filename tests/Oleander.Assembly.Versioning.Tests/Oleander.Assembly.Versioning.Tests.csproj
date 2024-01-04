@@ -11,7 +11,8 @@
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
-
+    <IsPublishable>False</IsPublishable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

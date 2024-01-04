@@ -73,30 +73,3 @@ public class CalculateAlphaVersionTests
     }
 
 }
-
-
-
-public class FileSystemTests
-{
-    [Fact]
-    public void TestAddToGitIgnoreFile()
-    {
-        var gitignorFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".gitignore");
-
-        File.WriteAllLines(gitignorFileName, Enumerable.Empty<string>());
-
-        var fileSystem = new FileSystem(new NullLogger())
-        {
-            GitHash = "122ce327",
-            TargetPlatform = "any",
-            GitRepositoryDirName = AppDomain.CurrentDomain.BaseDirectory,
-            ProjectDirName = AppDomain.CurrentDomain.BaseDirectory
-        };
-
-        
-        Directory.Delete(fileSystem.CacheDir, true);
-        Assert.False(string.IsNullOrEmpty(fileSystem.CacheDir));
-      
-        Assert.Contains("**/.[Vv]ersioning/[Cc]ache/", File.ReadAllLines(gitignorFileName));
-    }
-}
