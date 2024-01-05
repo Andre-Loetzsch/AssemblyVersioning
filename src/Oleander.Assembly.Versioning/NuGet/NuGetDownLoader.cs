@@ -33,7 +33,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
             }
             catch (Exception ex)
             {
-                logger.LogError("Get versions failed! ({type} : {message}) PackageId={packageId}, Source name={packageName}, Source={packageSource}", 
+                logger.LogError("Get versions failed! ({type} : {message}) PackageId={packageId}, Source name={packageName}, Source={packageSource}",
                     ex.GetType(), ex.Message, packageId, source.PackageSource.Name, source.PackageSource.Source);
             }
         }
@@ -124,11 +124,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (!Directory.Exists(libDir)) Directory.CreateDirectory(libDir);
                 var path = Path.Combine(libDir, zipEntry.Name);
 
-                if (File.Exists(path)) File.Delete(path);
-                File.Move(tempFilename, path);
-
-                logger.LogInformation("Unzip '{zipEntryName}' entry to file '{path}'.", zipEntry.Name, path);
-
+                this.MoveTempFileToTarget(tempFilename, path, zipEntry.Name);
             }
             catch (Exception ex)
             {
@@ -139,6 +135,41 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
 
         return true;
     }
+
+    private void MoveTempFileToTarget(string tempFilename, string targetPath, string zipEntryName)
+    {
+        var fileInfo = new FileInfo(targetPath);
+
+        if (fileInfo.Exists)
+        {
+            if ((DateTime.Now - fileInfo.CreationTime).TotalSeconds > 10)
+            {
+                File.Delete(targetPath);
+                File.Move(tempFilename, targetPath);
+                logger.LogInformation("Unzip '{zipEntryName}' entry to override file '{path}'.", zipEntryName, targetPath);
+            }
+            else
+            {
+                logger.LogInformation("Skip unzipping the file '{path}' because the file is up-to-date.", targetPath);
+            }
+        }
+        else
+        {
+            try
+            {
+                File.Move(tempFilename, targetPath);
+                logger.LogInformation("Unzip '{zipEntryName}' entry to file '{path}'.", zipEntryName, targetPath);
+            }
+            catch (IOException)
+            {
+                fileInfo = new(targetPath);
+
+                if (!fileInfo.Exists) throw;
+                logger.LogInformation("Skip unzipping the file '{path}' because the file is up-to-date.", targetPath);
+            }
+        }
+    }
+
 
     public void Dispose()
     {
