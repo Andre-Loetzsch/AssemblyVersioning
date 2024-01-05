@@ -281,6 +281,8 @@ internal class Versioning(ILogger logger)
         #region CalculateVersion
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
+        updateResult.CurrentVersion = updateResult.CalculatedVersion > projectFileVersion ? updateResult.CalculatedVersion : projectFileVersion;
+
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
         #endregion
@@ -293,13 +295,13 @@ internal class Versioning(ILogger logger)
 
             if (string.IsNullOrEmpty(versionSuffix) || versionSuffix == "alpha" || versionSuffix == "beta")
             {
-                if (updateResult.CalculatedVersion.Major == 0)
+                if (updateResult.CurrentVersion.Major == 0)
                 {
-                    versionSuffix = updateResult.CalculatedVersion.Minor == 0 ? "alpha" : "beta";
+                    versionSuffix = updateResult.CurrentVersion.Minor == 0 ? "alpha" : "beta";
                 }
             }
 
-            this.UpdateProjectFile(updateResult.CalculatedVersion, versionSuffix, this.FileSystem.GitHash);
+            this.UpdateProjectFile(updateResult.CurrentVersion, versionSuffix, this.FileSystem.GitHash);
 
             var gitChangesList = gitChanges.ToList();
             gitChangesList.Add(this.FileSystem.ProjectFileInfo.FullName);
