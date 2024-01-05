@@ -5,12 +5,12 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.1.59.0</AssemblyVersion>
+    <AssemblyVersion>0.1.53.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>75289a5394b6dbb9911ac5405ff6dd5124844f81</SourceRevisionId>
+    <SourceRevisionId>19fe49a3476353b952b98e316171ad73b6a09109</SourceRevisionId>
     <VersionSuffix>alpha</VersionSuffix>
     <Title>Assembly versioning task</Title>
     <Authors>Oleander</Authors>
