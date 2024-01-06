@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>1.4.3.1</AssemblyVersion>
-    <SourceRevisionId>015774d7db1256715892e9d0e0b15328c6af415b</SourceRevisionId>
+    <AssemblyVersion>1.4.3.2</AssemblyVersion>
+    <SourceRevisionId>201f2389867f1a716078df43e06ce53223b0b59c</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>

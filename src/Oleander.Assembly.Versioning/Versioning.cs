@@ -25,7 +25,6 @@ internal class Versioning(ILogger logger)
         public DateTime LastUpdated { get; set; }
     }
 
-    private static readonly object syncDownloadNugetPackages = new();
     private static readonly Dictionary<string, GitHashCacheItem> gitHashCache = new();
     private static readonly Dictionary<string, GitChangesCacheItem> gitChangesCache = new();
     private readonly Dictionary<string, AssemblyFrameworkInfo> _assemblyFrameworkInfoCache = new();
@@ -181,20 +180,18 @@ internal class Versioning(ILogger logger)
         var packageId = this._msBuildProject.PackageId;
         if (packageId == null) return false;
 
-        lock (syncDownloadNugetPackages)
-        {
-            var packageSource = this._msBuildProject.PackageSource;
-            using var nuGetDownLoader = new NuGetDownLoader(new NuGetLogger(logger), this.FileSystem.TargetFileInfo.Name);
-            var sources = packageSource == null ? nuGetDownLoader.GetNuGetConfigSources() : new[] { Repository.Factory.GetCoreV3(packageSource) };
+        var packageSource = this._msBuildProject.PackageSource;
+        using var nuGetDownLoader = new NuGetDownLoader(new NuGetLogger(logger), this.FileSystem.TargetFileInfo.Name);
+        var sources = packageSource == null ? nuGetDownLoader.GetNuGetConfigSources() : new[] { Repository.Factory.GetCoreV3(packageSource) };
 
-            var versions = nuGetDownLoader.GetAllVersionsAsync(sources, packageId, CancellationToken.None).GetAwaiter().GetResult();
+        var versions = nuGetDownLoader.GetAllVersionsAsync(sources, packageId, CancellationToken.None).GetAwaiter().GetResult();
 
-            if (!versions.Any()) return false;
+        if (!versions.Any()) return false;
 
-            var (source, version) = versions.First(x => x.Item2.Version == versions.Max(x1 => x1.Item2.Version));
+        var (source, version) = versions.First(x => x.Item2.Version == versions.Max(x1 => x1.Item2.Version));
 
-            return nuGetDownLoader.DownloadPackageAsync(source, packageId, version, outDir, CancellationToken.None).GetAwaiter().GetResult();
-        }
+        return nuGetDownLoader.DownloadPackageAsync(source, packageId, version, outDir, CancellationToken.None).GetAwaiter().GetResult();
+
     }
 
     #endregion
@@ -284,6 +281,8 @@ internal class Versioning(ILogger logger)
         #region CalculateVersion
 
         updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
+        //updateResult.CurrentVersion = updateResult.CalculatedVersion > projectFileVersion ? updateResult.CalculatedVersion : projectFileVersion;
+
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
         #endregion
@@ -451,7 +450,7 @@ internal class Versioning(ILogger logger)
             logger.LogInformation("Directory '{versionInfoDir}' created.", versionInfoFileInfo.DirectoryName);
         }
 
-        File.WriteAllLines(versionInfoFileInfo.FullName, new[] { refVersion.ToString(), calculatedVersion.ToString() });
+        File.WriteAllLines(versionInfoFileInfo.FullName, [refVersion.ToString(), calculatedVersion.ToString()]);
     }
 
     private void WriteChangeLog(VersionChange versionChange, IEnumerable<string> gitChanges, string xmlDiff)
