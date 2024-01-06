@@ -5,13 +5,13 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.1.53.1</AssemblyVersion>
+    <AssemblyVersion>0.0.53.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>c1f7c6d18d01590c58a5ed5a78219d9b6d8d702c</SourceRevisionId>
-    <VersionSuffix>beta</VersionSuffix>
+    <SourceRevisionId>dbde1261a4b93e573de2fa181f26a25a81f1477a</SourceRevisionId>
+    <VersionSuffix>alpha</VersionSuffix>
     <Title>Assembly versioning task</Title>
     <Authors>Oleander</Authors>
     <Description>Compares two assemblies and calculates the current version</Description>
