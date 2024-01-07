@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>1.4.3.2</AssemblyVersion>
-    <SourceRevisionId>201f2389867f1a716078df43e06ce53223b0b59c</SourceRevisionId>
+    <AssemblyVersion>1.4.5.0</AssemblyVersion>
+    <SourceRevisionId>c17e02f04b08102c7b8141ee1fe98326903c7290</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
@@ -18,6 +18,10 @@
     <IsPublishable>False</IsPublishable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.54.1-alpha" />
+  </ItemGroup>
 
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->

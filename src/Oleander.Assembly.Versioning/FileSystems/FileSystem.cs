@@ -53,9 +53,9 @@ internal class FileSystem(ILogger logger)
 
     #endregion
 
-    #region VersionInfoFileInfo
+    #region VersionFileCacheFileInfo
 
-    public FileInfo VersionInfoFileInfo => new(Path.Combine(this.CacheDirInfo.FullName, "versionInfo.txt"));
+    public FileInfo VersionFileCacheFileInfo => new(Path.Combine(this.CacheDirInfo.FullName, "versionInfo.txt"));
 
     #endregion
 
@@ -189,6 +189,9 @@ internal class FileSystem(ILogger logger)
 
     #region ProjectRefDirInfo
 
+    /// <summary>
+    /// “Directory exists” is the indicator that we are using version.bin as the project reference,  otherwise nuget is used as the reference.
+    /// </summary>
     public DirectoryInfo ProjectRefDirInfo => CreateDirectoryInfo(this.VersioningDirInfo, "ref", this.TargetFramework, this.TargetPlatform);
 
     #endregion
