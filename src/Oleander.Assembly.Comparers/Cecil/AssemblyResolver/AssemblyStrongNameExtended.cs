@@ -1,6 +1,4 @@
-﻿using Mono.Cecil;
-
-namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
+﻿namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     public class AssemblyStrongNameExtended
     {

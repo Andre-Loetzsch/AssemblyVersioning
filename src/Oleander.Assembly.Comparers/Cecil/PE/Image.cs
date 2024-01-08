@@ -12,7 +12,7 @@ using Oleander.Assembly.Comparers.Cecil.Cil;
 using Oleander.Assembly.Comparers.Cecil.Metadata;
 using RVA = System.UInt32;
 
-namespace Mono.Cecil.PE {
+namespace Oleander.Assembly.Comparers.Cecil.PE {
 
 	sealed class Image {
 

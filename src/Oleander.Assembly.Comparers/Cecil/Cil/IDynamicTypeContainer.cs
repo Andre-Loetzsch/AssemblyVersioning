@@ -1,6 +1,4 @@
-﻿using Mono.Cecil;
-
-namespace Oleander.Assembly.Comparers.Cecil.Cil
+﻿namespace Oleander.Assembly.Comparers.Cecil.Cil
 {
     /*Telerik Authorship*/
     public interface IDynamicTypeContainer

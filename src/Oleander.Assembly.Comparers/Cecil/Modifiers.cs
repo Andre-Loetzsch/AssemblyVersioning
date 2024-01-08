@@ -9,7 +9,7 @@
 //
 
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public interface IModifierType {
 		TypeReference ModifierType { get; }

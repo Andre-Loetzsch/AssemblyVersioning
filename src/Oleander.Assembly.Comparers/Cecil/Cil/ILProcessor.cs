@@ -8,7 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Cecil;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
 namespace Oleander.Assembly.Comparers.Cecil.Cil {

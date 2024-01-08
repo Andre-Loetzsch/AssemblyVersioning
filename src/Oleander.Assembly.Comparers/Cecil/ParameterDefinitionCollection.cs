@@ -10,7 +10,7 @@
 
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	sealed class ParameterDefinitionCollection : Collection<ParameterDefinition> {
 

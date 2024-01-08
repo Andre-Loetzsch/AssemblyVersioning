@@ -1,6 +1,4 @@
-﻿using Mono.Cecil;
-
-namespace Oleander.Assembly.Comparers.Cecil.Extensions
+﻿namespace Oleander.Assembly.Comparers.Cecil.Extensions
 {
     public static class ModuleArchitectureExtensions
     {

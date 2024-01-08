@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using Oleander.Assembly.Comparers.Cecil;
 using Oleander.Assembly.Comparers.Core.DiffItems.Events;
 
 namespace Oleander.Assembly.Comparers.Core.Comparers.Accessors

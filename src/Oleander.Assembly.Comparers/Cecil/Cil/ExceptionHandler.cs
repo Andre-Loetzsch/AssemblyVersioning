@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Cecil;
-
 namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	public enum ExceptionHandlerType {

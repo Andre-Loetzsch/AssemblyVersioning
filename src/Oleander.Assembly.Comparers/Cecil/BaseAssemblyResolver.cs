@@ -9,18 +9,17 @@
 //
 
 using System.Text;
-/*Telerik Authorship*/
-/*Telerik Authorship*/
-/*Telerik Authorship*/
-/*Telerik Authorship*/
-using JustDecompile.SmartAssembly.Attributes;
 using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using Oleander.Assembly.Comparers.Cecil.Extensions;
+/*Telerik Authorship*/
+/*Telerik Authorship*/
+/*Telerik Authorship*/
+/*Telerik Authorship*/
 
 /*Telerik Authorship*/
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 	public delegate AssemblyDefinition AssemblyResolveEventHandler(object sender, /*Telerik Authorship*/ AssemblyResolveEventArgs args);
 
 	/*Telerik Authorship*/

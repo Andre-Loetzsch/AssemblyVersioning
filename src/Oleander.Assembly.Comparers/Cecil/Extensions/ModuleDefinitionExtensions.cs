@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using Mono.Cecil.PE;
+﻿using Oleander.Assembly.Comparers.Cecil.PE;
 
 namespace Oleander.Assembly.Comparers.Cecil.Extensions
 {

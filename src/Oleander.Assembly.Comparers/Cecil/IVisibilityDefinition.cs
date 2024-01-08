@@ -1,4 +1,4 @@
-namespace Mono.Cecil
+namespace Oleander.Assembly.Comparers.Cecil
 {
 	public interface IVisibilityDefinition
 	{

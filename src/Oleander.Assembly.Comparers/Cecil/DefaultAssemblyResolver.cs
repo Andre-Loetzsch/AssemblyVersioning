@@ -12,7 +12,7 @@
 
 using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
 
-namespace Mono.Cecil
+namespace Oleander.Assembly.Comparers.Cecil
 {
     /*Telerik Authroship*/
     public static class GlobalAssemblyResolver

@@ -9,8 +9,6 @@
 //
 
 using System.Collections;
-using Mono;
-using Mono.Cecil;
 
 namespace Oleander.Assembly.Comparers.Cecil.Collections.Generic {
 

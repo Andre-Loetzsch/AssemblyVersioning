@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using Mono.Cecil;
 using Oleander.Assembly.Comparers.Cecil.Extensions;
 
 namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver

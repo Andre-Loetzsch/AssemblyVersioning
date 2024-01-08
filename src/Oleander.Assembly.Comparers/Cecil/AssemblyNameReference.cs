@@ -15,7 +15,7 @@ using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 /*Telerik Authorship*/
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public class AssemblyNameReference : IMetadataScope {
 

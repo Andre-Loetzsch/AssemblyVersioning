@@ -10,34 +10,30 @@
 
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-namespace Mono
-{
-    internal static class Empty<T>
-    {
+namespace Oleander.Assembly.Comparers.Cecil;
 
-        public static readonly T[] Array = System.Array.Empty<T>();
-    }
+internal static class Empty<T>
+{
+
+    public static readonly T[] Array = System.Array.Empty<T>();
 }
 
-namespace Mono.Cecil
+internal static partial class Mixin
 {
-    internal static partial class Mixin
+
+    public static bool IsNullOrEmpty<T>(this T[] self)
     {
+        return self == null || self.Length == 0;
+    }
 
-        public static bool IsNullOrEmpty<T>(this T[] self)
-        {
-            return self == null || self.Length == 0;
-        }
+    public static bool IsNullOrEmpty<T>(this Collection<T> self)
+    {
+        return self == null || self.size == 0;
+    }
 
-        public static bool IsNullOrEmpty<T>(this Collection<T> self)
-        {
-            return self == null || self.size == 0;
-        }
-
-        public static T[] Resize<T>(this T[] self, int length)
-        {
-            Array.Resize(ref self, length);
-            return self;
-        }
+    public static T[] Resize<T>(this T[] self, int length)
+    {
+        Array.Resize(ref self, length);
+        return self;
     }
 }

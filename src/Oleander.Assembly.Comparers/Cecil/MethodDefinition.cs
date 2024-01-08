@@ -15,7 +15,7 @@ using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using Oleander.Assembly.Comparers.Cecil.Metadata;
 using RVA = System.UInt32;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public sealed class MethodDefinition : MethodReference, IMemberDefinition, ISecurityDeclarationProvider, IVisibilityDefinition/*Telerik Authorship*/, ISecurityDeclarationMemberDefinition/*Telerik Authorship*/, IGenericDefinition/*Telerik Authorship*/ {
 

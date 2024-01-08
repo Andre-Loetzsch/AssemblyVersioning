@@ -9,7 +9,6 @@
 //
 
 using System.Text;
-using Mono.Cecil;
 
 namespace Oleander.Assembly.Comparers.Cecil.Cil {
 

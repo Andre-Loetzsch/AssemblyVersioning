@@ -9,8 +9,8 @@
 //
 
 /*Telerik Authorship*/
-using Mono.Cecil.Mono.Cecil;
-namespace Mono.Cecil {
+
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public interface IConstantProvider : IMetadataTokenProvider {
 

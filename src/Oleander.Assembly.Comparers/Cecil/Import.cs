@@ -8,11 +8,11 @@
 // Licensed under the MIT/X11 license.
 //
 
-using SR = System.Reflection;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using Oleander.Assembly.Comparers.Cecil.Metadata;
+using SR = System.Reflection;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	enum ImportGenericKind {
 		Definition,
@@ -249,10 +249,10 @@ namespace Mono.Cecil {
 			AssemblyNameReference scope;
 			var name = AssemblyNameReference.Parse (assembly.FullName);
 
-			if (TryGetAssemblyNameReference (name, out scope))
+			if (this.TryGetAssemblyNameReference (name, out scope))
 				return scope;
 
-			module.AssemblyReferences.Add (name);
+			this.module.AssemblyReferences.Add (name);
 
 			return name;
 		}

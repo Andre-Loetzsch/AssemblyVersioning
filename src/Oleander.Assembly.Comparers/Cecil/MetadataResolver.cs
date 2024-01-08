@@ -9,11 +9,12 @@
 //
 
 /*Telerik authorship*/
+
 using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using Oleander.Assembly.Comparers.Cecil.Extensions;
 
-namespace Mono.Cecil
+namespace Oleander.Assembly.Comparers.Cecil
 {
 
     public interface IAssemblyResolver

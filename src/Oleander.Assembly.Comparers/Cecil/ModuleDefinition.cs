@@ -8,14 +8,13 @@
 // Licensed under the MIT/X11 license.
 //
 
-using SR = System.Reflection;
-/*Telerik Authorship*/
-using Mono.Cecil.PE;
 using Oleander.Assembly.Comparers.Cecil.Cil;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using Oleander.Assembly.Comparers.Cecil.Metadata;
+using Oleander.Assembly.Comparers.Cecil.PE;
+/*Telerik Authorship*/
 
-namespace Mono.Cecil
+namespace Oleander.Assembly.Comparers.Cecil
 {
 
     public enum ReadingMode

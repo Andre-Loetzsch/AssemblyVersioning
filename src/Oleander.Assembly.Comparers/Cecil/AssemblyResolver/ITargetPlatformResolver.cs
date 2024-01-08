@@ -1,6 +1,4 @@
 ﻿
-using Mono.Cecil;
-
 namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
 	/*Telerik Authorship*/

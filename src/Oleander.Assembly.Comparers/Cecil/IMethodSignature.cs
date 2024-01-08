@@ -11,7 +11,7 @@
 using System.Text;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public interface IMethodSignature : IMetadataTokenProvider {
 

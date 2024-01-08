@@ -10,7 +10,7 @@
 
 using Oleander.Assembly.Comparers.Cecil.Metadata;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	struct Range {
 		public uint Start;

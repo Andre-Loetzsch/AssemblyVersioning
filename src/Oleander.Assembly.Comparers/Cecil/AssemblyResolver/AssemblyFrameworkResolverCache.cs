@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Versioning;
-using Mono.Cecil;
 
 namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {

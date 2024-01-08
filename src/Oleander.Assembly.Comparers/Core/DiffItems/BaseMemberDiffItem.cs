@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using Oleander.Assembly.Comparers.Cecil;
 using Oleander.Assembly.Comparers.Core.Extensions;
 
 namespace Oleander.Assembly.Comparers.Core.DiffItems

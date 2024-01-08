@@ -9,10 +9,10 @@
 //
 
 /*Telerik Authorship*/
-using Mono.Cecil.Mono.Cecil;
+
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil {
 
 	public sealed class FieldDefinition : FieldReference, IMemberDefinition, IConstantProvider, IMarshalInfoProvider, IVisibilityDefinition/*Telerik Authorship*/ {
 

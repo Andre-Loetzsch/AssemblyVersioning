@@ -2,7 +2,7 @@
 
 // Licence: Everyone is free to use the code contained in this file in any way.
 
-namespace JustDecompile.SmartAssembly.Attributes
+namespace Oleander.Assembly.Comparers.Cecil
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Struct)]
     public sealed class DoNotCaptureVariablesAttribute : Attribute

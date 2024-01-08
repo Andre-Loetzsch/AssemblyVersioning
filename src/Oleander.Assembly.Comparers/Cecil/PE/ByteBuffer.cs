@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-namespace Mono.Cecil.PE {
+namespace Oleander.Assembly.Comparers.Cecil.PE {
 
 	class ByteBuffer {
 

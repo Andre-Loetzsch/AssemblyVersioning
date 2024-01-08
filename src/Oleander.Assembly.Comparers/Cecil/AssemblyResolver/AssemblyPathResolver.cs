@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using Oleander.Assembly.Comparers.Cecil.Extensions;
+﻿using Oleander.Assembly.Comparers.Cecil.Extensions;
 /*Telerik Authorship*/
 using AssemblyPathName = System.Collections.Generic.KeyValuePair<Oleander.Assembly.Comparers.Cecil.AssemblyResolver.AssemblyStrongNameExtended, string>;
 

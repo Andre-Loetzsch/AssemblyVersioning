@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using AssemblyPathName = System.Collections.Generic.KeyValuePair<Oleander.Assembly.Comparers.Cecil.AssemblyResolver.AssemblyStrongNameExtended, string>;
+﻿using AssemblyPathName = System.Collections.Generic.KeyValuePair<Oleander.Assembly.Comparers.Cecil.AssemblyResolver.AssemblyStrongNameExtended, string>;
 
 namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {

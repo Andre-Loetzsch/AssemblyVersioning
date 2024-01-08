@@ -10,7 +10,7 @@
 
 using RVA = System.UInt32;
 
-namespace Mono.Cecil.PE {
+namespace Oleander.Assembly.Comparers.Cecil.PE {
 
 	struct DataDirectory {
 
