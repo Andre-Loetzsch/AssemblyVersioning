@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparator;
+using Oleander.Assembly.Versioning.Caching;
 using Oleander.Assembly.Versioning.ExternalProcesses;
 using Oleander.Assembly.Versioning.FileSystems;
 using Oleander.Assembly.Versioning.NuGet;
@@ -29,7 +30,6 @@ internal class Versioning(ILogger logger)
     private static readonly Dictionary<string, GitChangesCacheItem> gitChangesCache = new();
     private readonly Dictionary<string, AssemblyFrameworkInfo> _assemblyFrameworkInfoCache = new();
     private MSBuildProject? _msBuildProject;
-
     internal FileSystem FileSystem = new(logger);
 
     #region UpdateAssemblyVersion
@@ -202,9 +202,11 @@ internal class Versioning(ILogger logger)
     {
         #region initialisations
 
-        var updateResult = new VersioningResult();
         this._msBuildProject = new MSBuildProject(this.FileSystem.ProjectFileInfo.FullName);
         this._assemblyFrameworkInfoCache.Clear();
+
+        var updateResult = new VersioningResult();
+        var versionCache = this.CreateVersionFileCache();
 
         #endregion
 
@@ -244,33 +246,6 @@ internal class Versioning(ILogger logger)
 
         #endregion
 
-        #region TryGetProjectFileAssemblyVersion
-
-        if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
-        {
-            projectFileVersion = new Version(0, 0, 1, 0);
-            logger.LogInformation("Project file does not contain assembly version information. Use start version '{projectFileVersion}'.", projectFileVersion);
-        }
-        else
-        {
-            logger.LogInformation("Use project file assembly version '{projectFileVersion}'.", projectFileVersion);
-        }
-
-        #endregion
-
-        #region TryGetRefAndLastCalculatedVersion
-
-        if (!this.TryGetRefAndLastCalculatedVersion(out var refVersion, out var lastCalculatedVersion))
-        {
-            refVersion = projectFileVersion;
-            lastCalculatedVersion = projectFileVersion;
-
-            this.SaveRefAndLastCalculatedVersion(refVersion, lastCalculatedVersion);
-            logger.LogInformation("Reference version was not found. Use version from project file.");
-        }
-
-        #endregion
-
         #region Increase Build- Revision- Version
 
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
@@ -278,18 +253,38 @@ internal class Versioning(ILogger logger)
 
         #endregion
 
+        #region update DesiredVersion
+
+        if (this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
+        {
+            if (versionCache.CurrentVersion != projectFileVersion)
+            {
+                versionCache.ManuallySetProjectVersion = projectFileVersion;
+            }
+        }
+
+        #endregion
+
         #region CalculateVersion
 
-        updateResult.CalculatedVersion = CalculateVersion(refVersion, versionChange);
-        //updateResult.CurrentVersion = updateResult.CalculatedVersion > projectFileVersion ? updateResult.CalculatedVersion : projectFileVersion;
-
+        updateResult.CalculatedVersion = CalculateVersion(versionCache.RefVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
+
+        if (versionCache.ManuallySetProjectVersion > updateResult.CalculatedVersion)
+        {
+            logger.LogInformation("Use the project file version '{manuallySetProjectVersion}' because it is higher than the calculated version '{calculatedVersion}'.", 
+                versionCache.ManuallySetProjectVersion, updateResult.CalculatedVersion);
+
+            updateResult.CalculatedVersion = versionCache.ManuallySetProjectVersion;
+        }
 
         #endregion
 
         #region Update new version
 
-        if (projectFileVersion <= lastCalculatedVersion && projectFileVersion != updateResult.CalculatedVersion)
+        versionCache.CurrentVersion = updateResult.CalculatedVersion;
+
+        if (projectFileVersion != updateResult.CalculatedVersion)
         {
             var versionSuffix = this._msBuildProject.VersionSuffix ?? string.Empty;
 
@@ -308,13 +303,16 @@ internal class Versioning(ILogger logger)
             gitChanges = gitChangesList.ToArray();
         }
 
-        this.SaveRefAndLastCalculatedVersion(refVersion, updateResult.CalculatedVersion);
+        versionCache.Write();
+
         this.CopyTargetFileToProjectRefDir(gitChanges.Any());
 
         #endregion
-
+        
         return updateResult;
     }
+
+    private bool UseNuGetAsReference => !this.FileSystem.ProjectRefDirInfo.Exists;
 
     private bool TryGetProjectFileAssemblyVersion([MaybeNullWhen(false)] out Version version)
     {
@@ -326,40 +324,36 @@ internal class Versioning(ILogger logger)
 
     }
 
-    private bool TryGetRefAndLastCalculatedVersion([MaybeNullWhen(false)] out Version refVersion, [MaybeNullWhen(false)] out Version lastCalculatedVersion)
+    private VersionFileCache CreateVersionFileCache()
     {
-        refVersion = null;
-        lastCalculatedVersion = null;
+        var cache = new VersionFileCache(this.FileSystem.VersionFileCacheFileInfo);
 
-
-        if (!this.FileSystem.VersionInfoFileInfo.Exists)
+        if (cache.CacheFileInfo.Exists)
         {
-            if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
-            {
-                projectFileVersion = new(0, 0, 0, 0);
-            }
-
-            if (!this.FileSystem.ProjectRefDirInfo.Exists)
-            {
-                if (!this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileInfo, out var assemblyFrameworkInfo)) return false;
-                refVersion = assemblyFrameworkInfo.Version;
-            }
-            else
-            {
-                refVersion = projectFileVersion;
-            }
-
-            this.SaveRefAndLastCalculatedVersion(refVersion, projectFileVersion);
+            cache.Read();
+            return cache;
         }
 
-        var versionInfoFileInfo = this.FileSystem.VersionInfoFileInfo;
-        if (!versionInfoFileInfo.Exists) return false;
+        if (!this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
+        {
+            projectFileVersion = new(0, 0, 0, 0);
+        }
 
-        var fileContent = File.ReadAllLines(versionInfoFileInfo.FullName).ToList();
+        cache.ManuallySetProjectVersion = projectFileVersion;
+        cache.CurrentVersion = projectFileVersion;
 
-        return fileContent.Count > 1 &&
-               Version.TryParse(fileContent[0], out refVersion!) &&
-               Version.TryParse(fileContent[1], out lastCalculatedVersion!);
+        cache.RefVersion = this.UseNuGetAsReference && 
+                           this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileInfo, out var assemblyFrameworkInfo) ?
+                                assemblyFrameworkInfo.Version : 
+                                projectFileVersion;
+        
+        if (cache.CacheFileInfo.CreateDirectoryIfNotExist())
+        {
+            logger.LogInformation("Directory '{cacheDir}' created.", cache.CacheFileInfo.DirectoryName);
+        }
+
+        cache.Write();
+        return cache;
     }
 
     private bool TryGetAssemblyFrameworkInfo(FileInfo assemblyLocationFileInfo, [MaybeNullWhen(false)] out AssemblyFrameworkInfo assemblyFrameworkInfo)
@@ -441,18 +435,6 @@ internal class Versioning(ILogger logger)
         #endregion
     }
 
-    private void SaveRefAndLastCalculatedVersion(Version refVersion, Version calculatedVersion)
-    {
-        var versionInfoFileInfo = this.FileSystem.VersionInfoFileInfo;
-
-        if (versionInfoFileInfo.CreateDirectoryIfNotExist())
-        {
-            logger.LogInformation("Directory '{versionInfoDir}' created.", versionInfoFileInfo.DirectoryName);
-        }
-
-        File.WriteAllLines(versionInfoFileInfo.FullName, [refVersion.ToString(), calculatedVersion.ToString()]);
-    }
-
     private void WriteChangeLog(VersionChange versionChange, IEnumerable<string> gitChanges, string xmlDiff)
     {
         var log = new List<string> { $"[{DateTime.Now:yyyy:MM:dd HH:mm:ss}] - {versionChange}" };
@@ -476,9 +458,7 @@ internal class Versioning(ILogger logger)
 
     private void CopyTargetFileToProjectRefDir(bool hasGitChanges)
     {
-        // “Directory exists” is the indicator that we are using version.bin as the project reference,
-        // otherwise nuget is used as the reference.
-        if (!this.FileSystem.ProjectRefDirInfo.Exists) return;
+        if (this.UseNuGetAsReference) return;
 
         var targetFileInfo = this.FileSystem.TargetFileInfo;
         var projectRefFileInfo = this.FileSystem.ProjectRefFileInfo;
