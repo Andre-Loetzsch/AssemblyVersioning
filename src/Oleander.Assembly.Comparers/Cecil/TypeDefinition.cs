@@ -9,10 +9,11 @@
 //
 
 /*Telerik Authorship*/
-using Mono.Cecil.Metadata;
+
 /*Telerik Authorship*/
 using System.ComponentModel;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil {
 

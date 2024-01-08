@@ -8,7 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using MD = Mono.Cecil.Metadata;
 
 namespace Mono.Cecil {
 
@@ -66,7 +65,7 @@ namespace Mono.Cecil {
 		{
 			Mixin.CheckModifier (modifierType, type);
 			this.modifier_type = modifierType;
-			this.etype = MD.ElementType.CModOpt;
+			this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.CModOpt;
 		}
 	}
 
@@ -119,7 +118,7 @@ namespace Mono.Cecil {
 		{
 			Mixin.CheckModifier (modifierType, type);
 			this.modifier_type = modifierType;
-			this.etype = MD.ElementType.CModReqD;
+			this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.CModReqD;
 		}
 
 	}

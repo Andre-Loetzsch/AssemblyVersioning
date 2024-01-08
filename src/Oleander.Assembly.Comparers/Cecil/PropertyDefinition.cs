@@ -12,6 +12,7 @@ using System.Text;
 /*Telerik Authorship*/
 using Mono.Cecil.Mono.Cecil;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil {
 

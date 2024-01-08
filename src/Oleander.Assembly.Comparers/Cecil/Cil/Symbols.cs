@@ -11,6 +11,7 @@
 using System.Runtime.InteropServices;
 using Mono.Cecil;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 using SR = System.Reflection;
 
 /*Telerik Authorship*/

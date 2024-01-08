@@ -9,7 +9,6 @@
 //
 
 using System.Text;
-using Mono.Cecil.Metadata;
 using Mono.Cecil.PE;
 
 using RVA = System.UInt32;
@@ -17,6 +16,7 @@ using RVA = System.UInt32;
 using Mono.Cecil.Mono.Cecil;
 using Oleander.Assembly.Comparers.Cecil.Cil;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil {
 

@@ -8,7 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-using MD = Mono.Cecil.Metadata;
 
 namespace Mono.Cecil {
 
@@ -35,7 +34,7 @@ namespace Mono.Cecil {
 			: base (type)
 		{
 			Mixin.CheckType (type);
-			this.etype = MD.ElementType.ByRef;
+			this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.ByRef;
 		}
 	}
 }

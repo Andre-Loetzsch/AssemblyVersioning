@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Oleander.Assembly.Comparers.Core.DiffItems.Enums
 {

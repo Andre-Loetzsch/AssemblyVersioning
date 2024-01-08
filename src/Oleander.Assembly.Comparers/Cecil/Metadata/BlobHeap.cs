@@ -8,9 +8,10 @@
 // Licensed under the MIT/X11 license.
 //
 
+using Mono;
 using Mono.Cecil.PE;
 
-namespace Mono.Cecil.Metadata {
+namespace Oleander.Assembly.Comparers.Cecil.Metadata {
 
 	sealed class BlobHeap : Heap {
 

@@ -8,6 +8,8 @@
 // Licensed under the MIT/X11 license.
 //
 
+using Oleander.Assembly.Comparers.Cecil.Metadata;
+
 namespace Mono.Cecil {
 
 	public abstract class TypeSpecification : TypeReference {

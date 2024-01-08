@@ -10,7 +10,6 @@
 
 using System.Text;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
-using MD = Mono.Cecil.Metadata;
 
 namespace Mono.Cecil {
 
@@ -99,7 +98,7 @@ namespace Mono.Cecil {
 		{
 			this.function = new MethodReference ();
 			this.function.Name = "method";
-			this.etype = MD.ElementType.FnPtr;
+			this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.FnPtr;
 		}
 
 		public override TypeDefinition Resolve ()

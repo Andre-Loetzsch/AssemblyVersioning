@@ -9,10 +9,9 @@
 //
 
 using System.Text;
-
 using Mono.Cecil.PE;
 
-namespace Mono.Cecil.Metadata {
+namespace Oleander.Assembly.Comparers.Cecil.Metadata {
 
 	class StringHeap : Heap {
 

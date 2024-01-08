@@ -11,7 +11,6 @@
 /*Telerik Authorship*/
 using System.Text;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
-using MD = Mono.Cecil.Metadata;
 
 namespace Mono.Cecil {
 
@@ -86,7 +85,7 @@ namespace Mono.Cecil {
 			: base (type)
 		{
 			this.IsValueType = type.IsValueType;
-			this.etype = MD.ElementType.GenericInst;
+			this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.GenericInst;
 			/*Telerik Authorship*/
 			this.PostionToArgument = new Dictionary<int, TypeReference>();
 		}

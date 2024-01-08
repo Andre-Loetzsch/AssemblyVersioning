@@ -11,6 +11,8 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
+
 /*Telerik Authorship*/
 
 namespace Mono.Cecil {

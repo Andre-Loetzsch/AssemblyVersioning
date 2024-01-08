@@ -1,4 +1,4 @@
-﻿using Mono.Cecil.Metadata;
+﻿using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil.Mono.Cecil
 {

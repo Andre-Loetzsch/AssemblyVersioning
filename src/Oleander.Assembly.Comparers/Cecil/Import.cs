@@ -9,9 +9,8 @@
 //
 
 using SR = System.Reflection;
-
-using Mono.Cecil.Metadata;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil {
 

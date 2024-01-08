@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-namespace Mono.Cecil.Metadata {
+namespace Oleander.Assembly.Comparers.Cecil.Metadata {
 
 	/*Telerik Authorship*/
 	public enum ElementType : byte {

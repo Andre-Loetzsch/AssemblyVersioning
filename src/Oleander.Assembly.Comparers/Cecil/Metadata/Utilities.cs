@@ -8,9 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Cecil.Metadata;
-
-namespace Mono.Cecil {
+namespace Oleander.Assembly.Comparers.Cecil.Metadata {
 
 	static partial class Mixin {
 

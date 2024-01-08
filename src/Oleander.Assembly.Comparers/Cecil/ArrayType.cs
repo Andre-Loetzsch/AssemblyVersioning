@@ -10,7 +10,6 @@
 
 using System.Text;
 using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
-using MD = Mono.Cecil.Metadata;
 
 namespace Mono.Cecil
 {
@@ -121,7 +120,7 @@ namespace Mono.Cecil
             : base(type)
         {
             Mixin.CheckType(type);
-            this.etype = MD.ElementType.Array;
+            this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.Array;
         }
 
         public ArrayType(TypeReference type, int rank)
@@ -134,7 +133,7 @@ namespace Mono.Cecil
 
             this._dimensions = new Collection<ArrayDimension>(rank);
             for (var i = 0; i < rank; i++) this._dimensions.Add(new ArrayDimension());
-            this.etype = MD.ElementType.Array;
+            this.etype = Oleander.Assembly.Comparers.Cecil.Metadata.ElementType.Array;
         }
     }
 }

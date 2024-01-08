@@ -10,7 +10,7 @@
 
 using Mono.Cecil.PE;
 
-namespace Mono.Cecil.Metadata {
+namespace Oleander.Assembly.Comparers.Cecil.Metadata {
 
 	sealed class UserStringHeap : StringHeap {
 

@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Cecil.Metadata;
+using Oleander.Assembly.Comparers.Cecil.Metadata;
 
 namespace Mono.Cecil {
 
