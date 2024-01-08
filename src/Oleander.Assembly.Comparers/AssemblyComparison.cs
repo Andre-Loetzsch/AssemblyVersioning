@@ -1,6 +1,7 @@
 ﻿using JustAssembly.Core;
+using Oleander.Assembly.Comparers.Core;
 
-namespace Oleander.Assembly.Comparator;
+namespace Oleander.Assembly.Comparers;
 
 public class AssemblyComparison
 {

@@ -33,8 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Oleander.Assembly.Comparator\Oleander.Assembly.Comparers.csproj" />
-    <ProjectReference Include="..\Oleander.Assembly.Comparers\Oleander.Assembly.Comparers.csproj" />
     <ProjectReference Include="..\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>
 

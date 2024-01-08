@@ -1,4 +1,4 @@
-﻿namespace Oleander.Assembly.Comparator;
+﻿namespace Oleander.Assembly.Comparers;
 
 public enum VersionChange
 {
