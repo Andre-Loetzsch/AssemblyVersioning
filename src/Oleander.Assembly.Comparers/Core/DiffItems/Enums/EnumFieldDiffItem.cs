@@ -1,6 +1,5 @@
-﻿using Oleander.Assembly.Comparers.Core;
-
-namespace JustAssembly.Core.DiffItems.Enums
+﻿
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Enums
 {
     class EnumFieldDiffItem : BaseDiffItem<EnumFieldDefinition>
     {

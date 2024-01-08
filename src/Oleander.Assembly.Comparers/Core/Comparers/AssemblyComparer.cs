@@ -1,9 +1,8 @@
 ﻿using Mono.Cecil;
-using JustAssembly.Core.Extensions;
-using JustAssembly.Core.DiffItems.Assemblies;
-using Oleander.Assembly.Comparers.Core;
+using Oleander.Assembly.Comparers.Core.DiffItems.Assemblies;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     internal class AssemblyComparer(AssemblyDefinition oldAssembly, AssemblyDefinition newAssembly)
     {

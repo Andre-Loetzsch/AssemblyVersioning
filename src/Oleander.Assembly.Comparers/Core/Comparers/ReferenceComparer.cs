@@ -1,8 +1,7 @@
-﻿using JustAssembly.Core.DiffItems.References;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.References;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class ReferenceComparer : BaseDiffComparer<AssemblyNameReference>
     {

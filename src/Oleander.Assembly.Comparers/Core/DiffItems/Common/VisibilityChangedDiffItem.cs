@@ -1,6 +1,5 @@
-﻿using Oleander.Assembly.Comparers.Core;
-
-namespace JustAssembly.Core.DiffItems.Common
+﻿
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Common
 {
     class VisibilityChangedDiffItem : BaseDiffItem
     {

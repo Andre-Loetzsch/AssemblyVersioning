@@ -1,11 +1,10 @@
-﻿using JustAssembly.Core.Comparers.Accessors;
-using JustAssembly.Core.DiffItems.Common;
-using JustAssembly.Core.DiffItems.Properties;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.Comparers.Accessors;
+using Oleander.Assembly.Comparers.Core.DiffItems.Common;
+using Oleander.Assembly.Comparers.Core.DiffItems.Properties;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class PropertyComparer : BaseDiffComparer<PropertyDefinition>
     {
@@ -19,9 +18,9 @@ namespace JustAssembly.Core.Comparers
             IEnumerable<IDiffItem> declarationDiffs =
                 EnumerableExtensions.ConcatAll(
                     new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes),
-                    GetReturnTypeDifference(oldElement, newElement)
+                    this.GetReturnTypeDifference(oldElement, newElement)
                     );
-            IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = GenerateAccessorDifferences(oldElement, newElement);
+            IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement);
 
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
             {

@@ -1,12 +1,10 @@
-﻿using JustAssembly.Core.DiffItems.Common;
-using JustAssembly.Core.DiffItems.Enums;
-using JustAssembly.Core.DiffItems.Types;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Common;
+using Oleander.Assembly.Comparers.Core.DiffItems.Enums;
+using Oleander.Assembly.Comparers.Core.DiffItems.Types;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class TypeComparer : BaseDiffComparer<TypeDefinition>
     {
@@ -22,17 +20,17 @@ namespace JustAssembly.Core.Comparers
             IEnumerable<IDiffItem> declarationDiffs =
                 EnumerableExtensions.ConcatAll<IDiffItem>(
                     attributeDiffs,
-                    CheckVisibility(oldElement, newElement)
+                    this.CheckVisibility(oldElement, newElement)
                 );
 
             IEnumerable<IDiffItem> childrenDiffs =
                 EnumerableExtensions.ConcatAll<IDiffItem>(
-                    GetFieldDifferences(oldElement, newElement),
-                    GetPropertyDifferences(oldElement, newElement),
-                    GetMethodDifferences(oldElement, newElement),
-                    GetEventDifferences(oldElement, newElement),
-                    GetNestedTypeDiffs(oldElement, newElement),
-                    GetEnumTypeValueDiffs(oldElement, newElement)
+                    this.GetFieldDifferences(oldElement, newElement),
+                    this.GetPropertyDifferences(oldElement, newElement),
+                    this.GetMethodDifferences(oldElement, newElement),
+                    this.GetEventDifferences(oldElement, newElement),
+                    this.GetNestedTypeDiffs(oldElement, newElement),
+                    this.GetEnumTypeValueDiffs(oldElement, newElement)
                 );
 
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())

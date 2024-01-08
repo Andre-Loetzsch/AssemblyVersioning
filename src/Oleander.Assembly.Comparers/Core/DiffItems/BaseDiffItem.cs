@@ -1,10 +1,8 @@
 ﻿using System.Xml;
-using JustAssembly.Core.Extensions;
 using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
-using MetadataType = Oleander.Assembly.Comparers.Core.MetadataType;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.DiffItems
+namespace Oleander.Assembly.Comparers.Core.DiffItems
 {
     abstract class BaseDiffItem(DiffType diffType) : IDiffItem
     {

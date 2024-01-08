@@ -1,10 +1,9 @@
-﻿using JustAssembly.Core.Extensions;
-using JustAssembly.Core.DiffItems.Methods;
-using Mono.Cecil;
-using JustAssembly.Core.DiffItems.Common;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Common;
+using Oleander.Assembly.Comparers.Core.DiffItems.Methods;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class MethodComparer : BaseDiffComparer<MethodDefinition>
     {
@@ -15,7 +14,7 @@ namespace JustAssembly.Core.Comparers
 
         protected override IDiffItem GenerateDiffItem(MethodDefinition oldElement, MethodDefinition newElement)
         {
-            IEnumerable<IDiffItem> declarationDiffs = GetDeclarationDiffsChecked(oldElement, newElement);
+            IEnumerable<IDiffItem> declarationDiffs = this.GetDeclarationDiffsChecked(oldElement, newElement);
 
             if (declarationDiffs.IsEmpty())
             {
@@ -36,17 +35,17 @@ namespace JustAssembly.Core.Comparers
                 throw new ArgumentNullException("newMethod");
             }
 
-            return GetDeclarationDiffsChecked(oldMethod, newMethod);
+            return this.GetDeclarationDiffsChecked(oldMethod, newMethod);
         }
 
         private IEnumerable<IDiffItem> GetDeclarationDiffsChecked(MethodDefinition oldMethod, MethodDefinition newMethod)
         {
             IEnumerable<IDiffItem> attributeDifferences = new CustomAttributeComparer().GetMultipleDifferences(oldMethod.CustomAttributes, newMethod.CustomAttributes);
-            IEnumerable<IDiffItem> reducedVisibilityDiff = CheckVisibility(oldMethod, newMethod);
-            IEnumerable<IDiffItem> virtualFlagDiff = CheckVirtualFlag(oldMethod, newMethod);
-            IEnumerable<IDiffItem> staticFlagDiff = CheckStaticFlag(oldMethod, newMethod);
-            IEnumerable<IDiffItem> returnTypeDiff = GetReturnTypeDifference(oldMethod, newMethod);
-            IEnumerable<IDiffItem> parameterNameDifferences = GetParameterNameDiffs(oldMethod, newMethod);
+            IEnumerable<IDiffItem> reducedVisibilityDiff = this.CheckVisibility(oldMethod, newMethod);
+            IEnumerable<IDiffItem> virtualFlagDiff = this.CheckVirtualFlag(oldMethod, newMethod);
+            IEnumerable<IDiffItem> staticFlagDiff = this.CheckStaticFlag(oldMethod, newMethod);
+            IEnumerable<IDiffItem> returnTypeDiff = this.GetReturnTypeDifference(oldMethod, newMethod);
+            IEnumerable<IDiffItem> parameterNameDifferences = this.GetParameterNameDiffs(oldMethod, newMethod);
 
             IEnumerable<IDiffItem> declarationDiffs =
                 EnumerableExtensions.ConcatAll(

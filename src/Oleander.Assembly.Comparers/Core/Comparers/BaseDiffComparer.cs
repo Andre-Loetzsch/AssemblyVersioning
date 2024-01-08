@@ -1,16 +1,14 @@
-﻿using Oleander.Assembly.Comparers.Core;
-
-namespace JustAssembly.Core.Comparers
+﻿namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     abstract class BaseDiffComparer<T> where T : class
     {
         public IEnumerable<IDiffItem> GetMultipleDifferences(IEnumerable<T> oldElements, IEnumerable<T> newElements)
         {
             List<T> oldElementsSorted = new List<T>(oldElements);
-            oldElementsSorted.Sort(CompareElements);
+            oldElementsSorted.Sort(this.CompareElements);
 
             List<T> newElementsSorted = new List<T>(newElements);
-            newElementsSorted.Sort(CompareElements);
+            newElementsSorted.Sort(this.CompareElements);
 
             int oldIndex;
             int newIndex;
@@ -22,22 +20,22 @@ namespace JustAssembly.Core.Comparers
                 T oldElement = oldElementsSorted[oldIndex];
                 T newElement = newElementsSorted[newIndex];
 
-                int compareResult = CompareElements(oldElement, newElement);
+                int compareResult = this.CompareElements(oldElement, newElement);
 
                 if (compareResult < 0)
                 {
                     oldIndex++;
-                    if (IsAPIElement(oldElement))
+                    if (this.IsAPIElement(oldElement))
                     {
-                        result.Add(GetMissingDiffItem(oldElement));
+                        result.Add(this.GetMissingDiffItem(oldElement));
                     }
                 }
                 else if (compareResult > 0)
                 {
                     newIndex++;
-                    if (IsAPIElement(newElement))
+                    if (this.IsAPIElement(newElement))
                     {
-                        IDiffItem newItem = GetNewDiffItem(newElement);
+                        IDiffItem newItem = this.GetNewDiffItem(newElement);
                         if (newItem != null)
                         {
                             result.Add(newItem);
@@ -48,7 +46,7 @@ namespace JustAssembly.Core.Comparers
                 {
                     oldIndex++;
                     newIndex++;
-                    if (IsAPIElement(oldElement) || IsAPIElement(newElement))
+                    if (this.IsAPIElement(oldElement) || this.IsAPIElement(newElement))
                     {
                         IDiffItem diffResult = this.GenerateDiffItem(oldElement, newElement);
                         if (diffResult != null)
@@ -61,17 +59,17 @@ namespace JustAssembly.Core.Comparers
 
             for (; oldIndex < oldElementsSorted.Count; oldIndex++)
             {
-                if (IsAPIElement(oldElementsSorted[oldIndex]))
+                if (this.IsAPIElement(oldElementsSorted[oldIndex]))
                 {
-                    result.Add(GetMissingDiffItem(oldElementsSorted[oldIndex]));
+                    result.Add(this.GetMissingDiffItem(oldElementsSorted[oldIndex]));
                 }
             }
 
             for (; newIndex < newElementsSorted.Count; newIndex++)
             {
-                if (IsAPIElement(newElementsSorted[newIndex]))
+                if (this.IsAPIElement(newElementsSorted[newIndex]))
                 {
-                    IDiffItem newItem = GetNewDiffItem(newElementsSorted[newIndex]);
+                    IDiffItem newItem = this.GetNewDiffItem(newElementsSorted[newIndex]);
                     if (newItem != null)
                     {
                         result.Add(newItem);

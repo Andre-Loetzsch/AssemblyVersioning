@@ -1,9 +1,8 @@
-﻿using JustAssembly.Core.DiffItems.Common;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Common;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers.Accessors
+namespace Oleander.Assembly.Comparers.Core.Comparers.Accessors
 {
     abstract class BaseAccessorComparer<T>
     {
@@ -22,8 +21,8 @@ namespace JustAssembly.Core.Comparers.Accessors
 
         public IMetadataDiffItem<MethodDefinition> GenerateAccessorDiffItem()
         {
-            MethodDefinition oldAccessor = SelectAccessor(this.oldElement);
-            MethodDefinition newAccessor = SelectAccessor(this.newElement);
+            MethodDefinition oldAccessor = this.SelectAccessor(this.oldElement);
+            MethodDefinition newAccessor = this.SelectAccessor(this.newElement);
 
             if (oldAccessor == null && newAccessor == null)
             {
@@ -33,7 +32,7 @@ namespace JustAssembly.Core.Comparers.Accessors
             if (oldAccessor == null && newAccessor != null ||
                 oldAccessor != null && newAccessor == null)
             {
-                return (oldAccessor ?? newAccessor).IsAPIDefinition() ? CreateAccessorDiffItem(null) : null;
+                return (oldAccessor ?? newAccessor).IsAPIDefinition() ? this.CreateAccessorDiffItem(null) : null;
             }
 
             if (!oldAccessor.IsAPIDefinition() && !newAccessor.IsAPIDefinition())
@@ -47,7 +46,7 @@ namespace JustAssembly.Core.Comparers.Accessors
                 return null;
             }
 
-            return CreateAccessorDiffItem(declarationDiffs);
+            return this.CreateAccessorDiffItem(declarationDiffs);
         }
     }
 }

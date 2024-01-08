@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     static class VisibilityComparer
     {

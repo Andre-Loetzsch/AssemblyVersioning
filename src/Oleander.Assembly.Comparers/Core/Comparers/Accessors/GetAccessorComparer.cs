@@ -1,8 +1,7 @@
-﻿using JustAssembly.Core.DiffItems.Properties;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Properties;
 
-namespace JustAssembly.Core.Comparers.Accessors
+namespace Oleander.Assembly.Comparers.Core.Comparers.Accessors
 {
     class GetAccessorComparer : BaseAccessorComparer<PropertyDefinition>
     {

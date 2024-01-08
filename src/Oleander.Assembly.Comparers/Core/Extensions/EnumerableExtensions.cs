@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace JustAssembly.Core.Extensions
+namespace Oleander.Assembly.Comparers.Core.Extensions
 {
     static class EnumerableExtensions
     {

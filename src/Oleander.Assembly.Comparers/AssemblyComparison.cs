@@ -1,5 +1,4 @@
-﻿using JustAssembly.Core;
-using Oleander.Assembly.Comparers.Core;
+﻿using Oleander.Assembly.Comparers.Core;
 
 namespace Oleander.Assembly.Comparers;
 

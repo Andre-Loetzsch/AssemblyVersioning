@@ -1,7 +1,6 @@
-﻿using JustAssembly.Core;
-using JustAssembly.Core.Comparers;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Oleander.Assembly.Comparers.Core;
+using Oleander.Assembly.Comparers.Core.Comparers;
 
 namespace Oleander.Assembly.Comparers
 {

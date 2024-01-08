@@ -1,6 +1,5 @@
-﻿using Oleander.Assembly.Comparers.Core;
-
-namespace JustAssembly.Core.DiffItems.Common
+﻿
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Common
 {
     class StaticFlagChangedDiffItem : BaseDiffItem
     {
@@ -14,7 +13,7 @@ namespace JustAssembly.Core.DiffItems.Common
 
         protected override string GetXmlInfoString()
         {
-            return string.Format("Member changed to {0}.", isNewMemberStatic ? "static" : "instance");
+            return string.Format("Member changed to {0}.", this.isNewMemberStatic ? "static" : "instance");
         }
 
         public override bool IsBreakingChange

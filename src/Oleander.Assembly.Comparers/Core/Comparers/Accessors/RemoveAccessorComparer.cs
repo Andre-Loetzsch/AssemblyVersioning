@@ -1,8 +1,7 @@
-﻿using JustAssembly.Core.DiffItems.Events;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Events;
 
-namespace JustAssembly.Core.Comparers.Accessors
+namespace Oleander.Assembly.Comparers.Core.Comparers.Accessors
 {
     class RemoveAccessorComparer : BaseAccessorComparer<EventDefinition>
     {

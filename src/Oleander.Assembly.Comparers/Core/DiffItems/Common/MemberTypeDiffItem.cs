@@ -1,8 +1,7 @@
 ﻿using Mono.Cecil;
-using JustAssembly.Core.Extensions;
-using Oleander.Assembly.Comparers.Core;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.DiffItems.Common
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Common
 {
     class MemberTypeDiffItem : BaseDiffItem
     {

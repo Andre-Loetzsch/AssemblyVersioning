@@ -1,8 +1,6 @@
 ﻿using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
-using MetadataType = Oleander.Assembly.Comparers.Core.MetadataType;
 
-namespace JustAssembly.Core.DiffItems.Fields
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Fields
 {
     class FieldDiffItem : BaseMemberDiffItem<FieldDefinition>
     {

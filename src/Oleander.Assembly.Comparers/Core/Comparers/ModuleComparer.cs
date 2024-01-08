@@ -1,9 +1,8 @@
-﻿using JustAssembly.Core.DiffItems.Modules;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Modules;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class ModuleComparer : BaseDiffComparer<ModuleDefinition>
     {

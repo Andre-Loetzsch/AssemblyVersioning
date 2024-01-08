@@ -1,10 +1,9 @@
-﻿using JustAssembly.Core.DiffItems.Common;
-using JustAssembly.Core.DiffItems.Fields;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.DiffItems.Common;
+using Oleander.Assembly.Comparers.Core.DiffItems.Fields;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class FieldComparer : BaseDiffComparer<FieldDefinition>
     {
@@ -16,13 +15,13 @@ namespace JustAssembly.Core.Comparers
         protected override IDiffItem GenerateDiffItem(FieldDefinition oldElement, FieldDefinition newElement)
         {
             IEnumerable<IDiffItem> attributeDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes);
-            IEnumerable<IDiffItem> fieldTypeDiffs = GetFieldTypeDiff(oldElement, newElement);
+            IEnumerable<IDiffItem> fieldTypeDiffs = this.GetFieldTypeDiff(oldElement, newElement);
 
             IEnumerable<IDiffItem> declarationDiffs =
                 EnumerableExtensions.ConcatAll(
                     attributeDiffs,
-                    CheckVisibility(oldElement, newElement),
-                    CheckStaticFlag(oldElement, newElement),
+                    this.CheckVisibility(oldElement, newElement),
+                    this.CheckStaticFlag(oldElement, newElement),
                     fieldTypeDiffs
                 );
 

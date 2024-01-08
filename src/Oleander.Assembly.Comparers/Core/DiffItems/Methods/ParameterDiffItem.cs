@@ -1,7 +1,6 @@
 ﻿using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
 
-namespace JustAssembly.Core.DiffItems.Methods
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Methods
 {
     class ParameterDiffItem : BaseDiffItem
     {

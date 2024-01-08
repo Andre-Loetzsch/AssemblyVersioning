@@ -1,10 +1,9 @@
-﻿using JustAssembly.Core.Comparers.Accessors;
-using JustAssembly.Core.DiffItems.Events;
-using JustAssembly.Core.Extensions;
-using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Core.Comparers.Accessors;
+using Oleander.Assembly.Comparers.Core.DiffItems.Events;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.Comparers
+namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class EventComparer : BaseDiffComparer<EventDefinition>
     {
@@ -16,7 +15,7 @@ namespace JustAssembly.Core.Comparers
         protected override IDiffItem GenerateDiffItem(EventDefinition oldElement, EventDefinition newElement)
         {
             IEnumerable<IDiffItem> declarationDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes);
-            IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = GenerateAccessorDifferences(oldElement, newElement);
+            IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement);
 
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
             {

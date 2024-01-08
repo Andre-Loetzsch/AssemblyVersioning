@@ -1,8 +1,7 @@
 ﻿using Mono.Cecil;
-using JustAssembly.Core.Extensions;
-using Oleander.Assembly.Comparers.Core;
+using Oleander.Assembly.Comparers.Core.Extensions;
 
-namespace JustAssembly.Core.DiffItems.Attributes
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Attributes
 {
     class CustomAttributeDiffItem : BaseDiffItem
     {
@@ -27,7 +26,7 @@ namespace JustAssembly.Core.DiffItems.Attributes
         internal override void ToXml(System.Xml.XmlWriter writer)
         {
             writer.WriteStartElement("CustomAttribute");
-            writer.WriteAttributeString("Name", attribute.Constructor.GetSignature());
+            writer.WriteAttributeString("Name", this.attribute.Constructor.GetSignature());
             writer.WriteAttributeString("DiffType", this.DiffType.ToString());
             writer.WriteEndElement();
         }

@@ -1,8 +1,6 @@
 ﻿using Mono.Cecil;
-using Oleander.Assembly.Comparers.Core;
-using MetadataType = Oleander.Assembly.Comparers.Core.MetadataType;
 
-namespace JustAssembly.Core.DiffItems.Types
+namespace Oleander.Assembly.Comparers.Core.DiffItems.Types
 {
     class TypeDiffItem : BaseDiffItem<TypeDefinition>
     {
