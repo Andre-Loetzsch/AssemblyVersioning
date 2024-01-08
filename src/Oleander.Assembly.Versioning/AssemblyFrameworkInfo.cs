@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Versioning;
-using Mono.Cecil;
 using NuGet.Frameworks;
+using Oleander.Assembly.Comparers.Cecil;
 
 namespace Oleander.Assembly.Versioning;
 

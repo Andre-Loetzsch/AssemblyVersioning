@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Oleander.Assembly.Comparator;
+using Oleander.Assembly.Comparers;
 
 namespace Oleander.Assembly.Versioning.Tool;
 

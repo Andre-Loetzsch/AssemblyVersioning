@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
-using Oleander.Assembly.Comparator;
+using Oleander.Assembly.Comparers;
 using Oleander.Assembly.Versioning.Caching;
 using Oleander.Assembly.Versioning.ExternalProcesses;
 using Oleander.Assembly.Versioning.FileSystems;
