@@ -10,10 +10,10 @@
 
 using SR = System.Reflection;
 /*Telerik Authorship*/
-using Mono.Cecil.Cil;
 using Mono.Cecil.Metadata;
 using Mono.Cecil.PE;
-using Mono.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Cil;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
 namespace Mono.Cecil
 {

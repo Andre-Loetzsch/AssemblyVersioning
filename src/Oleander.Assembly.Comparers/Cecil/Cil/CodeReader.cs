@@ -8,12 +8,11 @@
 // Licensed under the MIT/X11 license.
 //
 
+using Mono.Cecil;
 using Mono.Cecil.PE;
-using Mono.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-using RVA = System.UInt32;
-
-namespace Mono.Cecil.Cil {
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	sealed class CodeReader : ByteBuffer {
 

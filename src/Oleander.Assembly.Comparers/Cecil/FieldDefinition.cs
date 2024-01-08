@@ -8,9 +8,9 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Collections.Generic;
 /*Telerik Authorship*/
 using Mono.Cecil.Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
 namespace Mono.Cecil {
 

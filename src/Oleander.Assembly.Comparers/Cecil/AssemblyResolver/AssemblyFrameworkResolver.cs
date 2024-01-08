@@ -1,7 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
+using Mono.Cecil;
 
-namespace Mono.Cecil.AssemblyResolver
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     public class AssemblyFrameworkResolver : IAssemblyFrameworkResolver
     {

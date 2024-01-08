@@ -8,9 +8,8 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Cecil.Cil;
 using Mono.Cecil.Metadata;
-
+using Oleander.Assembly.Comparers.Cecil.Cil;
 using RVA = System.UInt32;
 
 namespace Mono.Cecil.PE {

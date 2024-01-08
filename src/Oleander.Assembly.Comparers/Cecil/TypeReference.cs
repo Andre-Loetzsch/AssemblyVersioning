@@ -9,7 +9,7 @@
 //
 
 using Mono.Cecil.Metadata;
-using Mono.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
 namespace Mono.Cecil {
 

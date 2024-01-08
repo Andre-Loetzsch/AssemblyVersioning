@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Versioning;
+using Mono.Cecil;
 
-namespace Mono.Cecil.AssemblyResolver
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     public class AssemblyFrameworkResolverCache
     {

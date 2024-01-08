@@ -9,9 +9,10 @@
 //
 
 using System.Collections;
+using Mono;
 using Mono.Cecil;
 
-namespace Mono.Collections.Generic {
+namespace Oleander.Assembly.Comparers.Cecil.Collections.Generic {
 
 	public class Collection<T> : IList<T>, IList {
 

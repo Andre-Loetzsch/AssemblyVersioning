@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-namespace Mono.Cecil.Cil {
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	public enum FlowControl {
 		Branch,

@@ -1,9 +1,7 @@
-﻿namespace Mono.Cecil.AssemblyResolver
-{
-    using System;
-    using System.Linq;
-    using System.IO;
+﻿using Mono.Cecil;
 
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
+{
     public class AssemblyName
     {
         public AssemblyName(string name, string fullName, Version version, byte[] publicKey, string defaultDir)

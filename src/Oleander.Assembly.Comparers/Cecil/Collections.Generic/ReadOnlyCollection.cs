@@ -10,7 +10,7 @@
 
 using System.Collections;
 
-namespace Mono.Collections.Generic {
+namespace Oleander.Assembly.Comparers.Cecil.Collections.Generic {
 
 	public sealed class ReadOnlyCollection<T> : Collection<T>, ICollection<T>, IList {
 

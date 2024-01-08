@@ -11,12 +11,13 @@
 using System.Text;
 /*Telerik Authorship*/
 /*Telerik Authorship*/
-using Mono.Cecil.Extensions;
-using Mono.Collections.Generic;
 /*Telerik Authorship*/
-using Mono.Cecil.AssemblyResolver;
 /*Telerik Authorship*/
 using JustDecompile.SmartAssembly.Attributes;
+using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Extensions;
+
 /*Telerik Authorship*/
 
 namespace Mono.Cecil {

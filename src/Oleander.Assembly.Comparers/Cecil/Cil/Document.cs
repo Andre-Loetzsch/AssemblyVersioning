@@ -8,7 +8,9 @@
 // Licensed under the MIT/X11 license.
 //
 
-namespace Mono.Cecil.Cil {
+using Mono;
+
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	public enum DocumentType {
 		Other,

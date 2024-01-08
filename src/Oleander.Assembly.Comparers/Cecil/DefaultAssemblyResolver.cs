@@ -9,7 +9,8 @@
 //
 
 /*Telerik Authorship*/
-using Mono.Cecil.AssemblyResolver;
+
+using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
 
 namespace Mono.Cecil
 {

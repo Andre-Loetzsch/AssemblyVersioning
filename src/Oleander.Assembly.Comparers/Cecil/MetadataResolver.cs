@@ -8,10 +8,10 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Collections.Generic;
 /*Telerik authorship*/
-using Mono.Cecil.AssemblyResolver;
-using Mono.Cecil.Extensions;
+using Oleander.Assembly.Comparers.Cecil.AssemblyResolver;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
+using Oleander.Assembly.Comparers.Cecil.Extensions;
 
 namespace Mono.Cecil
 {

@@ -1,6 +1,6 @@
 ﻿using JustDecompile.SmartAssembly.Attributes;
 
-namespace Mono.Cecil.AssemblyResolver
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     [DoNotPrune]
     [DoNotObfuscateType]

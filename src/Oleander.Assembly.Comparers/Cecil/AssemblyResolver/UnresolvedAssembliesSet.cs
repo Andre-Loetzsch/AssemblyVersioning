@@ -1,4 +1,6 @@
-﻿namespace Mono.Cecil.AssemblyResolver
+﻿using Mono.Cecil;
+
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     /*Telerik Authorship*/
     public interface IClonableCollection<T> : ICollection<T>

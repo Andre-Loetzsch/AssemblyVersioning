@@ -1,4 +1,6 @@
-﻿namespace Mono.Cecil.AssemblyResolver
+﻿using Mono.Cecil;
+
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     public interface IAssemblyFrameworkResolver
     {

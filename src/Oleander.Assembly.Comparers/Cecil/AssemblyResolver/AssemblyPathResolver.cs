@@ -1,8 +1,9 @@
-﻿using Mono.Cecil.Extensions;
+﻿using Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Extensions;
 /*Telerik Authorship*/
-using AssemblyPathName = System.Collections.Generic.KeyValuePair<Mono.Cecil.AssemblyResolver.AssemblyStrongNameExtended, string>;
+using AssemblyPathName = System.Collections.Generic.KeyValuePair<Oleander.Assembly.Comparers.Cecil.AssemblyResolver.AssemblyStrongNameExtended, string>;
 
-namespace Mono.Cecil.AssemblyResolver
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     internal class AssemblyPathResolver
     {

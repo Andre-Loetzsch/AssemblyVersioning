@@ -1,4 +1,4 @@
-﻿namespace Mono.Cecil.Extensions
+﻿namespace Oleander.Assembly.Comparers.Cecil.Extensions
 {
     /*Telerik Authorship*/
     public static class AssemblyNameComparer

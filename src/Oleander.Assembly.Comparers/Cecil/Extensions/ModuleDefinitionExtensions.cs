@@ -1,6 +1,7 @@
-﻿using Mono.Cecil.PE;
+﻿using Mono.Cecil;
+using Mono.Cecil.PE;
 
-namespace Mono.Cecil.Extensions
+namespace Oleander.Assembly.Comparers.Cecil.Extensions
 {
     public static class ModuleDefinitionExtensions
     {

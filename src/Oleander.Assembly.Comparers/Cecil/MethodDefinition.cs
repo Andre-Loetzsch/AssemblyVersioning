@@ -10,9 +10,8 @@
 
 /*Telerik Authorship*/
 
-using Mono.Cecil.Cil;
-using Mono.Collections.Generic;
-
+using Oleander.Assembly.Comparers.Cecil.Cil;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using RVA = System.UInt32;
 
 namespace Mono.Cecil {

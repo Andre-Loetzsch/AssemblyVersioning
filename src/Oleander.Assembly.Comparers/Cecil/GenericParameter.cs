@@ -8,9 +8,8 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Collections.Generic;
-
 using Mono.Cecil.Metadata;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
 namespace Mono.Cecil {
 

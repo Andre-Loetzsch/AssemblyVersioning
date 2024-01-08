@@ -8,9 +8,10 @@
 // Licensed under the MIT/X11 license.
 //
 
-using Mono.Collections.Generic;
+using Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 
-namespace Mono.Cecil.Cil {
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	public sealed class MethodBody : IVariableDefinitionProvider {
 

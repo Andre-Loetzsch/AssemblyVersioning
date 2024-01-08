@@ -1,8 +1,9 @@
 ﻿using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using Mono.Cecil.Extensions;
+using Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Extensions;
 
-namespace Mono.Cecil.AssemblyResolver
+namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
 	/*Telerik Authorship*/
 	public class TargetPlatformResolver : ITargetPlatformResolver

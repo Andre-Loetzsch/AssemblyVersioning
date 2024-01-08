@@ -9,12 +9,13 @@
 //
 
 using System.Runtime.InteropServices;
+using Mono.Cecil;
+using Oleander.Assembly.Comparers.Cecil.Collections.Generic;
 using SR = System.Reflection;
 
-using Mono.Collections.Generic;
 /*Telerik Authorship*/
 
-namespace Mono.Cecil.Cil {
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	[StructLayout (LayoutKind.Sequential)]
 	public struct ImageDebugDirectory {

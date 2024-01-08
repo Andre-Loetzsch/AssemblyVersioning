@@ -1,4 +1,4 @@
-﻿namespace Mono.Cecil.AssemblyResolver
+﻿namespace Oleander.Assembly.Comparers.Cecil.AssemblyResolver
 {
     public static class SystemInformation
     {

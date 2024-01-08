@@ -9,8 +9,9 @@
 //
 
 using System.Text;
+using Mono.Cecil;
 
-namespace Mono.Cecil.Cil {
+namespace Oleander.Assembly.Comparers.Cecil.Cil {
 
 	public sealed class Instruction {
 
