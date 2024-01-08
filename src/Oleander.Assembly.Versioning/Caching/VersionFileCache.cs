@@ -6,16 +6,16 @@ namespace Oleander.Assembly.Versioning.Caching
     {
         public FileInfo CacheFileInfo { get; } = cacheFileInfo;
         public Version RefVersion { get; set; } = new Version(0, 0, 0, 0);
-        public Version LastUsedVersion { get; set; } = new Version(0, 0, 0, 0);
-        public Version DesiredVersion { get; set; } = new Version(0, 0, 0, 0);
+        public Version CurrentVersion { get; set; } = new Version(0, 0, 0, 0);
+        public Version ManuallySetProjectVersion { get; set; } = new Version(0, 0, 0, 0);
 
         public void Write()
         {
             var fileContent = new string[3];
 
             fileContent[0] = this.RefVersion.ToString();
-            fileContent[1] = this.LastUsedVersion.ToString();
-            fileContent[2] = this.DesiredVersion.ToString();
+            fileContent[1] = this.CurrentVersion.ToString();
+            fileContent[2] = this.ManuallySetProjectVersion.ToString();
             
             File.WriteAllLines(this.CacheFileInfo.FullName, fileContent);
         }
@@ -34,10 +34,10 @@ namespace Oleander.Assembly.Versioning.Caching
                         this.RefVersion = version;
                         break;
                     case 1:
-                        this.LastUsedVersion = version;
+                        this.CurrentVersion = version;
                         break;
                     case 2:
-                        this.DesiredVersion = version;
+                        this.ManuallySetProjectVersion = version;
                         break;
                 }
             }

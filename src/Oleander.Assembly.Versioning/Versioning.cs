@@ -257,9 +257,9 @@ internal class Versioning(ILogger logger)
 
         if (this.TryGetProjectFileAssemblyVersion(out var projectFileVersion))
         {
-            if (versionCache.LastUsedVersion != projectFileVersion)
+            if (versionCache.CurrentVersion != projectFileVersion)
             {
-                versionCache.DesiredVersion = projectFileVersion;
+                versionCache.ManuallySetProjectVersion = projectFileVersion;
             }
         }
 
@@ -270,22 +270,22 @@ internal class Versioning(ILogger logger)
         updateResult.CalculatedVersion = CalculateVersion(versionCache.RefVersion, versionChange);
         logger.LogInformation("Version '{calculatedVersion}' was calculated.", updateResult.CalculatedVersion);
 
-        if (versionCache.DesiredVersion > updateResult.CalculatedVersion)
+        if (versionCache.ManuallySetProjectVersion > updateResult.CalculatedVersion)
         {
-            logger.LogInformation("Use the project file version '{desiredVersion}' because it is higher than the calculated version '{CalculatedVersion}'.", 
-                versionCache.DesiredVersion, updateResult.CalculatedVersion);
+            logger.LogInformation("Use the project file version '{manuallySetProjectVersion}' because it is higher than the calculated version '{calculatedVersion}'.", 
+                versionCache.ManuallySetProjectVersion, updateResult.CalculatedVersion);
 
-            updateResult.CalculatedVersion = versionCache.DesiredVersion;
+            updateResult.CalculatedVersion = versionCache.ManuallySetProjectVersion;
         }
 
         #endregion
 
         #region Update new version
 
-        if (versionCache.LastUsedVersion != updateResult.CalculatedVersion)
+        versionCache.CurrentVersion = updateResult.CalculatedVersion;
+
+        if (projectFileVersion != updateResult.CalculatedVersion)
         {
-            versionCache.LastUsedVersion = updateResult.CalculatedVersion;
-        
             var versionSuffix = this._msBuildProject.VersionSuffix ?? string.Empty;
 
             if (string.IsNullOrEmpty(versionSuffix) || versionSuffix == "alpha" || versionSuffix == "beta")
@@ -308,8 +308,6 @@ internal class Versioning(ILogger logger)
         this.CopyTargetFileToProjectRefDir(gitChanges.Any());
 
         #endregion
-
-
         
         return updateResult;
     }
@@ -341,8 +339,8 @@ internal class Versioning(ILogger logger)
             projectFileVersion = new(0, 0, 0, 0);
         }
 
-        cache.DesiredVersion = projectFileVersion;
-        cache.LastUsedVersion = projectFileVersion;
+        cache.ManuallySetProjectVersion = projectFileVersion;
+        cache.CurrentVersion = projectFileVersion;
 
         cache.RefVersion = this.UseNuGetAsReference && 
                            this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileInfo, out var assemblyFrameworkInfo) ?
