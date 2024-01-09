@@ -28,7 +28,7 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(CustomAttribute element)
         {
-            return true;
+            return !element.Constructor.GetSignature().StartsWith("System.Diagnostics.Debugg");
         }
     }
 }
