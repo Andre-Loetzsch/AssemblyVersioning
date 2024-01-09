@@ -194,4 +194,15 @@ public class SimulationTests
         Assert.Equal(new(1, 0, 0, 0), result[0]);
         Assert.Equal(new(1, 1, 0, 0), result[1]);
     }
+
+    [Fact]
+    public void TestIgnoreDebuggerAttributes()
+    {
+        var result = new TestRunner("ignoreDebuggerAttributes").RunSimulation().ToList();
+
+        Assert.Equal(3, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 0, 0, 0), result[1]);
+        Assert.Equal(new(1, 0, 0, 0), result[2]);
+    }
 }
