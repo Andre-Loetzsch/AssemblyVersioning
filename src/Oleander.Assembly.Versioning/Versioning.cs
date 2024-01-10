@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using NuGet.Frameworks;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using Oleander.Assembly.Comparers;
@@ -579,9 +580,55 @@ internal class Versioning(ILogger logger)
             return true;
         }
 
+        this.FileSystem.TargetFramework = FindTargetFrameworkFromPath(this.FileSystem.TargetFileInfo.FullName);
+        this.FileSystem.TargetPlatform = FindTargetPlatformFromPath(this.FileSystem.TargetFileInfo.FullName);
+
+        var cacheDirInfo = this.FileSystem.CacheDirInfo;
+        if (cacheDirInfo.CreateDirectoryIfNotExist())
+        {
+            logger.LogInformation("Directory '{cacheDir}' created.", cacheDirInfo.FullName);
+        }
+
         logger.LogWarning("The assembly '{targetFile}' cannot be loaded. It may not be a CLR assembly. The file is skipped.", this.FileSystem.TargetFileInfo);
         return false;
     }
+
+
+    private static string FindTargetFrameworkFromPath(string path)
+    {
+        var result = string.Empty;
+        foreach (var folderName in path.Split(new []{Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries))
+        {
+            var nuGetFramework = NuGetFramework.ParseFolder(folderName);
+            if (!nuGetFramework.IsUnsupported) result = nuGetFramework.GetShortFolderName();
+        }
+
+        return result;
+    }
+
+
+    private static string FindTargetPlatformFromPath(string path)
+    {
+        var result = string.Empty;
+        foreach (var folderName in path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            
+            if (folderName.StartsWith("android", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("android", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("win-",    StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("linux-",  StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("ios",     StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("mac",     StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("osx",     StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("tvos",    StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("windows", StringComparison.OrdinalIgnoreCase)) result = folderName;
+        }
+
+        return result;
+    }
+
+
+
 
     #endregion
 
