@@ -25,7 +25,7 @@ internal class AssemblyFrameworkInfo
 
     public bool CouldResolved { get; }
 
-    public Version Version { get; }
+    public Version? Version { get; } 
 
     public string? TargetFramework { get; } 
 
