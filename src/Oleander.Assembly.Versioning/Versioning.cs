@@ -42,7 +42,7 @@ internal class Versioning(ILogger logger)
         };
 
         var updateResult = this.ValidateFileSystem();
-        return updateResult.ErrorCode != VersioningErrorCodes.Success ?
+        return updateResult.ErrorCode != VersioningErrorCodes.Success || !this.TrySetTargetFrameworkAndPlatform() ?
             updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
@@ -55,7 +55,7 @@ internal class Versioning(ILogger logger)
         };
 
         var updateResult = this.ValidateFileSystem();
-        return updateResult.ErrorCode != VersioningErrorCodes.Success ?
+        return updateResult.ErrorCode != VersioningErrorCodes.Success || !this.TrySetTargetFrameworkAndPlatform() ?
             updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
@@ -69,7 +69,7 @@ internal class Versioning(ILogger logger)
         };
 
         var updateResult = this.ValidateFileSystem();
-        return updateResult.ErrorCode != VersioningErrorCodes.Success ?
+        return updateResult.ErrorCode != VersioningErrorCodes.Success || !this.TrySetTargetFrameworkAndPlatform() ?
             updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
@@ -84,7 +84,7 @@ internal class Versioning(ILogger logger)
         };
 
         var updateResult = this.ValidateFileSystem();
-        return updateResult.ErrorCode != VersioningErrorCodes.Success ?
+        return updateResult.ErrorCode != VersioningErrorCodes.Success || !this.TrySetTargetFrameworkAndPlatform() ?
             updateResult : this.PrivateUpdateAssemblyVersion();
     }
 
@@ -272,7 +272,7 @@ internal class Versioning(ILogger logger)
 
         if (versionCache.ManuallySetProjectVersion > updateResult.CalculatedVersion)
         {
-            logger.LogInformation("Use the project file version '{manuallySetProjectVersion}' because it is higher than the calculated version '{calculatedVersion}'.", 
+            logger.LogInformation("Use the project file version '{manuallySetProjectVersion}' because it is higher than the calculated version '{calculatedVersion}'.",
                 versionCache.ManuallySetProjectVersion, updateResult.CalculatedVersion);
 
             updateResult.CalculatedVersion = versionCache.ManuallySetProjectVersion;
@@ -308,7 +308,7 @@ internal class Versioning(ILogger logger)
         this.CopyTargetFileToProjectRefDir(gitChanges.Any());
 
         #endregion
-        
+
         return updateResult;
     }
 
@@ -342,11 +342,11 @@ internal class Versioning(ILogger logger)
         cache.ManuallySetProjectVersion = projectFileVersion;
         cache.CurrentVersion = projectFileVersion;
 
-        cache.RefVersion = this.UseNuGetAsReference && 
+        cache.RefVersion = this.UseNuGetAsReference &&
                            this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileInfo, out var assemblyFrameworkInfo) ?
-                                assemblyFrameworkInfo.Version : 
+                                assemblyFrameworkInfo.Version :
                                 projectFileVersion;
-        
+
         if (cache.CacheFileInfo.CreateDirectoryIfNotExist())
         {
             logger.LogInformation("Directory '{cacheDir}' created.", cache.CacheFileInfo.DirectoryName);
@@ -362,6 +362,8 @@ internal class Versioning(ILogger logger)
         if (!assemblyLocationFileInfo.Exists) return false;
 
         assemblyFrameworkInfo = new AssemblyFrameworkInfo(assemblyLocationFileInfo.FullName);
+
+        if (!assemblyFrameworkInfo.CouldResolved) return false;
         this._assemblyFrameworkInfoCache.Add(assemblyLocationFileInfo.FullName, assemblyFrameworkInfo);
 
         return true;
@@ -563,15 +565,22 @@ internal class Versioning(ILogger logger)
         }
 
         this.FileSystem.GitHash = gitHash;
+        updateResult.ErrorCode = VersioningErrorCodes.Success;
+        return updateResult;
+    }
 
+    private bool TrySetTargetFrameworkAndPlatform()
+    {
         if (this.TryGetAssemblyFrameworkInfo(this.FileSystem.TargetFileInfo, out var assemblyFrameworkInfo))
         {
             this.FileSystem.TargetFramework = assemblyFrameworkInfo.FrameworkShortFolderName ?? string.Empty;
             this.FileSystem.TargetPlatform = assemblyFrameworkInfo.TargetPlatform ?? string.Empty;
+
+            return true;
         }
 
-        updateResult.ErrorCode = VersioningErrorCodes.Success;
-        return updateResult;
+        logger.LogWarning("The assembly '{targetFile}' cannot be loaded. It may not be a CLR assembly. The file is skipped.", this.FileSystem.TargetFileInfo);
+        return false;
     }
 
     #endregion

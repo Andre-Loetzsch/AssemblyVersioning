@@ -10,7 +10,10 @@ internal class AssemblyFrameworkInfo
     {
         var assemblyDefinition = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(assemblyLocation);
 
-        this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
+        if (assemblyDefinition == null) return;
+
+        this.CouldResolved = true;
+        this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue ?? "unknown";
         this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
@@ -19,6 +22,8 @@ internal class AssemblyFrameworkInfo
         this.NuGetFramework = NuGetFramework.ParseFrameworkName(this.FrameworkName.FullName, new DefaultFrameworkNameProvider());
         this.FrameworkShortFolderName = this.NuGetFramework.GetShortFolderName();
     }
+
+    public bool CouldResolved { get; }
 
     public Version Version { get; }
 

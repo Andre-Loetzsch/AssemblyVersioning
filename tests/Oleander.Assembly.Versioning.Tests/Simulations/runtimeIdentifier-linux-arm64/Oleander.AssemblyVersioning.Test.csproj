@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <RuntimeIdentifiers>win-x64;linux-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+ 
+</Project>

@@ -7,16 +7,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyVersion>1.4.5.0</AssemblyVersion>
-    <SourceRevisionId>c17e02f04b08102c7b8141ee1fe98326903c7290</SourceRevisionId>
+    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <SourceRevisionId>ca77ef2ad3da077537fa3ce9a28c4b2e0453ac1e</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <VersionSuffix>beta</VersionSuffix>
-    <IsPublishable>False</IsPublishable>
+    <!--<IsPublishable>False</IsPublishable>-->
     <IsPackable>false</IsPackable>
+
+    <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
+    <!--<RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>-->
+
   </PropertyGroup>
 
   <ItemGroup>
