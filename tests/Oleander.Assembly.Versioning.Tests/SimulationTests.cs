@@ -205,4 +205,14 @@ public class SimulationTests
         Assert.Equal(new(1, 0, 0, 0), result[1]);
         Assert.Equal(new(1, 0, 0, 0), result[2]);
     }
+
+    [Fact]
+    public void TestRuntimeIdentifierLinuxArm64()
+    {
+        var result = new TestRunner("runtimeIdentifier-linux-arm64").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 2, 3, 4), result[0]);
+        Assert.Equal(new(1, 2, 0, 0), result[1]);
+    }
 }
