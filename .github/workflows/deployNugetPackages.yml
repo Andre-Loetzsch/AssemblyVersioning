@@ -69,15 +69,57 @@ jobs:
          packoutdir: ${{ env.PACKOUTDIR }}
          github_token: ${{ secrets.GITHUB_TOKEN }}
    
-     # - name: 'delete Oleander.Extensions.Configuration-dev old packages'
-     #   if: env.VERSION_SUFFIX == 'dev'
-     #   uses: actions/delete-package-versions@v4
-     #   with:
-     #     package-name: 'Oleander.Extensions.Configuration'
-     #     package-type: 'nuget'
-     #     min-versions-to-keep: 5
-     #     delete-only-pre-release-versions: "true"
-       
+
+
+
+     - name: 'delete Oleander.Assembly.Versioning.Tool-dev old packages'
+       if: env.VERSION_SUFFIX == 'dev'
+       uses: actions/delete-package-versions@v4
+       with:
+         package-name: 'Oleander.Assembly.Versioning.Tool'
+         package-type: 'nuget'
+         min-versions-to-keep: 5
+         delete-only-pre-release-versions: "true"
+
+     - name: 'delete Oleander.Assembly.Versioning.BuildTask-dev old packages'
+       if: env.VERSION_SUFFIX == 'dev'
+       uses: actions/delete-package-versions@v4
+       with:
+         package-name: 'Oleander.Assembly.Versioning.BuildTask'
+         package-type: 'nuget'
+         min-versions-to-keep: 5
+         delete-only-pre-release-versions: "true"
+
+
+     - name: 'delete Oleander.Assembly.Versioning-dev old packages'
+       if: env.VERSION_SUFFIX == 'dev'
+       uses: actions/delete-package-versions@v4
+       with:
+         package-name: 'Oleander.Assembly.Versioning'
+         package-type: 'nuget'
+         min-versions-to-keep: 5
+         delete-only-pre-release-versions: "true"
+
+
+     - name: 'delete Oleander.Assembly.Comparator-dev old packages'
+       if: env.VERSION_SUFFIX == 'dev'
+       uses: actions/delete-package-versions@v4
+       with:
+         package-name: 'Oleander.Assembly.Comparator'
+         package-type: 'nuget'
+         min-versions-to-keep: 5
+         delete-only-pre-release-versions: "true"
+
+
+     - name: 'delete Oleander.Assembly.Comparers-dev old packages'
+       if: env.VERSION_SUFFIX == 'dev'
+       uses: actions/delete-package-versions@v4
+       with:
+         package-name: 'Oleander.Assembly.Comparers'
+         package-type: 'nuget'
+         min-versions-to-keep: 5
+         delete-only-pre-release-versions: "true"
+
      - name: 'push nuget packages'
        if: matrix.os == 'windows-latest' && github.event_name != 'pull_request'
        uses: Andre-Loetzsch/actions/pushNugetPackages@v1
