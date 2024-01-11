@@ -23,6 +23,9 @@
 
   </PropertyGroup>
 
+  <!--<ItemGroup>
+    <PackageReference Include="Oleander.Assembly.Comparers" Version="0.0.27-dev" />
+  </ItemGroup>-->
   
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
