@@ -156,7 +156,8 @@ internal class Versioning(ILogger logger)
             gitChanges = Array.Empty<string>();
             return true;
         }
-
+       
+        // ReSharper disable once UseCollectionExpression
         gitChanges = result.StandardOutput!.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         cacheItem.LastUpdated = DateTime.Now;
         cacheItem.Result = result;
@@ -183,7 +184,7 @@ internal class Versioning(ILogger logger)
 
         var packageSource = this._msBuildProject.PackageSource;
         using var nuGetDownLoader = new NuGetDownLoader(new NuGetLogger(logger), this.FileSystem.TargetFileInfo.Name);
-        var sources = packageSource == null ? nuGetDownLoader.GetNuGetConfigSources() : new[] { Repository.Factory.GetCoreV3(packageSource) };
+        var sources = packageSource == null ? NuGetDownLoader.GetNuGetConfigSources() : new[] { Repository.Factory.GetCoreV3(packageSource) };
 
         var versions = nuGetDownLoader.GetAllVersionsAsync(sources, packageId, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -207,7 +208,7 @@ internal class Versioning(ILogger logger)
         this._assemblyFrameworkInfoCache.Clear();
 
         var updateResult = new VersioningResult();
-        var versionCache = this.CreateVersionFileCache();
+        
 
         #endregion
 
@@ -251,6 +252,12 @@ internal class Versioning(ILogger logger)
 
         if (this.ShouldIncreaseBuildVersion(gitChanges, versionChange)) versionChange = VersionChange.Build;
         if (this.ShouldIncreaseRevisionVersion(gitChanges, versionChange)) versionChange = VersionChange.Revision;
+
+        #endregion
+
+        #region create version cache
+
+        var versionCache = this.CreateVersionFileCache();
 
         #endregion
 
@@ -306,7 +313,7 @@ internal class Versioning(ILogger logger)
 
         versionCache.Write();
 
-        this.CopyTargetFileToProjectRefDir(gitChanges.Any());
+        this.CopyTargetFileToProjectRefDir(gitChanges.Length > 0);
 
         #endregion
 
@@ -345,7 +352,7 @@ internal class Versioning(ILogger logger)
 
         cache.RefVersion = this.UseNuGetAsReference &&
                            this.TryGetAssemblyFrameworkInfo(this.FileSystem.RefTargetFileInfo, out var assemblyFrameworkInfo) ?
-                                assemblyFrameworkInfo.Version :
+                                assemblyFrameworkInfo.Version ?? projectFileVersion :
                                 projectFileVersion;
 
         if (cache.CacheFileInfo.CreateDirectoryIfNotExist())
@@ -354,6 +361,10 @@ internal class Versioning(ILogger logger)
         }
 
         cache.Write();
+
+        logger.LogInformation("Create version cache: File name='{cacheFile}' RefVersion={refVersion}, CurrentVersion={currentVersion}", 
+            cache.CacheFileInfo.FullName, cache.RefVersion, cache.CurrentVersion);
+
         return cache;
     }
 
@@ -593,11 +604,10 @@ internal class Versioning(ILogger logger)
         return false;
     }
 
-
     private static string FindTargetFrameworkFromPath(string path)
     {
         var result = string.Empty;
-        foreach (var folderName in path.Split(new []{Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries))
+        foreach (var folderName in path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries))
         {
             var nuGetFramework = NuGetFramework.ParseFolder(folderName);
             if (!nuGetFramework.IsUnsupported) result = nuGetFramework.GetShortFolderName();
@@ -606,29 +616,25 @@ internal class Versioning(ILogger logger)
         return result;
     }
 
-
     private static string FindTargetPlatformFromPath(string path)
     {
         var result = string.Empty;
         foreach (var folderName in path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries))
         {
-            
+
             if (folderName.StartsWith("android", StringComparison.OrdinalIgnoreCase)) result = folderName;
             if (folderName.StartsWith("android", StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("win-",    StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("linux-",  StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("ios",     StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("mac",     StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("osx",     StringComparison.OrdinalIgnoreCase)) result = folderName;
-            if (folderName.StartsWith("tvos",    StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("win-", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("linux-", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("ios", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("mac", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("osx", StringComparison.OrdinalIgnoreCase)) result = folderName;
+            if (folderName.StartsWith("tvos", StringComparison.OrdinalIgnoreCase)) result = folderName;
             if (folderName.StartsWith("windows", StringComparison.OrdinalIgnoreCase)) result = folderName;
         }
 
         return result;
     }
-
-
-
 
     #endregion
 

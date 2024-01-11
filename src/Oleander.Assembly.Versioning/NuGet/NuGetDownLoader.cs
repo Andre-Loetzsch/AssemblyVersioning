@@ -41,7 +41,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
         return result.ToArray();
     }
 
-    public IReadOnlyList<SourceRepository> GetNuGetConfigSources()
+    public static IReadOnlyList<SourceRepository> GetNuGetConfigSources()
     {
         var settings = Settings.LoadDefaultSettings(root: null);
         var sourceRepositoryProvider = new SourceRepositoryProvider(
@@ -69,7 +69,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
         var filteredZipEntries = archive.Entries
             .Where(x => string.Equals(x.Name, targetName, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        if (!filteredZipEntries.Any())
+        if (filteredZipEntries.Count == 0)
         {
             logger.LogWarning("Package does not contain any content with target name '{targetName}'!", targetName);
             return false;

@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<TargetFrameworks>net8.0-windows10.0.22621.0;net8.0-windows</TargetFrameworks>-->
-    <!--<TargetFramework>netstandard2.0</TargetFramework>-->
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    
     <AssemblyVersion>1.5.0.1</AssemblyVersion>
     <SourceRevisionId>1e4819022b3d1d8cc136c7e45a8d8c018c424a0d</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
@@ -15,14 +9,14 @@
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <VersionSuffix>beta</VersionSuffix>
-    <!--<IsPublishable>False</IsPublishable>-->
     <IsPackable>false</IsPackable>
-
-    <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-    <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>-->
-
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
+    <!--<RuntimeIdentifier>linux-arm64</RuntimeIdentifier>-->
+  </PropertyGroup>
   
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->

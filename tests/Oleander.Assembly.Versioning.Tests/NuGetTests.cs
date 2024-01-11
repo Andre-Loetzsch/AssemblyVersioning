@@ -11,7 +11,7 @@ public class NuGetTests
         var packageId = "Oleander.Assembly.Versioning.Tool";//"Newtonsoft.Json";
         var outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages");
         using var nuGetDownLoader1 = new NuGetDownLoader(new NuGetLogger(new NullLogger()), "Oleander.Assembly.Versioning.Tool.dll");
-        var sources = nuGetDownLoader1.GetNuGetConfigSources();
+        var sources = NuGetDownLoader.GetNuGetConfigSources();
         var versions = await nuGetDownLoader1.GetAllVersionsAsync(sources, packageId, CancellationToken.None);
 
         if (!versions.Any()) return;

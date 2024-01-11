@@ -1,28 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\Common\targets\common.targets" />
+
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
-    <LangVersion>12</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.79.0</AssemblyVersion>
-    <SourceRevisionId>ca77ef2ad3da077537fa3ce9a28c4b2e0453ac1e</SourceRevisionId>
-    <VersionSuffix>alpha</VersionSuffix>
+    <AssemblyVersion>0.1.80.0</AssemblyVersion>
+    <SourceRevisionId>cb50750338472ae3d7b16da7220cd0c901520d35</SourceRevisionId>
+    <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Calculate the next version of an assembly</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Common\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
+    <Compile Include="..\..\Common\src\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <NoWarn>$(NoWarn);nullable</NoWarn>
-  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" Version="17.8.3" NoWarn="NU1701" />
@@ -30,7 +26,6 @@
     <PackageReference Include="NuGet.Frameworks" Version="6.8.0" />
     <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.41-alpha" />-->
   </ItemGroup>
 
   <ItemGroup>
