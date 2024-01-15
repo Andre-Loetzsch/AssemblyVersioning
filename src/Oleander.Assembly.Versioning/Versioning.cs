@@ -520,7 +520,9 @@ internal class Versioning(ILogger logger)
         if (versionChange > VersionChange.Revision) return false;
 
         var gitDiffFilter = this.GetGitDiffFilter();
-        return gitChanges.Any(x => gitDiffFilter.Contains(Path.GetExtension(x).ToLower()));
+
+        return gitChanges.Any(x => !string.Equals(Path.GetFileName(x), "AssemblyInfo.cs", StringComparison.OrdinalIgnoreCase) &&   
+                                   gitDiffFilter.Contains(Path.GetExtension(x).ToLower()));
     }
 
     private bool ShouldIncreaseRevisionVersion(IEnumerable<string> gitChanges, VersionChange versionChange)

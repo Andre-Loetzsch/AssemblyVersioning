@@ -1,0 +1,4 @@
+﻿namespace Oleander.AssemblyVersioning.Test
+{
+    //
+}
