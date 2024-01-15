@@ -215,4 +215,14 @@ public class SimulationTests
         Assert.Equal(new(1, 2, 3, 4), result[0]);
         Assert.Equal(new(1, 2, 0, 0), result[1]);
     }
+
+    [Fact]
+    public void TestAssemblyInfoFileChanged()
+    {
+        var result = new TestRunner("assemblyInfoFileChanged").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(1, 0, 0, 1), result[1]);
+    }
 }
