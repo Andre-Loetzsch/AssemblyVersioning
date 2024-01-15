@@ -2,7 +2,7 @@
 
 namespace Multiple.TargetFrameworks.Test
 {
-    [DebuggerDisplay("{Text}")]
+    //[DebuggerDisplay("{Text}")]
     public class Class1
     {
         //[DebuggerStepThrough]
@@ -19,7 +19,7 @@ namespace Multiple.TargetFrameworks.Test
         //    return 0;
         //}
 
-        public string? Text { get; set; }
+        //public string? Text { get; set; }
         //private string Text2 { get; set;}
     }
 }
