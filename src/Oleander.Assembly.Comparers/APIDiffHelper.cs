@@ -23,6 +23,9 @@ namespace Oleander.Assembly.Comparers
             GlobalAssemblyResolver.Instance.ClearCache();
         }
 
+
+        internal static Func<string, bool> InternalApiIgnore { get; set; }
+
         private static IMetadataDiffItem<AssemblyDefinition> GetAPIDifferences(AssemblyDefinition oldAssembly, AssemblyDefinition newAssembly)
         {
             return new AssemblyComparer(oldAssembly, newAssembly).Compare();

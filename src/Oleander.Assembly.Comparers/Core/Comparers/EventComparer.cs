@@ -56,8 +56,15 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(EventDefinition element)
         {
-            return element.AddMethod != null && element.AddMethod.IsAPIDefinition() ||
+            var isApi = element.AddMethod != null && element.AddMethod.IsAPIDefinition() ||
                 element.RemoveMethod != null && element.RemoveMethod.IsAPIDefinition();
+
+            if (!isApi) return false;
+
+            element.GetMemberTypeAndName(out _, out var name);
+
+            return APIDiffHelper.InternalApiIgnore == null ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(EventDefinition)}:{name}");
         }
     }
 }

@@ -9,9 +9,6 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Events
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.Event; }
-        }
+        public override MetadataType MetadataType => MetadataType.Event;
     }
 }

@@ -119,7 +119,13 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(TypeDefinition element)
         {
-            return element.IsPublic || element.IsNestedPublic || element.IsNestedFamily || element.IsNestedFamilyOrAssembly;
+            var isApi = element.IsPublic || element.IsNestedPublic || element.IsNestedFamily || element.IsNestedFamilyOrAssembly;
+
+            if (!isApi) return false;
+
+            return APIDiffHelper.InternalApiIgnore == null ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(TypeDefinition)}:{element.Name}") ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(TypeDefinition)}:{element.FullName}");
         }
     }
 }

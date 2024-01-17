@@ -31,9 +31,6 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Attributes
             writer.WriteEndElement();
         }
 
-        public override bool IsBreakingChange
-        {
-            get { return this.DiffType == DiffType.Deleted; }
-        }
+        public override bool IsBreakingChange => this.DiffType == DiffType.Deleted;
     }
 }
