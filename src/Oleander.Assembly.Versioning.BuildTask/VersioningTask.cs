@@ -67,7 +67,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 File.AppendAllLines(this._tempExceptionLogFile, lines);
 
                 this._taskLogger.LogError(EventIds.AnExceptionHasOccurred,
-                    "An exception has occurred: {exMessage} Further information can be found in the file '{tempExceptionLogFile}'.", 
+                    "An exception has occurred: {exMessage} A diagnostic log has been written to the following location: '{tempExceptionLogFile}'.", 
                     ex.Message, this._tempExceptionLogFile);
             }
 
