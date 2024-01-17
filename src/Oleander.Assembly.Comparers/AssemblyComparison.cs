@@ -6,12 +6,13 @@ public class AssemblyComparison
 {
     private readonly IMetadataDiffItem _diffItem;
 
-    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly, bool clearCache)
+    public AssemblyComparison(FileSystemInfo refAssembly, FileSystemInfo newAssembly, bool clearCache, Func<string, bool> apiIgnore = null)
     {
         if (refAssembly is not { Exists: true }) return;
         if (newAssembly is not { Exists: true }) return;
 
         if (clearCache ) { APIDiffHelper.ClearCache();}
+        APIDiffHelper.InternalApiIgnore = apiIgnore;
         this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
     }
 

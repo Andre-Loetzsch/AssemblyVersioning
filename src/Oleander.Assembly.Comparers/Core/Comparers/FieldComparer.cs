@@ -69,7 +69,12 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(FieldDefinition element)
         {
-            return element.IsAPIDefinition();
+            if (!element.IsAPIDefinition()) return false;
+
+            element.GetMemberTypeAndName(out _, out var name);
+
+            return APIDiffHelper.InternalApiIgnore == null ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(FieldDefinition)}:{name}");
         }
     }
 }

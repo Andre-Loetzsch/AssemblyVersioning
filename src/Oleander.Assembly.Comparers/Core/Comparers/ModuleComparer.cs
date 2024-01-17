@@ -50,7 +50,10 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(ModuleDefinition element)
         {
-            return element.Types.Any(type => type.IsPublic);
+            if (element.Types.All(type => !type.IsPublic)) return false;
+
+            return APIDiffHelper.InternalApiIgnore == null ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(ModuleDefinition)}:{element.Name}");
         }
     }
 }

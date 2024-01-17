@@ -237,7 +237,23 @@ internal class Versioning(ILogger logger)
         logger.LogInformation("Assembly comparison target:    {targetFileInfo}", targetFileInfo);
         logger.LogInformation("Assembly Comparison reference: {refTargetFileInfo}", refTargetFileInfo);
 
-        var comparison = new AssemblyComparison(refTargetFileInfo, targetFileInfo, true);
+        var apiIgnoreList = this.GetApiIgnoreList();
+
+        Func<string, bool> apiIgnore = null;
+
+        if (apiIgnoreList.Count > 0)
+        {
+            apiIgnore = name =>
+            {
+                logger.LogDebug("Search in ignore list: '{name}'", name);
+
+                if (apiIgnoreList.Contains(name)) return true;
+                logger.LogInformation("Ignore '{name}'", name);
+                return false;
+            };
+        }
+
+        var comparison = new AssemblyComparison(refTargetFileInfo, targetFileInfo, true, apiIgnore);
         var versionChange = comparison.VersionChange;
 
         logger.LogInformation("Assembly comparison result is: {versionChange}", versionChange);
@@ -633,6 +649,25 @@ internal class Versioning(ILogger logger)
             if (folderName.StartsWith("osx", StringComparison.OrdinalIgnoreCase)) result = folderName;
             if (folderName.StartsWith("tvos", StringComparison.OrdinalIgnoreCase)) result = folderName;
             if (folderName.StartsWith("windows", StringComparison.OrdinalIgnoreCase)) result = folderName;
+        }
+
+        return result;
+    }
+
+    private List<string> GetApiIgnoreList()
+    {
+        var result = new List<string>();
+
+        if (this.FileSystem.GitRepositoryApiIgnoreFileInfo.Exists)
+        {
+            result.AddRange(File.ReadAllLines(this.FileSystem.GitRepositoryApiIgnoreFileInfo.FullName));
+            logger.LogInformation("Found git-repository api-ignore file: '{fileName}'", this.FileSystem.GitRepositoryApiIgnoreFileInfo.FullName);
+        }
+
+        if (this.FileSystem.ProjectApiIgnoreFileInfo.Exists)
+        {
+            result.AddRange(File.ReadAllLines(this.FileSystem.ProjectApiIgnoreFileInfo.FullName).Where(x => !result.Contains(x)));
+            logger.LogInformation("Found project api-ignore file: '{fileName}'", this.FileSystem.ProjectApiIgnoreFileInfo.FullName);
         }
 
         return result;

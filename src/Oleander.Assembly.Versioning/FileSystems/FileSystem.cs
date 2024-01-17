@@ -104,6 +104,18 @@ internal class FileSystem(ILogger logger)
 
     #endregion
 
+    #region ProjectApiIgnoreFileInfo
+
+    public FileInfo ProjectApiIgnoreFileInfo => new(Path.Combine(this.ProjectDirInfo.FullName, ".versioningIgnore"));
+
+    #endregion
+
+    #region GitRepositoryApiIgnoreFileInfo
+
+    public FileInfo GitRepositoryApiIgnoreFileInfo => new(Path.Combine(this.GitRepositoryDirInfo.FullName, ".versioningIgnore"));
+
+    #endregion
+
     #endregion
 
     #region DirectoryInfos

@@ -23,12 +23,20 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(CustomAttribute x, CustomAttribute y)
         {
-            return x.Constructor.GetSignature().CompareTo(y.Constructor.GetSignature());
+            return string.Compare(x.Constructor.GetSignature(), y.Constructor.GetSignature(), StringComparison.OrdinalIgnoreCase);
         }
 
         protected override bool IsAPIElement(CustomAttribute element)
         {
-            return !element.Constructor.GetSignature().StartsWith("System.Diagnostics.Debugg");
+            var signature = element.Constructor.GetSignature();
+
+            if (signature.StartsWith("System.Diagnostics.Debugg")) return false;
+            if (signature.StartsWith("System.Runtime.CompilerServices.RefSafetyRulesAttribute")) return false;
+
+            // CustomAttribute Name="System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor(System.Int32)"
+            // CustomAttribute:System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor(System.Int32)
+            return APIDiffHelper.InternalApiIgnore == null ||
+                   APIDiffHelper.InternalApiIgnore($"{nameof(CustomAttribute)}:{signature}");
         }
     }
 }
