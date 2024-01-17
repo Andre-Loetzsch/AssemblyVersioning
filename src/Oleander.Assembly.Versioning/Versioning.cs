@@ -239,7 +239,7 @@ internal class Versioning(ILogger logger)
 
         var apiIgnoreList = this.GetApiIgnoreList();
 
-        Func<string, bool> apiIgnore = null;
+        Func<string, bool>? apiIgnore = null;
 
         if (apiIgnoreList.Count > 0)
         {
