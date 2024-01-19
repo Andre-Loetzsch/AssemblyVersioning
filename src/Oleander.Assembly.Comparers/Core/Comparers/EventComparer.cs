@@ -14,16 +14,17 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override IDiffItem GenerateDiffItem(EventDefinition oldElement, EventDefinition newElement)
         {
-            IEnumerable<IDiffItem> declarationDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes);
-            IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement);
+            var diffItems = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes).ToList();
+            var childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement).ToList();
 
-            // TODO compare event args!
-            if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
+            diffItems.AddRange(this.GetEventTypeDiff(oldElement, newElement));
+            
+            if (diffItems.IsEmpty() && childrenDiffs.IsEmpty())
             {
                 return null;
             }
 
-            return new EventDiffItem(oldElement, newElement, declarationDiffs, childrenDiffs);
+            return new EventDiffItem(oldElement, newElement, diffItems, childrenDiffs);
         }
 
         private IEnumerable<IMetadataDiffItem<MethodDefinition>> GenerateAccessorDifferences(EventDefinition oldEvent, EventDefinition newEvent)
@@ -37,13 +38,29 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
             }
 
             IMetadataDiffItem<MethodDefinition> removeAccessorDiffItem = new RemoveAccessorComparer(oldEvent, newEvent).GenerateAccessorDiffItem();
-            if(removeAccessorDiffItem != null)
+            if (removeAccessorDiffItem != null)
             {
                 result.Add(removeAccessorDiffItem);
             }
 
             return result;
         }
+
+
+        private IEnumerable<IDiffItem> GetEventTypeDiff(EventDefinition oldElement, EventDefinition newElement)
+        {
+            if (oldElement.EventType.FullName != newElement.EventType.FullName)
+            {
+
+                //oldElement.EventType.
+
+                // TODO compare event args!
+
+            }
+
+            return Enumerable.Empty<IDiffItem>();
+        }
+
 
         protected override IDiffItem GetNewDiffItem(EventDefinition element)
         {
@@ -59,12 +76,12 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
         {
             return element.AddMethod != null && element.AddMethod.IsAPIDefinition() ||
                 element.RemoveMethod != null && element.RemoveMethod.IsAPIDefinition();
-           
+
         }
 
         protected override bool IsIgnored(EventDefinition element)
         {
-            return APIDiffHelper.InternalApiIgnore != null && 
+            return APIDiffHelper.InternalApiIgnore != null &&
                    APIDiffHelper.InternalApiIgnore($"Event:{element.DeclaringType.FullName}.{element.Name}");
         }
     }

@@ -9,10 +9,7 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Events
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.Method; }
-        }
+        public override MetadataType MetadataType => MetadataType.Method;
 
         protected override string GetElementShortName(MethodDefinition element)
         {
