@@ -3,12 +3,12 @@
   <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
-    <AssemblyVersion>0.1.63.0</AssemblyVersion>
+    <AssemblyVersion>0.1.64.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>86494cf507c7639ccb541f34560b2d6464a61daf</SourceRevisionId>
+    <SourceRevisionId>ee180bd7178fc4b833e52a5dc57ac26a9b8952cd</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <Title>Assembly versioning task</Title>
     <Description>Compares two assemblies and calculates the current version</Description>

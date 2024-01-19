@@ -25,12 +25,9 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Common
             string newType;
             this.newMember.GetMemberTypeAndName(out newType, out name);
 
-            return string.Format("Member type changed from {0} to {1}.", oldType, newType);
+            return $"Member type changed from {oldType} to {newType}.";
         }
 
-        public override bool IsBreakingChange
-        {
-            get { return true; }
-        }
+        public override bool IsBreakingChange => true;
     }
 }

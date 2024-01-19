@@ -1,2 +1,4 @@
 Method:Oleander.AssemblyVersioning.Test.Class1.Method1()
 Method:Oleander.AssemblyVersioning.Test.Class1.Method1(System.String)
+Event:Oleander.AssemblyVersioning.Test.Class1.DoIgnore(Action`1[Int32])
+Event:Oleander.AssemblyVersioning.Test.Class1.DoIgnore(Action`1[Int64])

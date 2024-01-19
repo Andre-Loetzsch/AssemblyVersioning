@@ -26,10 +26,7 @@ namespace Oleander.Assembly.Comparers.Cecil {
 		protected EventReference (string name, TypeReference eventType)
 			: base (name)
 		{
-			if (eventType == null)
-				throw new ArgumentNullException ("eventType");
-
-            this.event_type = eventType;
+            this.event_type = eventType ?? throw new ArgumentNullException (nameof(eventType));
 		}
 
 		public abstract EventDefinition Resolve ();

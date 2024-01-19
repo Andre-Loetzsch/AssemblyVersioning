@@ -7,17 +7,11 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 {
     class EventComparer : BaseDiffComparer<EventDefinition>
     {
-        protected override IDiffItem GetMissingDiffItem(EventDefinition element)
-        {
-            return new EventDiffItem(element, null, null, null);
-        }
-
         protected override IDiffItem GenerateDiffItem(EventDefinition oldElement, EventDefinition newElement)
         {
             var diffItems = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes).ToList();
             var childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement).ToList();
 
-            diffItems.AddRange(this.GetEventTypeDiff(oldElement, newElement));
             
             if (diffItems.IsEmpty() && childrenDiffs.IsEmpty())
             {
@@ -46,30 +40,20 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
             return result;
         }
 
-
-        private IEnumerable<IDiffItem> GetEventTypeDiff(EventDefinition oldElement, EventDefinition newElement)
-        {
-            if (oldElement.EventType.FullName != newElement.EventType.FullName)
-            {
-
-                //oldElement.EventType.
-
-                // TODO compare event args!
-
-            }
-
-            return Enumerable.Empty<IDiffItem>();
-        }
-
-
         protected override IDiffItem GetNewDiffItem(EventDefinition element)
         {
             return new EventDiffItem(null, element, null, null);
         }
 
+        protected override IDiffItem GetMissingDiffItem(EventDefinition element)
+        {
+            return new EventDiffItem(element, null, null, null);
+        }
+
+
         protected override int CompareElements(EventDefinition x, EventDefinition y)
         {
-            return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
+            return string.Compare(x.FullName, y.FullName, StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(EventDefinition element)
@@ -81,8 +65,13 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsIgnored(EventDefinition element)
         {
+            //return APIDiffHelper.InternalApiIgnore != null &&
+            //       APIDiffHelper.InternalApiIgnore($"Event:{element.DeclaringType.FullName}.{element.Name}");
+
+            var name = $"{element.DeclaringType.FullName}.{element.Name}({element.EventType.FullName.Replace("<", "[").Replace(">", "]")})".Replace("System.", string.Empty);
             return APIDiffHelper.InternalApiIgnore != null &&
-                   APIDiffHelper.InternalApiIgnore($"Event:{element.DeclaringType.FullName}.{element.Name}");
+                   APIDiffHelper.InternalApiIgnore($"Event:{name}");
+
         }
     }
 }

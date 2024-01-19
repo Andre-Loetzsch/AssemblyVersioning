@@ -1,4 +1,5 @@
 ﻿using Oleander.Assembly.Comparers.Cecil;
+using System.Xml.Linq;
 
 namespace Oleander.Assembly.Comparers.Core.DiffItems.Events
 {
@@ -10,5 +11,10 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Events
         }
 
         public override MetadataType MetadataType => MetadataType.Event;
+
+        protected override string GetElementShortName(EventDefinition element)
+        {
+            return $"{element.Name}({element.EventType.FullName.Replace("<", "[").Replace(">", "]")})".Replace("System.", string.Empty);
+        }
     }
 }
