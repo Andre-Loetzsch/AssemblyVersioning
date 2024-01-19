@@ -3,8 +3,8 @@
   <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <SourceRevisionId>f8c27d824bd797522cbc3ebf5e15cc0e1cbd3c61</SourceRevisionId>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <SourceRevisionId>e4c677ed739f292a28f654c4bd7f9549ad82d956</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>

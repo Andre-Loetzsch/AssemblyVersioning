@@ -2,7 +2,8 @@
 {
     public class Class1
     {
-        public event Action? DoIgnore;
+        public event Action<int>? DoIgnore;
+        public event EventHandler<string>? DoIgnore2;
 
         public void Method1(string s)
         {

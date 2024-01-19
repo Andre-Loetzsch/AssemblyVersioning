@@ -6,9 +6,11 @@ namespace Oleander.Assembly.Comparers
 {
     public static class APIDiffHelper
     {
-        public static IMetadataDiffItem GetAPIDifferences(string oldAssemblyPath, string newAssemblyPath)
+        public static IMetadataDiffItem GetAPIDifferences(string oldAssemblyPath, string newAssemblyPath, Func<string, bool> apiIgnore = null)
         {
             if (oldAssemblyPath == null || newAssemblyPath == null) return null;
+
+            InternalApiIgnore = apiIgnore;
 
             var oldAssembly = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(oldAssemblyPath);
             var newAssembly = GlobalAssemblyResolver.Instance.GetAssemblyDefinition(newAssemblyPath);
@@ -23,8 +25,7 @@ namespace Oleander.Assembly.Comparers
             GlobalAssemblyResolver.Instance.ClearCache();
         }
 
-
-        internal static Func<string, bool> InternalApiIgnore { get; set; }
+        internal static Func<string, bool> InternalApiIgnore { get; private set; }
 
         private static IMetadataDiffItem<AssemblyDefinition> GetAPIDifferences(AssemblyDefinition oldAssembly, AssemblyDefinition newAssembly)
         {

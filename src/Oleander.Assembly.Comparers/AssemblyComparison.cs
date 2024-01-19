@@ -12,8 +12,8 @@ public class AssemblyComparison
         if (newAssembly is not { Exists: true }) return;
 
         if (clearCache ) { APIDiffHelper.ClearCache();}
-        APIDiffHelper.InternalApiIgnore = apiIgnore;
-        this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName);
+       
+        this._diffItem = APIDiffHelper.GetAPIDifferences(refAssembly.FullName, newAssembly.FullName, apiIgnore);
     }
 
     public string ToXml()

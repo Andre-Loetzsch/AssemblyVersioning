@@ -64,21 +64,20 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(PropertyDefinition x, PropertyDefinition y)
         {
-            return x.Name.CompareTo(y.Name);
+            return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(PropertyDefinition element)
         {
-            var isApi = element.GetMethod != null && element.GetMethod.IsAPIDefinition() ||
+            return element.GetMethod != null && element.GetMethod.IsAPIDefinition() ||
                 element.SetMethod != null && element.SetMethod.IsAPIDefinition();
 
-            if (!isApi) return false;
+        }
 
-            element.GetMemberTypeAndName(out _, out var name);
-
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(PropertyDefinition)}:{name}");
-
+        protected override bool IsIgnored(PropertyDefinition element)
+        {
+            return APIDiffHelper.InternalApiIgnore != null &&
+                   APIDiffHelper.InternalApiIgnore($"Property:{element.DeclaringType.FullName}.{element.Name}");
         }
     }
 }
