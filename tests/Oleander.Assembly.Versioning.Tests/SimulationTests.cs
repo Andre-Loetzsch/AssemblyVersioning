@@ -237,4 +237,24 @@ public class SimulationTests
         Assert.Equal(new(1, 1, 0, 0), result[2]);
         Assert.Equal(new(1, 0, 0, 0), result[3]);
     }
+
+    [Fact]
+    public void TestCompareGenerics()
+    {
+        var result = new TestRunner("compareGenerics").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
+
+    [Fact]
+    public void TestChangeEventTypes()
+    {
+        var result = new TestRunner("changeEventTypes").RunSimulation().ToList();
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal(new(1, 0, 0, 0), result[0]);
+        Assert.Equal(new(2, 0, 0, 0), result[1]);
+    }
 }

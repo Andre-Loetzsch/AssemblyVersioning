@@ -15,11 +15,10 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override IDiffItem GenerateDiffItem(PropertyDefinition oldElement, PropertyDefinition newElement)
         {
-            IEnumerable<IDiffItem> declarationDiffs =
-                EnumerableExtensions.ConcatAll(
+            IEnumerable<IDiffItem> declarationDiffs = EnumerableExtensions.ConcatAll(
                     new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes),
-                    this.GetReturnTypeDifference(oldElement, newElement)
-                    );
+                    this.GetReturnTypeDifference(oldElement, newElement));
+            
             IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement);
 
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())

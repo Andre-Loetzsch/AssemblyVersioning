@@ -2,17 +2,10 @@
 
 namespace Oleander.Assembly.Comparers.Core.DiffItems.Events
 {
-    class RemoveAccessorDiffItem : BaseMemberDiffItem<MethodDefinition>
+    internal class RemoveAccessorDiffItem(EventDefinition oldEvent, EventDefinition newEvent, IEnumerable<IDiffItem> declarationDiffs)
+        : BaseMemberDiffItem<MethodDefinition>(oldEvent.RemoveMethod, newEvent.RemoveMethod, declarationDiffs, null)
     {
-        public RemoveAccessorDiffItem(EventDefinition oldEvent, EventDefinition newEvent, IEnumerable<IDiffItem> declarationDiffs)
-            : base(oldEvent.RemoveMethod, newEvent.RemoveMethod, declarationDiffs, null)
-        {
-        }
-
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.Method; }
-        }
+        public override MetadataType MetadataType => MetadataType.Method;
 
         protected override string GetElementShortName(MethodDefinition element)
         {

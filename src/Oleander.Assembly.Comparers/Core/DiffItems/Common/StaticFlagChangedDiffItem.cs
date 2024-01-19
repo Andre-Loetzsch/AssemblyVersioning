@@ -3,22 +3,19 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Common
 {
     class StaticFlagChangedDiffItem : BaseDiffItem
     {
-        private readonly bool isNewMemberStatic;
+        private readonly bool _isNewMemberStatic;
 
         public StaticFlagChangedDiffItem(bool isNewMemberStatic)
             :base(DiffType.Modified)
         {
-            this.isNewMemberStatic = isNewMemberStatic;
+            this._isNewMemberStatic = isNewMemberStatic;
         }
 
         protected override string GetXmlInfoString()
         {
-            return string.Format("Member changed to {0}.", this.isNewMemberStatic ? "static" : "instance");
+            return $"Member changed to {(this._isNewMemberStatic ? "static" : "instance")}.";
         }
 
-        public override bool IsBreakingChange
-        {
-            get { return true; }
-        }
+        public override bool IsBreakingChange => true;
     }
 }

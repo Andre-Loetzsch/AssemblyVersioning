@@ -13,8 +13,7 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems
         protected override string GetElementShortName(T element)
         {
             string type;
-            string name;
-            element.GetMemberTypeAndName(out type, out name);
+            element.GetMemberTypeAndName(out type, out var name);
             return name;
         }
     }

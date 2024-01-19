@@ -2,7 +2,7 @@
 
 namespace Oleander.Assembly.Comparers.Core.Extensions
 {
-    static class MemberDefinitionExtensions
+    internal static class MemberDefinitionExtensions
     {
         public static void GetMemberTypeAndName(this IMemberDefinition self, out string type, out string name)
         {

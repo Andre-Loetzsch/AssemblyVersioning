@@ -654,13 +654,13 @@ internal class Versioning(ILogger logger)
 
         if (this.FileSystem.GitRepositoryApiIgnoreFileInfo.Exists)
         {
-            result.AddRange(File.ReadAllLines(this.FileSystem.GitRepositoryApiIgnoreFileInfo.FullName));
+            result.AddRange(File.ReadAllLines(this.FileSystem.GitRepositoryApiIgnoreFileInfo.FullName).Select(x => x.Trim()));
             logger.LogInformation("Found git-repository api-ignore file: '{fileName}'", this.FileSystem.GitRepositoryApiIgnoreFileInfo.FullName);
         }
 
         if (this.FileSystem.ProjectApiIgnoreFileInfo.Exists)
         {
-            result.AddRange(File.ReadAllLines(this.FileSystem.ProjectApiIgnoreFileInfo.FullName).Where(x => !result.Contains(x)));
+            result.AddRange(File.ReadAllLines(this.FileSystem.ProjectApiIgnoreFileInfo.FullName).Select(x => x.Trim()).Where(x => !result.Contains(x)));
             logger.LogInformation("Found project api-ignore file: '{fileName}'", this.FileSystem.ProjectApiIgnoreFileInfo.FullName);
         }
 
