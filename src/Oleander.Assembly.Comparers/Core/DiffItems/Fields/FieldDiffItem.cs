@@ -9,9 +9,6 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Fields
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.Field; }
-        }
+        public override MetadataType MetadataType => MetadataType.Field;
     }
 }

@@ -17,6 +17,7 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
             IEnumerable<IDiffItem> declarationDiffs = new CustomAttributeComparer().GetMultipleDifferences(oldElement.CustomAttributes, newElement.CustomAttributes);
             IEnumerable<IMetadataDiffItem<MethodDefinition>> childrenDiffs = this.GenerateAccessorDifferences(oldElement, newElement);
 
+            // TODO compare event args!
             if (declarationDiffs.IsEmpty() && childrenDiffs.IsEmpty())
             {
                 return null;
@@ -51,20 +52,20 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(EventDefinition x, EventDefinition y)
         {
-            return x.Name.CompareTo(y.Name);
+            return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(EventDefinition element)
         {
-            var isApi = element.AddMethod != null && element.AddMethod.IsAPIDefinition() ||
+            return element.AddMethod != null && element.AddMethod.IsAPIDefinition() ||
                 element.RemoveMethod != null && element.RemoveMethod.IsAPIDefinition();
+           
+        }
 
-            if (!isApi) return false;
-
-            element.GetMemberTypeAndName(out _, out var name);
-
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(EventDefinition)}:{name}");
+        protected override bool IsIgnored(EventDefinition element)
+        {
+            return APIDiffHelper.InternalApiIgnore != null && 
+                   APIDiffHelper.InternalApiIgnore($"Event:{element.DeclaringType.FullName}.{element.Name}");
         }
     }
 }

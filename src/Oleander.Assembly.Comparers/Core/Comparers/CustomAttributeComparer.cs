@@ -23,20 +23,23 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(CustomAttribute x, CustomAttribute y)
         {
-            return string.Compare(x.Constructor.GetSignature(), y.Constructor.GetSignature(), StringComparison.OrdinalIgnoreCase);
+            return string.Compare(x.Constructor.GetSignature(), y.Constructor.GetSignature(), StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(CustomAttribute element)
         {
+            return true;
+        }
+
+        protected override bool IsIgnored(CustomAttribute element)
+        {
             var signature = element.Constructor.GetSignature();
 
-            if (signature.StartsWith("System.Diagnostics.Debugg")) return false;
-            if (signature.StartsWith("System.Runtime.CompilerServices.RefSafetyRulesAttribute")) return false;
+            if (signature.StartsWith("System.Diagnostics.Debugg")) return true;
+            if (signature.StartsWith("System.Runtime.CompilerServices.RefSafetyRulesAttribute")) return true;
 
-            // CustomAttribute Name="System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor(System.Int32)"
-            // CustomAttribute:System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor(System.Int32)
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(CustomAttribute)}:{signature}");
+            return APIDiffHelper.InternalApiIgnore != null &&
+                   APIDiffHelper.InternalApiIgnore($"CustomAttribute:{signature.Replace("::.", ".").Replace("::", ".")}");
         }
     }
 }

@@ -1,8 +1,2 @@
-AssemblyReference:System.Threading
-CustomAttribute:System.Runtime.CompilerServices.NullableAttribute::.ctor(System.Byte)
-CustomAttribute:System.Runtime.CompilerServices.NullableContextAttribute::.ctor(System.Byte)
-Property:Count" 
-Method:Method1()
-Method:Method1(String)
-Method:Method2()
-Event:DoIgnore
+Method:Oleander.AssemblyVersioning.Test.Class1.Method1()
+Method:Oleander.AssemblyVersioning.Test.Class1.Method1(System.String)

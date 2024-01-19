@@ -116,17 +116,21 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(MethodDefinition x, MethodDefinition y)
         {
-            return x.GetSignature().CompareTo(y.GetSignature());
+            return string.Compare(x.GetSignature(), y.GetSignature(), StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(MethodDefinition element)
         {
-            if (!element.IsAPIDefinition()) return false;
+            return element.IsAPIDefinition();
+        }
 
-            element.GetMemberTypeAndName(out _, out var name);
+        protected override bool IsIgnored(MethodDefinition element)
+        {
+            var name = element.FullName.Replace("::.", ".").Replace("::", ".");
+            var returnType = element.ReturnType.FullName;
 
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(MethodDefinition)}:{name}");
+            if (name.StartsWith(returnType)) name = name.Substring(returnType.Length).Trim();
+            return APIDiffHelper.InternalApiIgnore != null && APIDiffHelper.InternalApiIgnore($"Method:{name}");
         }
     }
 }

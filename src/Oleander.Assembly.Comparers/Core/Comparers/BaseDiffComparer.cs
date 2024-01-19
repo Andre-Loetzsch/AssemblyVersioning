@@ -27,7 +27,10 @@
                     oldIndex++;
                     if (this.IsAPIElement(oldElement))
                     {
-                        result.Add(this.GetMissingDiffItem(oldElement));
+                        if (!this.IsIgnored(oldElement))
+                        {
+                            result.Add(this.GetMissingDiffItem(oldElement));
+                        }
                     }
                 }
                 else if (compareResult > 0)
@@ -38,7 +41,10 @@
                         IDiffItem newItem = this.GetNewDiffItem(newElement);
                         if (newItem != null)
                         {
-                            result.Add(newItem);
+                            if (!this.IsIgnored(newElement))
+                            {
+                                result.Add(newItem);
+                            }
                         }
                     }
                 }
@@ -46,14 +52,20 @@
                 {
                     oldIndex++;
                     newIndex++;
+
                     if (this.IsAPIElement(oldElement) || this.IsAPIElement(newElement))
                     {
                         IDiffItem diffResult = this.GenerateDiffItem(oldElement, newElement);
+                        
                         if (diffResult != null)
                         {
-                            result.Add(diffResult);
+                            if (!this.IsIgnored(oldElement) && !this.IsIgnored(newElement))
+                            {
+                                result.Add(diffResult);
+                            }
                         }
                     }
+
                 }
             }
 
@@ -61,7 +73,10 @@
             {
                 if (this.IsAPIElement(oldElementsSorted[oldIndex]))
                 {
-                    result.Add(this.GetMissingDiffItem(oldElementsSorted[oldIndex]));
+                    if (!this.IsIgnored(oldElementsSorted[oldIndex]))
+                    {
+                        result.Add(this.GetMissingDiffItem(oldElementsSorted[oldIndex]));
+                    }
                 }
             }
 
@@ -72,7 +87,11 @@
                     IDiffItem newItem = this.GetNewDiffItem(newElementsSorted[newIndex]);
                     if (newItem != null)
                     {
-                        result.Add(newItem);
+                        if (!this.IsIgnored(newElementsSorted[newIndex]))
+                        {
+                            result.Add(newItem);
+
+                        }
                     }
                 }
             }
@@ -87,6 +106,8 @@
         protected abstract IDiffItem GetNewDiffItem(T element);
 
         protected abstract bool IsAPIElement(T element);
+
+        protected abstract bool IsIgnored(T element);
 
         protected abstract int CompareElements(T x, T y);
     }

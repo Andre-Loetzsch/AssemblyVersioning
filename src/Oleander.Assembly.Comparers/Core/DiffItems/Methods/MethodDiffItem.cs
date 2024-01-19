@@ -9,9 +9,6 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.Methods
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.Method; }
-        }
+        public override MetadataType MetadataType => MetadataType.Method;
     }
 }

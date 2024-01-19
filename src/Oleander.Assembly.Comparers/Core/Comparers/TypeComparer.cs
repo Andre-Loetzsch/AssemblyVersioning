@@ -114,18 +114,17 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override int CompareElements(TypeDefinition x, TypeDefinition y)
         {
-            return x.FullName.CompareTo(y.FullName);
+            return string.Compare(x.FullName, y.FullName, StringComparison.Ordinal);
         }
 
         protected override bool IsAPIElement(TypeDefinition element)
         {
-            var isApi = element.IsPublic || element.IsNestedPublic || element.IsNestedFamily || element.IsNestedFamilyOrAssembly;
+            return element.IsPublic || element.IsNestedPublic || element.IsNestedFamily || element.IsNestedFamilyOrAssembly;
+        }
 
-            if (!isApi) return false;
-
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(TypeDefinition)}:{element.Name}") ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(TypeDefinition)}:{element.FullName}");
+        protected override bool IsIgnored(TypeDefinition element)
+        {
+            return APIDiffHelper.InternalApiIgnore != null && APIDiffHelper.InternalApiIgnore($"Type:{element.FullName}");
         }
     }
 }

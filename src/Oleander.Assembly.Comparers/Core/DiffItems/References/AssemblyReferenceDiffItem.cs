@@ -9,10 +9,7 @@ namespace Oleander.Assembly.Comparers.Core.DiffItems.References
         {
         }
 
-        public override MetadataType MetadataType
-        {
-            get { return MetadataType.AssemblyReference; }
-        }
+        public override MetadataType MetadataType => MetadataType.AssemblyReference;
 
         protected override string GetElementShortName(AssemblyNameReference element)
         {

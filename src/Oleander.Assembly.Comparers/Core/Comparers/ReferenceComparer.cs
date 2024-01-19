@@ -34,10 +34,12 @@ namespace Oleander.Assembly.Comparers.Core.Comparers
 
         protected override bool IsAPIElement(AssemblyNameReference element)
         {
-            return APIDiffHelper.InternalApiIgnore == null ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(AssemblyNameReference)}:{element.Name}") ||
-                   APIDiffHelper.InternalApiIgnore($"{nameof(AssemblyNameReference)}:{element.FullName}");
+            return true;
+        }
 
+        protected override bool IsIgnored(AssemblyNameReference element)
+        {
+            return APIDiffHelper.InternalApiIgnore != null && APIDiffHelper.InternalApiIgnore($"AssemblyReference:{element.Name}");
         }
     }
 }

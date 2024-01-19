@@ -156,7 +156,7 @@ internal class Versioning(ILogger logger)
             gitChanges = Array.Empty<string>();
             return true;
         }
-       
+
         // ReSharper disable once UseCollectionExpression
         gitChanges = result.StandardOutput!.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         cacheItem.LastUpdated = DateTime.Now;
@@ -208,7 +208,7 @@ internal class Versioning(ILogger logger)
         this._assemblyFrameworkInfoCache.Clear();
 
         var updateResult = new VersioningResult();
-        
+
 
         #endregion
 
@@ -239,21 +239,15 @@ internal class Versioning(ILogger logger)
 
         var apiIgnoreList = this.GetApiIgnoreList();
 
-        Func<string, bool>? apiIgnore = null;
-
-        if (apiIgnoreList.Count > 0)
+        bool APIIgnore(string name)
         {
-            apiIgnore = name =>
-            {
-                logger.LogDebug("Search in ignore list: '{name}'", name);
-
-                if (apiIgnoreList.Contains(name)) return true;
-                logger.LogInformation("Ignore '{name}'", name);
-                return false;
-            };
+            var ignore = apiIgnoreList.Contains(name);
+            logger.LogInformation("Ignore: {ignore} -> '{name}'", ignore, name);
+            return ignore;
         }
 
-        var comparison = new AssemblyComparison(refTargetFileInfo, targetFileInfo, true, apiIgnore);
+
+        var comparison = new AssemblyComparison(refTargetFileInfo, targetFileInfo, true, APIIgnore);
         var versionChange = comparison.VersionChange;
 
         logger.LogInformation("Assembly comparison result is: {versionChange}", versionChange);
@@ -378,7 +372,7 @@ internal class Versioning(ILogger logger)
 
         cache.Write();
 
-        logger.LogInformation("Create version cache: File name='{cacheFile}' RefVersion={refVersion}, CurrentVersion={currentVersion}", 
+        logger.LogInformation("Create version cache: File name='{cacheFile}' RefVersion={refVersion}, CurrentVersion={currentVersion}",
             cache.CacheFileInfo.FullName, cache.RefVersion, cache.CurrentVersion);
 
         return cache;
@@ -537,7 +531,7 @@ internal class Versioning(ILogger logger)
 
         var gitDiffFilter = this.GetGitDiffFilter();
 
-        return gitChanges.Any(x => !string.Equals(Path.GetFileName(x), "AssemblyInfo.cs", StringComparison.OrdinalIgnoreCase) &&   
+        return gitChanges.Any(x => !string.Equals(Path.GetFileName(x), "AssemblyInfo.cs", StringComparison.OrdinalIgnoreCase) &&
                                    gitDiffFilter.Contains(Path.GetExtension(x).ToLower()));
     }
 
