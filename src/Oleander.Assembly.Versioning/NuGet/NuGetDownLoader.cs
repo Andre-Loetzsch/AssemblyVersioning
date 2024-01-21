@@ -4,6 +4,7 @@ using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuGet.Frameworks;
 using NuGet.Configuration;
+using Oleander.Assembly.Versioning.Extensionss;
 
 namespace Oleander.Assembly.Versioning.NuGet;
 
@@ -19,7 +20,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
         {
             try
             {
-                logger.LogInformation("Get version: PackageId={packageId}, Source name={packageName}, Source={packageSource}",
+                logger.LogInformation("Search package versions for package id: {packageId}, Source name={packageSourceName}, Source={packageSource}",
                      packageId, source.PackageSource.Name, source.PackageSource.Source);
 
                 var resource = await source.GetResourceAsync<MetadataResource>(cancellationToken);
@@ -29,12 +30,13 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 {
                     if (result.Any(x => x.Item2.Version == version.Version)) continue;
                     result.Add(new(source, version));
+                    logger.LogInformation("Add package version: '{version}' for package id: {packageId}", version, packageId);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Get versions failed! ({type} : {message}) PackageId={packageId}, Source name={packageName}, Source={packageSource}",
-                    ex.GetType(), ex.Message, packageId, source.PackageSource.Name, source.PackageSource.Source);
+                logger.LogError("Get versions failed! PackageId={packageId}, Source name={packageSourceName}, Source={packageSource}, Exc={type}: {ex}",
+                     packageId, source.PackageSource.Name, source.PackageSource.Source, ex.GetType(), ex.GetAllMessages());
             }
         }
 
@@ -53,18 +55,29 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
 
     public async Task<bool> DownloadPackageAsync(SourceRepository source, string packageId, NuGetVersion packageVersion, string outDir, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Download package: PackageId={packageId}, Source name={packageName}, Source={packageSource}, Version={version}",
+        logger.LogInformation("Download package: PackageId={packageId}, Source name={packageSourceName}, Source={packageSource}, Version={version}",
             packageId, source.PackageSource.Name, source.PackageSource.Source, packageVersion.Version);
 
         var resource = await source.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
         using var packageStream = new MemoryStream();
         await resource.CopyNupkgToStreamAsync(packageId, packageVersion, packageStream, this._sourceCacheContext, logger, cancellationToken);
 
-        return this.UnZipAssemblies(packageStream, outDir);
+        try
+        {
+            return this.UnZipAssemblies(packageStream, outDir);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("UnZip assemblies failed! ({type} : {message}) PackageId={packageId}, Source name={packageSourceName}, Source={packageSource}",
+                ex.GetType(), ex.Message, packageId, source.PackageSource.Name, source.PackageSource.Source);
+
+            throw;
+        }
     }
 
     private bool UnZipAssemblies(Stream packageStream, string outDir)
     {
+
         using var archive = new ZipArchive(packageStream, ZipArchiveMode.Read, false);
         var filteredZipEntries = archive.Entries
             .Where(x => string.Equals(x.Name, targetName, StringComparison.OrdinalIgnoreCase)).ToList();

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
+using Oleander.Assembly.Versioning.Extensionss;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
 
 namespace Oleander.Assembly.Versioning.BuildTask
@@ -15,7 +16,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
         private readonly Versioning _versioning;
         private readonly TaskLogger _taskLogger;
-        private readonly string _tempExceptionLogFile = Path.GetTempFileName();
+        private readonly string _tempExceptionLogFile = Path.Combine(Path.GetTempPath(), "_versioning.tmp");
         
         public VersioningTask()
         {
@@ -50,6 +51,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 {
                     this._taskLogger.LogWarning(EventIds.ProjectDirNotExist, "Project dir '{projectDir}' does not exist!", projectDirInfo.FullName);
                 }
+
             }
             catch (Exception ex)
             {
@@ -67,8 +69,8 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 File.AppendAllLines(this._tempExceptionLogFile, lines);
 
                 this._taskLogger.LogError(EventIds.AnExceptionHasOccurred,
-                    "An exception has occurred: {exMessage} A diagnostic log has been written to the following location: '{tempExceptionLogFile}'.", 
-                    ex.Message, this._tempExceptionLogFile);
+                    "An exception has occurred: {ex} A diagnostic log has been written to the following location: '{tempExceptionLogFile}'.", 
+                    ex.GetAllMessages(), this._tempExceptionLogFile);
             }
 
             return !this.Log.HasLoggedErrors;
