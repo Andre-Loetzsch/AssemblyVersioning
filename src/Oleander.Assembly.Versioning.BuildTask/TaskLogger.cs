@@ -88,10 +88,6 @@ internal class TaskLogger(VersioningTask task) : ILogger
 
     bool ILogger.IsEnabled(LogLevel logLevel)
     {
-#if DEBUG
-        return true;
-#else
-
         return this.LogFilter switch
         {
             LogLevel.None => false,
@@ -102,8 +98,6 @@ internal class TaskLogger(VersioningTask task) : ILogger
             LogLevel.Critical => logLevel == LogLevel.Critical,
             _ => true
         };
-
-#endif
     }
 
     IDisposable? ILogger.BeginScope<TState>(TState state)

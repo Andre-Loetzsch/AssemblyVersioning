@@ -14,10 +14,10 @@ namespace Multiple.TargetFrameworks.Test
         }
 
 
-        //public int Test3(string text, string text2)
-        //{
-        //    return 0;
-        //}
+        public int Test3(string text, string text2)
+        {
+            return 0;
+        }
 
         //public string? Text { get; set; }
         //private string Text2 { get; set;}

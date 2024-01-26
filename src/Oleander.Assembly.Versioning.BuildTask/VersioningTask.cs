@@ -37,13 +37,13 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 }
                 else
                 {
-                    this._taskLogger.LogWarning(EventIds.InvalidLogLevel, "LogLevel '{logLevel}' is invalid!", this.LogLevel);
+                    this._taskLogger.LogWarning(EventIds.InvalidLogLevel, "--property:versioningTask-logLevel={logLevel} is not a valid LogLevel value!", this.LogLevel);
                 }
             }
 
             if (this.DisableTask)
             {
-                this._taskLogger.LogWarning(EventIds.TaskDisabled, "Task is disabled.");
+                this._taskLogger.LogWarning(EventIds.TaskDisabled, "Oleander.Assembly.Versioning.BuildTask.targets is disabled!  --property:versioningTask-disabled=true");
                 return true;
             }
 

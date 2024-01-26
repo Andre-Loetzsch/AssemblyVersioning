@@ -4,10 +4,13 @@
     <BuildTask_TFM Condition="'$(MSBuildRuntimeType)' == 'Core'">net8.0</BuildTask_TFM>
     <CustomTasksFolder>$(MSBuildThisFileDirectory)..\tasks\$(BuildTask_TFM)</CustomTasksFolder>
     <CustomTasksAssembly>$(CustomTasksFolder)\$(MSBuildThisFileName).dll</CustomTasksAssembly>
-    <VersioningTask_Disabled Condition="'$(versioningTask-disabled)' == ''">false</VersioningTask_Disabled>
     
+    <VersioningTask_Disabled Condition="'$(versioningTask-disabled)' == ''">false</VersioningTask_Disabled>
+    <VersioningTask_Disabled Condition="'$(versioningTask-disabled)' != ''">$(versioningTask-disabled)</VersioningTask_Disabled>
+
     <VersioningTask_LogLevel Condition="'$(versioningTask-logLevel)' != ''">$(versioningTask-logLevel)</VersioningTask_LogLevel>
-    <VersioningTask_LogLevel Condition="'$(versioningTask-logLevel)' == ''">Information</VersioningTask_LogLevel>
+    <VersioningTask_LogLevel Condition="'$(versioningTask-logLevel)' == '' And '$(Configuration)' != 'Debug'" >Information</VersioningTask_LogLevel>
+    <VersioningTask_LogLevel Condition="'$(versioningTask-logLevel)' == '' And '$(Configuration)' == 'Debug'" >Debug</VersioningTask_LogLevel>
   </PropertyGroup>
   <UsingTask TaskName="Oleander.Assembly.Versioning.BuildTask.VersioningTask" AssemblyFile="$(CustomTasksAssembly)"/>
 

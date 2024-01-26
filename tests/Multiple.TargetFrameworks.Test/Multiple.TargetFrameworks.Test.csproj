@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <SourceRevisionId>0d672fbbb3c8c648b5bffa14d869437456abcda5</SourceRevisionId>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <SourceRevisionId>07801f3b577839bc85195d02eac883fa45e00711</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
@@ -12,8 +12,8 @@
     <IsPackable>false</IsPackable>
 
 
-    <versioningTask-disabled>trUe</versioningTask-disabled>
-    <versioningTask-logLevel>Warning</versioningTask-logLevel>
+    <versioningTask-disabled>false</versioningTask-disabled>
+    <versioningTask-logLevel>Debug</versioningTask-logLevel>
 
   </PropertyGroup>
 
@@ -23,9 +23,9 @@
     <!--<RuntimeIdentifier>linux-arm64</RuntimeIdentifier>-->
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.2.1.10-beta" />
-  </ItemGroup>
+  <!--<ItemGroup>
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.2.0.5-beta" />
+  </ItemGroup>-->
 
   
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
