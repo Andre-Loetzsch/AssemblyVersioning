@@ -12,11 +12,13 @@ internal static class EventIds
     public static EventId DebugProjectDirName = new(2, DebugEventName);
     public static EventId DebugProjectFileName = new(3, DebugEventName);
     public static EventId DebugGitRepositoryDirName = new(4, DebugEventName);
+    public static EventId LogLevel = new(5, DebugEventName);
 
     public const string InfoEventName = "INF";
     public static EventId TaskStarted  = new (1, InfoEventName);
     public static EventId CalculatedVersion = new(2, InfoEventName);
     public static EventId TaskCompleted = new (3, InfoEventName);
+
 
     public const string WarningEventName = "WRN";
     public static EventId ProjectDirNotExist = new(1, WarningEventName);
@@ -24,6 +26,8 @@ internal static class EventIds
     public static EventId PropertyProjectDirNameIsNull = new(3, WarningEventName);
     public static EventId PropertyProjectFileNameIsNull = new(4, WarningEventName);
     public static EventId PropertyGitRepositoryDirNameIsNull = new(5, WarningEventName);
+    public static EventId InvalidLogLevel = new(6, WarningEventName);
+    public static EventId TaskDisabled = new(7, WarningEventName);
 
     public const string ErrorEventName = "ERR";
     public static EventId VersioningCacheDirNotExist = new(1, WarningEventName);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Microsoft.Extensions.Logging;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -8,16 +7,18 @@ namespace Oleander.Assembly.Versioning.BuildTask;
 internal class TaskLogger(VersioningTask task) : ILogger
 {
     private readonly List<string> _logs = new List<string>();
+    private readonly List<string> _stackTrace = new List<string>();
 
     void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         var msg = formatter(state, exception);
+        var log = $"{this._logs.Count + 1,3} {DateTime.Now:yyyy.MM.dd HH:mm:ss} - {logLevel,12} - {msg}";
 
-        if (((ILogger)this).IsEnabled(logLevel))
-        {
-            this._logs.Add($"{this._logs.Count + 1,3} {DateTime.Now:yyyy.MM.dd HH:mm:ss} - {logLevel,12} - {msg}");
-        }
-       
+        if (logLevel != LogLevel.Trace) this._stackTrace.Add(log);
+        if (!((ILogger)this).IsEnabled(logLevel)) return;
+
+        this._logs.Add(log);
+
         if (string.IsNullOrEmpty(eventId.Name))
         {
             switch (logLevel)
@@ -68,26 +69,41 @@ internal class TaskLogger(VersioningTask task) : ILogger
         }
     }
 
-    public TaskLoggingHelper Log => task.Log;
-
     public string[] GetLogs()
     {
         var logs = this._logs.ToArray();
         this._logs.Clear();
+        this._stackTrace.Clear();
         return logs;
     }
 
+    public string[] GetStackTrace()
+    {
+        var logs = this._stackTrace.ToArray();
+        this._stackTrace.Clear();
+        return logs;
+    }
+
+    public LogLevel LogFilter { get; set; }
+
     bool ILogger.IsEnabled(LogLevel logLevel)
     {
-        #if DEBUG
+#if DEBUG
         return true;
-        #else
-        return logLevel
-            is LogLevel.Information
-            or LogLevel.Warning
-            or LogLevel.Error
-            or LogLevel.Critical;
-        #endif
+#else
+
+        return this.LogFilter switch
+        {
+            LogLevel.None => false,
+            LogLevel.Debug => logLevel != LogLevel.Trace,
+            LogLevel.Information => logLevel is LogLevel.Information or LogLevel.Warning or LogLevel.Error or LogLevel.Critical,
+            LogLevel.Warning => logLevel is LogLevel.Warning or LogLevel.Error or LogLevel.Critical,
+            LogLevel.Error => logLevel is LogLevel.Error or LogLevel.Critical,
+            LogLevel.Critical => logLevel == LogLevel.Critical,
+            _ => true
+        };
+
+#endif
     }
 
     IDisposable? ILogger.BeginScope<TState>(TState state)
