@@ -30,7 +30,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 {
                     if (result.Any(x => x.Item2.Version == version.Version)) continue;
                     result.Add(new(source, version));
-                    logger.LogInformation("Add package version: '{version}' for package id: {packageId}", version, packageId);
+                    logger.LogDebug("Package version found: '{version}'", version);
                 }
             }
             catch (Exception ex)
@@ -77,7 +77,6 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
 
     private bool UnZipAssemblies(Stream packageStream, string outDir)
     {
-
         using var archive = new ZipArchive(packageStream, ZipArchiveMode.Read, false);
         var filteredZipEntries = archive.Entries
             .Where(x => string.Equals(x.Name, targetName, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -137,6 +136,7 @@ internal class NuGetDownLoader(NuGetLogger logger, string targetName) : IDisposa
                 if (!Directory.Exists(libDir)) Directory.CreateDirectory(libDir);
                 var path = Path.Combine(libDir, zipEntry.Name);
 
+                logger.LogDebug("Move tempFile to target: tempFilename='{tempFilename}', targetPath='{targetPath}' zipEntryName='{zipEntryName}'", tempFilename, path, zipEntry.Name);
                 this.MoveTempFileToTarget(tempFilename, path, zipEntry.Name);
             }
             catch (Exception ex)

@@ -14,6 +14,9 @@ namespace Oleander.Assembly.Versioning.BuildTask
         public string? ProjectFileName { get; set; }
         public string? GitRepositoryDirName { get; set; }
 
+        public bool DisableTask { get; set; }
+        public string? LogLevel { get; set; }
+
         private readonly Versioning _versioning;
         private readonly TaskLogger _taskLogger;
         private readonly string _tempExceptionLogFile = Path.Combine(Path.GetTempPath(), "_versioning.tmp");
@@ -26,8 +29,28 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
         public override bool Execute()
         {
+            if (!string.IsNullOrEmpty(this.LogLevel))
+            {
+                if (Enum.TryParse<LogLevel>(this.LogLevel, true, out var logLevel))
+                {
+                    this._taskLogger.LogFilter = logLevel;
+                }
+                else
+                {
+                    this._taskLogger.LogError(EventIds.InvalidLogLevel, "--property:versioningTask-logLevel={logLevel} is not a valid LogLevel value!", this.LogLevel);
+                    return false;
+                }
+            }
+
+            if (this.DisableTask)
+            {
+                this._taskLogger.LogWarning(EventIds.TaskDisabled, "Oleander.Assembly.Versioning.BuildTask.targets is disabled!  --property:versioningTask-disabled=true");
+                return true;
+            }
+
             try
             {
+
                 if (!this.ValidateProperties()) return false;
 
                 this.InnerExecute();
@@ -62,7 +85,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
                     $"Process: {process.ProcessName} {process.Id}",
                 };
 
-                lines.AddRange(this._taskLogger.GetLogs());
+                lines.AddRange(this._taskLogger.GetStackTrace());
                 lines.Add($"Exception: {ex}");
                 lines.Add($" ");
 

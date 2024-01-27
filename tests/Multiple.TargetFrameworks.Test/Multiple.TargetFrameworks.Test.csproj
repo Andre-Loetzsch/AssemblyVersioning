@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>1.5.0.1</AssemblyVersion>
-    <SourceRevisionId>1e4819022b3d1d8cc136c7e45a8d8c018c424a0d</SourceRevisionId>
+    <AssemblyVersion>2.1.0.1</AssemblyVersion>
+    <SourceRevisionId>0f84f7af546265b64c9e656774b4d67784031aa9</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
@@ -10,6 +10,11 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <VersionSuffix>beta</VersionSuffix>
     <IsPackable>false</IsPackable>
+
+
+    <!--<versioningTask-disabled>true</versioningTask-disabled>
+    <versioningTask-logLevel>Information</versioningTask-logLevel>-->
+
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,6 +22,7 @@
     <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
     <!--<RuntimeIdentifier>linux-arm64</RuntimeIdentifier>-->
   </PropertyGroup>
+
   
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
     <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->

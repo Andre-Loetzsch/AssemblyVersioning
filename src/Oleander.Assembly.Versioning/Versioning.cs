@@ -242,7 +242,16 @@ internal class Versioning(ILogger logger)
         bool APIIgnore(string name)
         {
             var ignore = apiIgnoreList.Contains(name);
-            logger.LogInformation("Ignore: {ignore} -> '{name}'", ignore, name);
+
+            if (ignore)
+            {
+                logger.LogInformation("Ignore: {ignore} -> '{name}'", ignore, name);
+            }
+            else
+            {
+                logger.LogDebug("Ignore: {ignore} -> '{name}'", ignore, name);
+            }
+
             return ignore;
         }
 
@@ -422,7 +431,7 @@ internal class Versioning(ILogger logger)
                 return;
             }
 
-            logger.LogWarning("The NuGet package was downloaded, but the expected file “{refTargetFile}” could not be found!", refTargetFileInfo.FullName);
+            logger.LogWarning("The NuGet package was downloaded, but the expected file '{refTargetFile}' could not be found!", refTargetFileInfo.FullName);
         }
 
         #endregion
