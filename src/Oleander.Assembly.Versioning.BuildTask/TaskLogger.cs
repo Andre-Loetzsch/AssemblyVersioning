@@ -40,29 +40,28 @@ internal class TaskLogger(VersioningTask task) : ILogger
             }
         }
 
-        var code = $"{eventId.Name}{eventId.Id:000}";
+        var code = $"OAVBT{eventId.Id:00}";
         const string file = "Oleander.Assembly.Versioning.BuildTask.dll";
-        const string subcategory = "OAVBT";
 
         switch (logLevel)
         {
             case LogLevel.None:
                 return;
-            case LogLevel.Debug:
-                task.Log.LogMessage(subcategory, code, null, file, 0, 0, 0, 0, MessageImportance.Low, msg);
-                break;
             case LogLevel.Trace:
-                task.Log.LogMessage(subcategory, code, null, file, 0, 0, 0, 0, MessageImportance.Normal, msg);
+                task.Log.LogMessage(eventId.Name, code, null, file, 0, 0, 0, 0, MessageImportance.Low, msg);
+                break;
+            case LogLevel.Debug:
+                task.Log.LogMessage(eventId.Name, code, null, file, 0, 0, 0, 0, MessageImportance.Normal, msg);
                 break;
             case LogLevel.Information:
-                task.Log.LogMessage(subcategory, code, null, file, 0, 0, 0, 0, MessageImportance.High, msg);
+                task.Log.LogMessage(eventId.Name, code, null, file, 0, 0, 0, 0, MessageImportance.High, msg);
                 break;
             case LogLevel.Warning:
-                task.Log.LogWarning(subcategory, code, null, file, 0, 0, 0, 0, msg);
+                task.Log.LogWarning(eventId.Name, code, null, file, 0, 0, 0, 0, msg);
                 break;
             case LogLevel.Critical:
             case LogLevel.Error:
-                task.Log.LogError(subcategory, code, null, file, 0, 0, 0, 0, msg);
+                task.Log.LogError(eventId.Name, code, null, file, 0, 0, 0, 0, msg);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
