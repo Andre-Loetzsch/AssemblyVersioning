@@ -408,6 +408,11 @@ internal class Versioning(ILogger logger)
 
         if (refTargetFileInfo.Exists) return;
 
+        if (refTargetFileInfo.FullName.Length >= 260)
+        {
+            logger.LogWarning("File name '{refTargetFile}' exceeds 260 characters! MSBuild does not support paths larger than 260 characters.", refTargetFileInfo.FullName);
+        }
+
         if (cacheBaseDirInfo.CreateDirectoryIfNotExist())
         {
             logger.LogInformation("Directory '{cacheBaseDir}' created.", cacheBaseDirInfo.FullName);
@@ -448,7 +453,7 @@ internal class Versioning(ILogger logger)
 
         if (refTargetFileInfo.CreateDirectoryIfNotExist())
         {
-            logger.LogInformation("Directory '{refTargetDir}' created.", refTargetFileInfo.DirectoryName);
+            logger.LogInformation("Directory '{refTargetDir}' was created.", refTargetFileInfo.DirectoryName);
         }
 
         var projectRefFileInfo = this.FileSystem.ProjectRefFileInfo;

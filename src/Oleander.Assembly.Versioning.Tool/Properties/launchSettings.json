@@ -8,6 +8,10 @@
       "commandName": "Project",
       "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Versioning\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.dll\""
     },
+    "Tool update D316IT012 Oleander.Assembly.Comparers": {
+      "commandName": "Project",
+      "commandLineArgs": "update -t \"D:\\dev\\git\\oleander\\AssemblyVersioning\\src\\Oleander.Assembly.Comparers\\bin\\Debug\\net8.0\\Oleander.Assembly.Comparers.dll\""
+    },
     "Tool update L316IT012 Tentakel.Database": {
       "commandName": "Project",
       "commandLineArgs": "update -t \"C:\\dev\\git\\tentakelDev\\Tentakel.DataAccess\\src\\Tentakel.Database\\bin\\Debug\\net48\\Tentakel.Database.dll\""

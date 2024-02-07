@@ -178,7 +178,7 @@ internal class FileSystem(ILogger logger)
 
     #region CacheBaseDirInfo
 
-    public DirectoryInfo CacheBaseDirInfo => CreateDirectoryInfo(this.VersioningDirInfo, "cache", this.GitHash);
+    public DirectoryInfo CacheBaseDirInfo => CreateDirectoryInfo(this.VersioningDirInfo, "cache", this.GitHash.Length > 8 ? this.GitHash.Substring(0, 8) : this.GitHash);
 
     #endregion
 
