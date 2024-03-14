@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Oleander.Assembly.Comparers;
+using Oleander.Assembly.Versioning.Tool.OutputFormats;
 
 namespace Oleander.Assembly.Versioning.Tool;
 
 internal class CompareAssembliesTool(ILogger<CompareAssembliesTool> logger)
 {
-    public int CompareAssemblies(FileInfo target1, FileInfo target2)
+    public int CompareAssemblies(FileInfo target1, FileInfo target2, IOutputFormat outputFormat)
     {
         if (!target1.Exists) return -1;
         if (!target2.Exists) return -2;
@@ -14,9 +15,10 @@ internal class CompareAssembliesTool(ILogger<CompareAssembliesTool> logger)
 
         logger.LogInformation("recommended version change: {versionChange}", assemblyComparison.VersionChange);
 
-        var xml = assemblyComparison.ToXml();
+        var output = outputFormat.Format(assemblyComparison);
+        logger.LogInformation("Result: {output}", output);
 
-        if (xml != null) logger.LogInformation("{xml}", xml);
+        if (!string.IsNullOrEmpty(output)) Console.WriteLine(output);
 
         return 0;
     }
