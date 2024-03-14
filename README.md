@@ -43,4 +43,3 @@ Microsoft.Build.Utilities.Task: Adds a target to MSBuild. To calculate the versi
 A dotnet tool for comparing dotnet assemblies and updating your project version.
 
 dotnet tool install --global dotnet-oleander-versioning-tool
-
