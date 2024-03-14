@@ -10,6 +10,4 @@ internal class TargetFileOption : Option<FileInfo>
         this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.dll"));
         this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.exe"));
     }
-
-    
 }

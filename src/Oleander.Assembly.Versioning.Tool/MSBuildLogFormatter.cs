@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Oleander.Assembly.Versioning.Tool;
 
-public static class MSBuildLogFormatter
+internal static class MSBuildLogFormatter
 {
     private const string messageFormat = "{origin}({line},{column}) : {subCategory} {category} {code} : {text}";
 
