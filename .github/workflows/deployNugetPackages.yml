@@ -34,7 +34,7 @@ jobs:
        run: echo "VERSION_SUFFIX=dev" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: string.Empty'
-       if: ${{ startsWith(github.ref_name, 'release/v') }}
+       if: ${{ startsWith(github.ref_name, 'release/') }}
        shell: bash
        run: echo "VERSION_SUFFIX=" >> $GITHUB_ENV
 
