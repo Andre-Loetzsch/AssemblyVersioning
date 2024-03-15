@@ -52,7 +52,7 @@ jobs:
        uses: actions/checkout@v4
      
      - name: 'Install dotnet'
-       uses: actions/setup-dotnet@v3
+       uses: actions/setup-dotnet@v4
        with:
          dotnet-version: '8.0.x'
 
@@ -74,7 +74,7 @@ jobs:
 
      - name: 'delete Oleander.Assembly.Versioning.Tool-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
-       uses: actions/delete-package-versions@v4
+       uses: actions/delete-package-versions@v5
        with:
          package-name: 'Oleander.Assembly.Versioning.Tool'
          package-type: 'nuget'
@@ -83,7 +83,7 @@ jobs:
 
      - name: 'delete Oleander.Assembly.Versioning.BuildTask-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
-       uses: actions/delete-package-versions@v4
+       uses: actions/delete-package-versions@v5
        with:
          package-name: 'Oleander.Assembly.Versioning.BuildTask'
          package-type: 'nuget'
@@ -93,7 +93,7 @@ jobs:
 
      - name: 'delete Oleander.Assembly.Versioning-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
-       uses: actions/delete-package-versions@v4
+       uses: actions/delete-package-versions@v5
        with:
          package-name: 'Oleander.Assembly.Versioning'
          package-type: 'nuget'
@@ -103,7 +103,7 @@ jobs:
 
      - name: 'delete Oleander.Assembly.Comparator-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
-       uses: actions/delete-package-versions@v4
+       uses: actions/delete-package-versions@v5
        with:
          package-name: 'Oleander.Assembly.Comparator'
          package-type: 'nuget'
@@ -113,7 +113,7 @@ jobs:
 
      - name: 'delete Oleander.Assembly.Comparers-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
-       uses: actions/delete-package-versions@v4
+       uses: actions/delete-package-versions@v5
        with:
          package-name: 'Oleander.Assembly.Comparers'
          package-type: 'nuget'
