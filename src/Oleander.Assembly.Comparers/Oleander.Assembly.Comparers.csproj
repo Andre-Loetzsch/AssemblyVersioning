@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common\targets\common.targets" />
-
   <PropertyGroup>
-    <AssemblyVersion>0.3.1.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <SourceRevisionId>ee180bd7178fc4b833e52a5dc57ac26a9b8952cd</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
@@ -11,6 +9,8 @@
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
   </PropertyGroup>
+
+  <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
     <Nullable>disable</Nullable>

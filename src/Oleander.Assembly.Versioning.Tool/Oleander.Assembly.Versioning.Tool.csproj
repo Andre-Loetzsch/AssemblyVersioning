@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common\targets\common.targets" />
-
   <PropertyGroup>
     <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <SourceRevisionId>96387170ff28194f4354b9fc18715bc0dceacc28</SourceRevisionId>
@@ -11,6 +9,8 @@
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
+
+  <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
