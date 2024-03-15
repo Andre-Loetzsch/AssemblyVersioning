@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <SourceRevisionId>1fa6ea098fbd09d1d4c0655c53fa0e19f9b657a8</SourceRevisionId>
-    <VersionSuffix>beta</VersionSuffix>
+    <SourceRevisionId>d03bdaf00234652880e771742472a43efaed2b7c</SourceRevisionId>
+    <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
