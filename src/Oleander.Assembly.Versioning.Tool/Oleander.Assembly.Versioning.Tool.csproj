@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common\targets\common.targets" />
-
   <PropertyGroup>
     <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <SourceRevisionId>96387170ff28194f4354b9fc18715bc0dceacc28</SourceRevisionId>
+    <SourceRevisionId>d03bdaf00234652880e771742472a43efaed2b7c</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
+
+  <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -20,7 +20,6 @@
     <PackageId>dotnet-oleander-versioning-tool</PackageId>
     <Description>A dotnet tool for comparing dotnet assemblies and updating your project version.</Description>
   </PropertyGroup>
-
  
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />

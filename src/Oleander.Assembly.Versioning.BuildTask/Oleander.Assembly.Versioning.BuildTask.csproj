@@ -1,15 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common\targets\common.targets" />
-
   <PropertyGroup>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>0f84f7af546265b64c9e656774b4d67784031aa9</SourceRevisionId>
-    <VersionSuffix>beta</VersionSuffix>
+    <SourceRevisionId>d03bdaf00234652880e771742472a43efaed2b7c</SourceRevisionId>
+    <VersionSuffix></VersionSuffix>
     <Title>Assembly versioning task</Title>
     <Description>Compares two assemblies and calculates the current version</Description>
     <PackageTags>Oleander; C#; MSBuild Task</PackageTags>
@@ -17,6 +15,8 @@
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
+
+  <Import Project="..\..\Common\targets\common.targets" />
 
   <PropertyGroup>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>

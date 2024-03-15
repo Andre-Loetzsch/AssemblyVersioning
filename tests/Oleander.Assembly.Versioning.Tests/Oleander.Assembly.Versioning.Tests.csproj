@@ -1,29 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.3.0.1</AssemblyVersion>
-    <SourceRevisionId>0f84f7af546265b64c9e656774b4d67784031aa9</SourceRevisionId>
-    <VersionSuffix>beta</VersionSuffix>
+    <SourceRevisionId>d03bdaf00234652880e771742472a43efaed2b7c</SourceRevisionId>
+    <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
     <IsPublishable>False</IsPublishable>
     <IsPackable>false</IsPackable>
-
   </PropertyGroup>
-
-
 
   <ItemGroup>
     <Compile Remove="Simulations\**" />
     <EmbeddedResource Remove="Simulations\**" />
     <None Remove="Simulations\**" />
   </ItemGroup>
-  
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
