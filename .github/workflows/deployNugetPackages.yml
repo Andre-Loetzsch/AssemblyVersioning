@@ -34,7 +34,7 @@ jobs:
        run: echo "VERSION_SUFFIX=dev" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: string.Empty'
-       if: ${{ startsWith(github.ref_name, 'release/v') }}
+       if: ${{ startsWith(github.ref_name, 'release/') }}
        shell: bash
        run: echo "VERSION_SUFFIX=" >> $GITHUB_ENV
 
@@ -68,9 +68,6 @@ jobs:
          version-suffix: ${{ env.VERSION_SUFFIX }}
          packoutdir: ${{ env.PACKOUTDIR }}
          github_token: ${{ secrets.GITHUB_TOKEN }}
-   
-
-
 
      - name: 'delete Oleander.Assembly.Versioning.Tool-dev old packages'
        if: env.VERSION_SUFFIX == 'dev'
