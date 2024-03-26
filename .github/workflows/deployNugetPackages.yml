@@ -12,7 +12,6 @@ on:
 
 env:
   VERSION_SUFFIX: dev
-  HEADREF: ${{ github.head_ref }}
   PACKOUTDIR: ${{ github.workspace }}\packoutput
                     
 jobs:
@@ -21,21 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-latest ]
+        os: [ windows-latest, ubuntu-latest ]
     steps:
-     - name: 'echo VERSION_SUFFIX'
-       shell: bash
-       run: echo ${{ env.VERSION_SUFFIX }}
-
-     - name: 'echo HEADREF '
-       shell: bash
-       run: echo ${{ env.HEADREF }}
-
-     - name: 'echo github.ref_name'
-       if: github.ref_name == 'main'
-       shell: bash
-       run: echo ${{ github.ref_name }}
-
      - name: 'Set VERSION_SUFFIX: string.Empty'
        if: ${{ startsWith(github.head_ref, 'release/') }}
        shell: bash
