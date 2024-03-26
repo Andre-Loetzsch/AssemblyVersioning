@@ -33,7 +33,7 @@ jobs:
        run: echo ${{ env.HEADREF }}
 
      - name: 'echo github.ref_name'
-       if: ${{ github.ref_name }} == 'main'
+       if: ${{ github.ref_name }} == 'mainX'
        shell: bash
        run: echo ${{ github.ref_name }}
 
