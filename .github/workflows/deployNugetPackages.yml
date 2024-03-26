@@ -34,27 +34,26 @@ jobs:
        run: echo ${{ env.HEADREF }}
 
      - name: 'echo github.ref_name'
-       if: ${{ github.ref_name }} == 'mainX'
+       if: github.ref_name == 'main'
        shell: bash
        run: echo ${{ github.ref_name }}
 
-     - name: 'Set VERSION_SUFFIX: dev'
-       if: ${{ github.ref_name }} == 'main'
+     - name: 'Init VERSION_SUFFIX: dev'
        shell: bash
        run: echo "VERSION_SUFFIX=dev" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: string.Empty'
-       if: ${{ startsWith(github.ref_name, 'release/') }}
+       if: ${{ startsWith(github.head_ref, 'release/') }}
        shell: bash
        run: echo "VERSION_SUFFIX=" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: alpha'
-       if: ${{ startsWith(github.ref_name, 'release/alpha') }}
+       if: ${{ startsWith(github.head_ref, 'release/alpha') }}
        shell: bash
        run: echo "VERSION_SUFFIX=alpha" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: beta'
-       if: ${{ startsWith(github.ref_name, 'release/beta') }}
+       if: ${{ startsWith(github.head_ref, 'release/beta') }}
        shell: bash
        run:  echo "VERSION_SUFFIX=beta" >> $GITHUB_ENV
 
