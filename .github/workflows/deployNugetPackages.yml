@@ -4,16 +4,14 @@ on:
   push:
     branches:
     - main
-    - 'release/**'
   pull_request:
    branches:
     - main
-    - 'release/**'
 
   workflow_dispatch:
 
 env:
-  VERSION_SUFFIX: ${{ github.ref_name }}
+  VERSION_SUFFIX: dev
   HEADREF: ${{ github.head_ref }}
   PACKOUTDIR: ${{ github.workspace }}\packoutput
                     
@@ -37,10 +35,6 @@ jobs:
        if: github.ref_name == 'main'
        shell: bash
        run: echo ${{ github.ref_name }}
-
-     - name: 'Init VERSION_SUFFIX: dev'
-       shell: bash
-       run: echo "VERSION_SUFFIX=dev" >> $GITHUB_ENV
 
      - name: 'Set VERSION_SUFFIX: string.Empty'
        if: ${{ startsWith(github.head_ref, 'release/') }}
