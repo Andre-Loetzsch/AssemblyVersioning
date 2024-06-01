@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>1.0.4.0</AssemblyVersion>
-    <SourceRevisionId>78d4469475b3b8727cfe833518bfc9b91c2497d7</SourceRevisionId>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <SourceRevisionId>3f9bc9c403dbb3155a21119cd8ad3d28d09ea69a</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="17.10.4" NoWarn="NU1701" />
+    <PackageReference Include="Microsoft.Build" Version="17.9.5" NoWarn="NU1701" />
     <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.0" />
-    <PackageReference Include="NuGet.Frameworks" Version="6.10.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.10.0" />
+    <PackageReference Include="NuGet.Frameworks" Version="6.9.1" />
+    <PackageReference Include="NuGet.Protocol" Version="6.9.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
   </ItemGroup>
 

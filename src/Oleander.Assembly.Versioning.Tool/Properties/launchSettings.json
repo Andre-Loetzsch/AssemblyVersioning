@@ -38,7 +38,7 @@
     },
     "Tool compare L316IT012 Test": {
       "commandName": "Project",
-      "commandLineArgs": "update -t \"C:\\dev\\git\\tentakelDev\\Tentakel.Wpf\\src\\Tentakel.Wpf.HierarchicalPropertyViewer\\bin\\Debug\\net48\\Tentakel.Wpf.HierarchicalPropertyViewer.dll\""
+      "commandLineArgs": "update -t \"C:\\dev\\git\\oleander\\AssemblyVersioning\\tests\\Oleander.Assembly.Versioning.Tests\\bin\\Debug\\net8.0\\Oleander.Assembly.Versioning.Tests.dll\""
     }
   }
 }

@@ -13,8 +13,8 @@ internal class AssemblyFrameworkInfo
         if (assemblyDefinition == null) return;
 
         this.CouldResolved = true;
-        this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue ?? "unknown";
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
