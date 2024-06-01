@@ -14,10 +14,11 @@ internal class AssemblyFrameworkInfo
 
         this.CouldResolved = true;
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
+      
         this.FrameworkName = new FrameworkName(this.TargetFramework);
         this.NuGetFramework = NuGetFramework.ParseFrameworkName(this.FrameworkName.FullName, new DefaultFrameworkNameProvider());
         this.FrameworkShortFolderName = this.NuGetFramework.GetShortFolderName();
@@ -27,9 +28,9 @@ internal class AssemblyFrameworkInfo
 
     public Version? Version { get; } 
 
-    public string? TargetFramework { get; } 
+    public string? TargetFramework { get; }
 
-    public string? TargetPlatform { get; }
+    public string TargetPlatform { get; } = "any";
 
     public FrameworkName? FrameworkName { get; }
     

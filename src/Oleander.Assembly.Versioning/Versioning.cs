@@ -612,8 +612,7 @@ internal class Versioning(ILogger logger)
         if (this.TryGetAssemblyFrameworkInfo(this.FileSystem.TargetFileInfo, out var assemblyFrameworkInfo))
         {
             this.FileSystem.TargetFramework = assemblyFrameworkInfo.FrameworkShortFolderName ?? string.Empty;
-            this.FileSystem.TargetPlatform = assemblyFrameworkInfo.TargetPlatform ?? string.Empty;
-
+            this.FileSystem.TargetPlatform = assemblyFrameworkInfo.TargetPlatform;
             return true;
         }
 
