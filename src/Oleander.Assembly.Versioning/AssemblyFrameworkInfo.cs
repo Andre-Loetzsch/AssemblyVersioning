@@ -18,6 +18,7 @@ internal class AssemblyFrameworkInfo
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
+      
         this.FrameworkName = new FrameworkName(this.TargetFramework);
         this.NuGetFramework = NuGetFramework.ParseFrameworkName(this.FrameworkName.FullName, new DefaultFrameworkNameProvider());
         this.FrameworkShortFolderName = this.NuGetFramework.GetShortFolderName();
