@@ -14,7 +14,7 @@ internal class AssemblyFrameworkInfo
 
         this.CouldResolved = true;
         this.TargetFramework = assemblyDefinition.TargetFrameworkAttributeValue;
-        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue;
+        this.TargetPlatform = assemblyDefinition.TargetPlatformAttributeValue ?? "any";
         this.Version = assemblyDefinition.Name.Version;
 
         if (this.TargetFramework == null) return;
@@ -27,9 +27,9 @@ internal class AssemblyFrameworkInfo
 
     public Version? Version { get; } 
 
-    public string? TargetFramework { get; } 
+    public string? TargetFramework { get; }
 
-    public string? TargetPlatform { get; }
+    public string TargetPlatform { get; } = "any";
 
     public FrameworkName? FrameworkName { get; }
     

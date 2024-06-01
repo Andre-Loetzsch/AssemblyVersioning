@@ -19,6 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multiple.TargetFrameworks.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oleander.Assembly.Comparers", "src\Oleander.Assembly.Comparers\Oleander.Assembly.Comparers.csproj", "{5C505743-DDC9-4A25-BD81-31F8BA66C9D1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{89ECA928-0EF1-462E-BED1-A1666C4AC2BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{F0C64D70-161D-432D-9494-4F09CBD35764}"
+	ProjectSection(SolutionItems) = preProject
+		Common\targets\common.targets = Common\targets\common.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +67,7 @@ Global
 		{E5178C9F-FDAB-4FC5-8757-CC354A8B72DD} = {ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}
 		{91D30EC1-4BB5-4946-8B3D-5F249BE8549F} = {B54A414D-0042-4945-A9B2-D4BA5FD8F13F}
 		{5C505743-DDC9-4A25-BD81-31F8BA66C9D1} = {ECFCB198-E60A-40B1-B605-0EBD7EA2F3DD}
+		{F0C64D70-161D-432D-9494-4F09CBD35764} = {89ECA928-0EF1-462E-BED1-A1666C4AC2BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB4D5221-7F56-45A4-8A1D-EFD2283D5679}

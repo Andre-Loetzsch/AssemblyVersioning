@@ -6,7 +6,7 @@ namespace Oleander.Assembly.Versioning.Tests;
 public class NuGetTests
 {
     [Fact]
-    public async void TestDownload()
+    public async Task TestDownload()
     {
         var packageId = "Oleander.Assembly.Versioning.Tool";//"Newtonsoft.Json";
         var outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "packages");
