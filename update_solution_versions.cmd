@@ -6,3 +6,7 @@
 "%~dp0\src\Oleander.Assembly.Versioning.Tool\bin\Debug\net8.0\Oleander.Assembly.Versioning.Tool.exe" update -t "%~dp0\src\Oleander.Assembly.Versioning.BuildTask\bin\Debug\net8.0\Oleander.Assembly.Versioning.BuildTask.dll" 
 "%~dp0\src\Oleander.Assembly.Versioning.Tool\bin\Debug\net8.0\Oleander.Assembly.Versioning.Tool.exe" update -t "%~dp0\src\Oleander.Assembly.Versioning.Tool\bin\Debug\net8.0\Oleander.Assembly.Versioning.Tool.dll" 
 "%~dp0\src\Oleander.Assembly.Versioning.Tool\bin\Debug\net8.0\Oleander.Assembly.Versioning.Tool.exe" update -t "%~dp0\tests\Oleander.Assembly.Versioning.Tests\bin\Debug\net8.0\Oleander.Assembly.Versioning.Tests.dll"
+
+
+
+pause
