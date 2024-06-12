@@ -4,7 +4,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Product>$(AssemblyName)</Product>
-    <Description>$(AssemblyName)</Description><LangVersion>latest</LangVersion>
+    <Description>$(AssemblyName)</Description>
+    <LangVersion>latest</LangVersion>
     <Copyright>Copyright © Oleander $([System.DateTime]::UtcNow.Year)</Copyright>
     <Company>Oleander</Company>
     <Product>$(AssemblyName)</Product>
