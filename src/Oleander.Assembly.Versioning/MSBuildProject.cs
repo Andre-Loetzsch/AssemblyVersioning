@@ -108,7 +108,7 @@ internal class MSBuildProject
 
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyVersion", assemblyVersion);
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyFileVersion", assemblyVersion);
-            this.TrySetAssemblyInfoFileAttributeValue("AssemblyInformationalVersion", assemblyInformationalVersion);
+            //this.TrySetAssemblyInfoFileAttributeValue("AssemblyInformationalVersion", assemblyInformationalVersion);
 
             if (!this._assemblyInfoFileChanged) return;
             File.WriteAllLines(this.AssemblyInfoPath, this._assemblyInfoContent);
@@ -169,7 +169,7 @@ internal class MSBuildProject
 
         var newValue = $"[assembly: {attribute}(\"{value}\")]";
 
-        this._assemblyInfoFileChanged = this._assemblyInfoContent[lineIdx] != newValue;
+        this._assemblyInfoFileChanged = this._assemblyInfoFileChanged || this._assemblyInfoContent[lineIdx] != newValue;
         this._assemblyInfoContent[lineIdx] = newValue;
         return true;
     }
