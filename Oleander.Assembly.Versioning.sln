@@ -26,6 +26,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{F0C6
 		Common\targets\common.targets = Common\targets\common.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8DBEDD2B-D52D-4E6E-82A4-8C45BE51A559}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\deployNugetPackages.yml = .github\workflows\deployNugetPackages.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

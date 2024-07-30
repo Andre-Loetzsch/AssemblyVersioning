@@ -119,7 +119,6 @@ internal class MSBuildProject
 
         this.CreateFileVersionIfNotExist();
         this.CreateVersionIfNotExist();
-        this.CreateInformationalVersionIfNotExist();
 
         if (!this._projectFileChanged) return;
         this._projectRootElement.Save();
@@ -235,24 +234,6 @@ internal class MSBuildProject
         }
 
         this._projectRootElement.AddProperty("FileVersion", "$(AssemblyVersion)");
-    }
-
-    private void CreateInformationalVersionIfNotExist()
-    {
-        var property = this._projectRootElement.Properties.FirstOrDefault(x => x.Name == "InformationalVersion");
-        if (property != null) return;
-
-        this._projectFileChanged = true;
-
-        var propertyGroup = this._projectRootElement.PropertyGroups.FirstOrDefault(x => x.Properties.Any(y => y.Name == "AssemblyVersion"));
-
-        if (propertyGroup != null)
-        {
-            propertyGroup.AddProperty("InformationalVersion", "$(AssemblyVersion)");
-            return;
-        }
-
-        this._projectRootElement.AddProperty("InformationalVersion", "$(AssemblyVersion)");
     }
 
     private void CreateVersionIfNotExist()
