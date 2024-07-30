@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyVersion>1.0.1.6</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
-    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <SourceRevisionId>78d4469475b3b8727cfe833518bfc9b91c2497d7</SourceRevisionId>
@@ -16,7 +15,7 @@
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
 
-  <Import Project="..\..\Common\targets\common.targets" />
+  <Import Project="..\..\common\targets\common.targets" />
 
   <PropertyGroup>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>

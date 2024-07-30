@@ -6,7 +6,6 @@
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
-    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <VersionSuffix></VersionSuffix>
     <IsPackable>false</IsPackable>

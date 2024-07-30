@@ -5,12 +5,11 @@
     <SourceRevisionId>78d4469475b3b8727cfe833518bfc9b91c2497d7</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
-    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
   </PropertyGroup>
 
-  <Import Project="..\..\Common\targets\common.targets" />
+  <Import Project="..\..\common\targets\common.targets" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>

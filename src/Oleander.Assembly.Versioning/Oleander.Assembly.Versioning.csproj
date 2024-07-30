@@ -5,26 +5,25 @@
     <SourceRevisionId>8b5c3950d214ce100cbf68ebab215a458701b7a4</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
-    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
   </PropertyGroup>
 
-  <Import Project="..\..\Common\targets\common.targets" />
+  <Import Project="..\..\common\targets\common.targets" />
 
   <PropertyGroup>
     <Description>Calculate the next version of an assembly</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Common\src\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
+    <Compile Include="..\..\common\src\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" Version="17.10.4" NoWarn="NU1701" />
-    <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.0" />
-    <PackageReference Include="NuGet.Frameworks" Version="6.10.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.10.0" />
+    <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.0.1" />
+    <PackageReference Include="NuGet.Frameworks" Version="6.10.1" />
+    <PackageReference Include="NuGet.Protocol" Version="6.10.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
