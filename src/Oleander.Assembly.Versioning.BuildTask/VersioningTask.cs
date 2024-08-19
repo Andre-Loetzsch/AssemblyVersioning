@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
+using Oleander.Assembly.Comparers;
 using Oleander.Assembly.Versioning.Extensionss;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
 
@@ -20,7 +21,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
         private readonly Versioning _versioning;
         private readonly TaskLogger _taskLogger;
         private readonly string _tempExceptionLogFile = Path.Combine(Path.GetTempPath(), "_versioning.tmp");
-        
+
         public VersioningTask()
         {
             this._taskLogger = new TaskLogger(this);
@@ -92,7 +93,7 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 File.AppendAllLines(this._tempExceptionLogFile, lines);
 
                 this._taskLogger.LogError(EventIds.AnExceptionHasOccurred,
-                    "An exception has occurred: {ex} A diagnostic log has been written to the following location: '{tempExceptionLogFile}'.", 
+                    "An exception has occurred: {ex} A diagnostic log has been written to the following location: '{tempExceptionLogFile}'.",
                     ex.GetAllMessages(), this._tempExceptionLogFile);
             }
 
@@ -112,9 +113,9 @@ namespace Oleander.Assembly.Versioning.BuildTask
                 "Task started at {time}: Version={version}, process name={processName}, process id={processId}.",
                 DateTime.Now.ToString("HH:mm:ss"), assemblyName.Version, process.ProcessName, process.Id);
 
-            this._taskLogger.LogDebug(EventIds.DebugTargetFileName,       "TargetFileName:       {targetFileName}", this.TargetFileName);
-            this._taskLogger.LogDebug(EventIds.DebugProjectDirName,       "ProjectDirName:       {projectDirName}", this.ProjectDirName);
-            this._taskLogger.LogDebug(EventIds.DebugProjectFileName,      "ProjectFileName:      {projectFileName}", this.ProjectFileName);
+            this._taskLogger.LogDebug(EventIds.DebugTargetFileName, "TargetFileName:       {targetFileName}", this.TargetFileName);
+            this._taskLogger.LogDebug(EventIds.DebugProjectDirName, "ProjectDirName:       {projectDirName}", this.ProjectDirName);
+            this._taskLogger.LogDebug(EventIds.DebugProjectFileName, "ProjectFileName:      {projectFileName}", this.ProjectFileName);
             this._taskLogger.LogDebug(EventIds.DebugGitRepositoryDirName, "GitRepositoryDirName: {gitRepositoryDirName}", this.GitRepositoryDirName);
 
             this.TargetFileName ??= string.Empty;
@@ -144,14 +145,20 @@ namespace Oleander.Assembly.Versioning.BuildTask
 
             if (result.ExternalProcessResult != null && result.ExternalProcessResult.ExitCode != 0)
             {
-                this._taskLogger.LogError(EventIds.ExternalProcessFailed, "External process failed with exit code {exitCode}! {externalResult}", 
+                this._taskLogger.LogError(EventIds.ExternalProcessFailed, "External process failed with exit code {exitCode}! {externalResult}",
                     result.ExternalProcessResult.ExitCode, result.ExternalProcessResult);
 
                 return;
             }
 
             this._taskLogger.LogInformation(EventIds.CalculatedVersion, "CalculatedVersion: {calculatedVersion}", result.CalculatedVersion);
-            this._taskLogger.LogInformation(EventIds.TaskCompleted, "Task completed at {time} and took {seconds} seconds.", 
+
+            if (result.VersionChange == VersionChange.Major)
+            {
+                this._taskLogger.LogWarning(EventIds.CalculatedBreakingChangesVersion, "The calculated version is a 'breaking change' version!");
+            }
+
+            this._taskLogger.LogInformation(EventIds.TaskCompleted, "Task completed at {time} and took {seconds} seconds.",
                 now.ToString("HH:mm:ss"), (DateTime.Now - now).TotalSeconds.ToString("F"));
         }
 

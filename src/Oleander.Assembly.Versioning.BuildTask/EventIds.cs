@@ -26,6 +26,7 @@ internal static class EventIds
     public static EventId PropertyProjectFileNameIsNull = new(44, WarningEventName);
     public static EventId PropertyGitRepositoryDirNameIsNull = new(45, WarningEventName);
     public static EventId TaskDisabled = new(46, WarningEventName);
+    public static EventId CalculatedBreakingChangesVersion = new (47, WarningEventName);
 
     public const string ErrorEventName = "ERR";
     public static EventId VersioningCacheDirNotExist = new(51, ErrorEventName);
