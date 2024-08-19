@@ -209,7 +209,6 @@ internal class Versioning(ILogger logger)
 
         var updateResult = new VersioningResult();
 
-
         #endregion
 
         #region TryGetGitChanges
@@ -255,10 +254,10 @@ internal class Versioning(ILogger logger)
             return ignore;
         }
 
-
         var comparison = new AssemblyComparison(refTargetFileInfo, targetFileInfo, true, APIIgnore);
         var versionChange = comparison.VersionChange;
-
+        
+        updateResult.VersionChange = versionChange;
         logger.LogInformation("Assembly comparison result is: {versionChange}", versionChange);
 
         var xml = comparison.ToXml() ?? "Xml is (null)";
