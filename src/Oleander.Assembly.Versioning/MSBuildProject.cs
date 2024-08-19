@@ -104,13 +104,9 @@ internal class MSBuildProject
         if (this.UseAssemblyInfoFile)
         {
             var assemblyVersion = this.AssemblyVersion;
-            var assemblyInformationalVersion = string.IsNullOrEmpty(this.VersionSuffix) ?
-                $"{assemblyVersion}+{this.SourceRevisionId}" :
-                $"{assemblyVersion}+{this.VersionSuffix}+{this.SourceRevisionId}";
-
+           
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyVersion", assemblyVersion);
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyFileVersion", assemblyVersion);
-            //this.TrySetAssemblyInfoFileAttributeValue("AssemblyInformationalVersion", assemblyInformationalVersion);
 
             if (!this._assemblyInfoFileChanged) return;
             File.WriteAllLines(this.AssemblyInfoPath, this._assemblyInfoContent);
