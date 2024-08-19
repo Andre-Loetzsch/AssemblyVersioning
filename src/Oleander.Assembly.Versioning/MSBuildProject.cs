@@ -72,19 +72,21 @@ internal class MSBuildProject
     {
         get
         {
-            var value = this.GetAttributeValue("PackageId");
-            if (!string.IsNullOrEmpty(value)) return value;
+            var packageId = this.GetAttributeValue("PackageId") ?? string.Empty;
+            var mSBuildProjectName = this.GetAttributeValue("MSBuildProjectName") ?? Path.GetFileNameWithoutExtension(this.ProjectFileName);
 
-            value = this.GetAttributeValue("AssemblyName");
-            if (!string.IsNullOrEmpty(value)) return value;
+            packageId = packageId.Replace("$(MSBuildProjectName)", mSBuildProjectName);
+            if (!string.IsNullOrEmpty(packageId)) return packageId;
 
-            value = this.GetAttributeValue("MSBuildProjectName");
-            if (!string.IsNullOrEmpty(value)) return value;
+            var assemblyName = this.GetAttributeValue("AssemblyName") ?? string.Empty;
+            assemblyName = assemblyName.Replace("$(MSBuildProjectName)", mSBuildProjectName);
+
+            if (!string.IsNullOrEmpty(assemblyName)) return assemblyName;
+            if (!string.IsNullOrEmpty(mSBuildProjectName)) return mSBuildProjectName;
 
             return Path.GetFileNameWithoutExtension(this.ProjectFileName);
         }
     }
-    
 
     public string? PackageSource => this.GetAttributeValue("PackageSource");
 
@@ -102,13 +104,9 @@ internal class MSBuildProject
         if (this.UseAssemblyInfoFile)
         {
             var assemblyVersion = this.AssemblyVersion;
-            var assemblyInformationalVersion = string.IsNullOrEmpty(this.VersionSuffix) ?
-                $"{assemblyVersion}+{this.SourceRevisionId}" :
-                $"{assemblyVersion}+{this.VersionSuffix}+{this.SourceRevisionId}";
-
+           
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyVersion", assemblyVersion);
             this.TrySetAssemblyInfoFileAttributeValue("AssemblyFileVersion", assemblyVersion);
-            //this.TrySetAssemblyInfoFileAttributeValue("AssemblyInformationalVersion", assemblyInformationalVersion);
 
             if (!this._assemblyInfoFileChanged) return;
             File.WriteAllLines(this.AssemblyInfoPath, this._assemblyInfoContent);
