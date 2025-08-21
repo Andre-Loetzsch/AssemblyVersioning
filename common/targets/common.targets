@@ -17,7 +17,8 @@
     <RepositoryUrl>https://github.com/Andre-Loetzsch/AssemblyVersioning</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Oleander; Assembly; Versioning; C#</PackageTags>
-    <PackageReleaseNotes>$(AssemblyName) Version:$(Version) Release:$([System.DateTime]::UtcNow.ToString('yyMMdd'))</PackageReleaseNotes>
+    <!--<PackageReleaseNotes>$(AssemblyName) Version:$(Version) Release:$([System.DateTime]::UtcNow.ToString('yyMMdd'))</PackageReleaseNotes>-->
+    <PackageReleaseNotes>NuGet packages updated</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
