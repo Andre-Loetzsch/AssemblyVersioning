@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>0.2.0.4</AssemblyVersion>
-    <SourceRevisionId>78d4469475b3b8727cfe833518bfc9b91c2497d7</SourceRevisionId>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
     <VersionSuffix>beta</VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
@@ -21,18 +21,19 @@
   </PropertyGroup>
  
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Oleander.Extensions.Configuration" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Configuration.Json" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.DependencyInjection" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Hosting.Abstractions" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Logging" Version="1.1.23348" />
-    <PackageReference Include="Oleander.Extensions.Logging.Abstractions" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Logging.Console" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Logging.File" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters" Version="1.1.23347.11358" />
-    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters.Abstractions" Version="1.1.23347.11358" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+    <PackageReference Include="Oleander.Extensions.Configuration" Version="1.2.1" />
+    <PackageReference Include="Oleander.Extensions.Configuration.Json" Version="1.2.1" />
+    <PackageReference Include="Oleander.Extensions.DependencyInjection" Version="1.2.0.1" />
+    <PackageReference Include="Oleander.Extensions.Hosting.Abstractions" Version="1.2.0.1" />
+    <PackageReference Include="Oleander.Extensions.Logging" Version="1.3.0" />
+    <PackageReference Include="Oleander.Extensions.Logging.Abstractions" Version="1.3.0" />
+    <PackageReference Include="Oleander.Extensions.Logging.Console" Version="1.2.1" />
+    <PackageReference Include="Oleander.Extensions.Logging.File" Version="1.2.2" />
+    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters" Version="1.3.0" />
+    <PackageReference Include="Oleander.Extensions.Logging.TextFormatters.Abstractions" Version="1.2.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
     <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18" PrivateAssets="all"/>-->
   </ItemGroup>
 
