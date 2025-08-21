@@ -47,3 +47,4 @@ dotnet tool install --global dotnet-oleander-versioning-tool
 Release notes:
 - 1.2.0.0 The MSBuild variable $(MSBuildProjectName) is now supported when creating the PackageId.
 - 1.3.0.0 Warn if breaking change
+- 1.4.0.0 NuGet packages updated

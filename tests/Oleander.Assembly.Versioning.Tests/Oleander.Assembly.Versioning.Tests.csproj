@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <SourceRevisionId>8b5c3950d214ce100cbf68ebab215a458701b7a4</SourceRevisionId>
+    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
