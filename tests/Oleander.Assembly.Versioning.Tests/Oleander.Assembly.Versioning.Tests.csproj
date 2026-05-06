@@ -4,7 +4,7 @@
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable Condition="'$(TargetFramework)' == 'net8.0'">enable</Nullable>
     <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
@@ -12,6 +12,8 @@
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
     <IsPublishable>False</IsPublishable>
     <IsPackable>false</IsPackable>
+    <OutputType>exe</OutputType>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,20 +23,36 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
+    
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />-->
+  </ItemGroup>
+
+
+
+  <!--<ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
-    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />-->
-  </ItemGroup>
+    --><!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />--><!--
+  </ItemGroup>-->
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <NoWarn>$(NoWarn);nullable</NoWarn>
-  </PropertyGroup>
 
+  <!--<PropertyGroup>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
+  </PropertyGroup>-->
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
   </ItemGroup>

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Oleander.Assembly.Versioning.Tool.Commands;
 using Oleander.Assembly.Versioning.Tool.Options;
 using Oleander.Extensions.DependencyInjection;
 using Oleander.Extensions.Hosting.Abstractions;
@@ -10,9 +11,6 @@ using Oleander.Extensions.Logging;
 using Oleander.Extensions.Logging.Abstractions;
 using Oleander.Extensions.Logging.Providers;
 using System.CommandLine;
-using System.CommandLine.Builder;
-using System.CommandLine.Parsing;
-using Oleander.Assembly.Versioning.Tool.Commands;
 
 namespace Oleander.Assembly.Versioning.Tool
 {
@@ -38,24 +36,36 @@ namespace Oleander.Assembly.Versioning.Tool
             var host = builder.Build();
             host.Services.InitLoggerFactory();
 
-
             var logger = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
-            var console = new ToolConsole(logger);
             var assemblyVersioningTool = host.Services.GetRequiredService<AssemblyVersioningTool>();
             var compareAssembliesTool = host.Services.GetRequiredService<CompareAssembliesTool>();
             var rootCommand = new RootCommand("assembly-versioning-tool");
-            var commandLine = new CommandLineBuilder(rootCommand)
-                .UseDefaults() // automatically configures dotnet-suggest
-                .Build();
 
             TabCompletions.Logger = logger;
 
-            rootCommand.AddCommand(new UpdateAssemblyVersionCommand(logger, assemblyVersioningTool));
-            rootCommand.AddCommand(new CompareAssembliesCommand(logger, compareAssembliesTool));
+            rootCommand.Add(new UpdateAssemblyVersionCommand(logger, assemblyVersioningTool));
+            rootCommand.Add(new CompareAssembliesCommand(logger, compareAssembliesTool));
 
-            var exitCode = await commandLine.InvokeAsync(args, console);
+            var outWriter = new StringWriter();
+            var errorWriter = new StringWriter();
+            var exitCode = await rootCommand.Parse(args).InvokeAsync(new()
+            {
+                Output = outWriter,
+                Error = errorWriter
+            });
 
-            console.Flush();
+            var outText = outWriter.ToString();
+            var errorText = errorWriter.ToString();
+
+            if (!string.IsNullOrEmpty(errorText))
+            {
+                logger.LogError("{stream.error}", errorText);
+                Console.WriteLine(MSBuildLogFormatter.CreateMSBuildErrorFormat("SRG1", outText, "Oleander.StrResGen.Tool"));
+            }
+            else
+            {
+                logger.LogInformation("{stream.out}", outText);
+            }
 
             const string logMsg = "assembly-versioning '{args}' exit with exit code {exitCode}";
 

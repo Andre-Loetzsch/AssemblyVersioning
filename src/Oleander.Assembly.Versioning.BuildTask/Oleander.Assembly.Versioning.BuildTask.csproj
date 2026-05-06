@@ -18,6 +18,7 @@
   <Import Project="..\..\common\targets\common.targets" />
 
   <PropertyGroup>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
@@ -35,11 +36,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.11.31" PrivateAssets="all" ExcludeAssets="Runtime">
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="18.4.0" PrivateAssets="all" ExcludeAssets="Runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" PrivateAssets="all" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" PrivateAssets="all" />
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>

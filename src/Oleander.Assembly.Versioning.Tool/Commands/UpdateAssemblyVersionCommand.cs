@@ -6,19 +6,27 @@ namespace Oleander.Assembly.Versioning.Tool.Commands;
 
 internal class UpdateAssemblyVersionCommand : UpdateAssemblyVersionCommandBase
 {
-    public UpdateAssemblyVersionCommand(ILogger logger, AssemblyVersioningTool tool) : base(logger, tool, "update", "Compares the public API of two assemblies and updates the calculated version in the project file")
+    public UpdateAssemblyVersionCommand(ILogger logger, AssemblyVersioningTool tool) 
+        : base(logger, tool, "update", "Compares the public API of two assemblies and updates the calculated version in the project file")
     {
-        var targetFileOption = new TargetFileOption().ExistingOnly();
+        var targetFileOption = new TargetFileOption().AcceptExistingOnly();
         var projectDirOption = new ProjectDirOption();
         var projFileOption = new ProjectFileOption();
         var gitDirOption = new GitDirOption();
+        
+        this.Options.Add(targetFileOption);
+        this.Options.Add(projectDirOption);
+        this.Options.Add(projFileOption);
+        this.Options.Add(gitDirOption);
 
-        this.AddOption(targetFileOption);
-        this.AddOption(projectDirOption);
-        this.AddOption(projFileOption);
-        this.AddOption(gitDirOption);
+        this.SetAction(parseResult =>
+        {
+            Task.FromResult(this.UpdateAssemblyVersion(
+                parseResult.GetRequiredValue(targetFileOption),
+                parseResult.GetRequiredValue(projectDirOption),
+                parseResult.GetRequiredValue(projFileOption),
+                parseResult.GetRequiredValue(gitDirOption)));
 
-        this.SetHandler((targetFile, projectDir, projFile, gitDir) =>
-            Task.FromResult(this.UpdateAssemblyVersion(targetFile, projectDir, projFile, gitDir)), targetFileOption, projectDirOption, projFileOption, gitDirOption);
+        });
     }
 }
