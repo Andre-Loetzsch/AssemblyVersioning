@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
+    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <SourceRevisionId>750fee05bf6e768f783835310a68a39949beb442</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="18.4.0" NoWarn="NU1701" />
+    <PackageReference Include="Microsoft.Build" Version="17.11.31" NoWarn="NU1701" />
+    <!--<PackageReference Include="Microsoft.Build" Version="18.4.0" NoWarn="NU1701" />-->
+    <!--<PackageReference Include="Microsoft.Build.Framework" Version="18.4.0" />-->
     <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.1.3" />
     <PackageReference Include="NuGet.Frameworks" Version="7.3.1" />
     <PackageReference Include="NuGet.Protocol" Version="7.3.1" />

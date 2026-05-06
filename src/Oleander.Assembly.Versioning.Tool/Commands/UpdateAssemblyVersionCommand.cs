@@ -23,9 +23,9 @@ internal class UpdateAssemblyVersionCommand : UpdateAssemblyVersionCommandBase
         {
             Task.FromResult(this.UpdateAssemblyVersion(
                 parseResult.GetRequiredValue(targetFileOption),
-                parseResult.GetRequiredValue(projectDirOption),
-                parseResult.GetRequiredValue(projFileOption),
-                parseResult.GetRequiredValue(gitDirOption)));
+                parseResult.GetValue(projectDirOption),
+                parseResult.GetValue(projFileOption),
+                parseResult.GetValue(gitDirOption)));
 
         });
     }
