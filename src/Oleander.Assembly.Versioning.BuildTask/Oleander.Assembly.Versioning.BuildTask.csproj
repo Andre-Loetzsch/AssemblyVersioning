@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <AssemblyVersion>1.5.0.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
+    <SourceRevisionId>343328e848e6c52e0500217546e9961217dd3ed2</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <Title>Assembly versioning task</Title>
     <Description>Compares two assemblies and calculates the current version</Description>
@@ -35,11 +35,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.11.31" PrivateAssets="all" ExcludeAssets="Runtime">
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="18.4.0" PrivateAssets="all" ExcludeAssets="Runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" PrivateAssets="all" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" PrivateAssets="all" />
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>

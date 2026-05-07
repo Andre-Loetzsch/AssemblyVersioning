@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <SourceRevisionId>d03bdaf00234652880e771742472a43efaed2b7c</SourceRevisionId>
+    <AssemblyVersion>1.1.0.1</AssemblyVersion>
+    <SourceRevisionId>343328e848e6c52e0500217546e9961217dd3ed2</SourceRevisionId>
     <VersionSuffix></VersionSuffix>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
@@ -12,7 +12,7 @@
   <Import Project="..\..\common\targets\common.targets" />
 
   <PropertyGroup>
-    <Nullable>disable</Nullable>
+	  <Nullable>disable</Nullable>
     <Description>Compares the API of two assemblies</Description>
   </PropertyGroup>
 

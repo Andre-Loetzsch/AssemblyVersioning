@@ -1,6 +1,6 @@
-﻿using System.CommandLine;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Oleander.Assembly.Versioning.Tool.Options;
+using System.CommandLine;
 
 namespace Oleander.Assembly.Versioning.Tool.Commands;
 
@@ -8,15 +8,21 @@ internal class CompareAssembliesCommand : CompareAssembliesCommandBase
 {
     public CompareAssembliesCommand(ILogger logger, CompareAssembliesTool tool) : base(logger, tool, "compare", "Compares the public API of two assemblies")
     {
-        var target1FileOption = new Target1FileOption().ExistingOnly();
-        var target2FileOption = new Target2FileOption().ExistingOnly();
+        var target1FileOption = new Target1FileOption().AcceptExistingOnly();
+        var target2FileOption = new Target2FileOption().AcceptExistingOnly();
         var outputFormatOption = new OutputFormatOption();
 
-        this.AddOption(target1FileOption);
-        this.AddOption(target2FileOption);
-        this.AddOption(outputFormatOption);
+        this.Options.Add(target1FileOption);    
+        this.Options.Add(target2FileOption);
+        this.Options.Add(outputFormatOption);
 
-        this.SetHandler((target1File, target2File, outputFormat) =>
-            Task.FromResult(this.CompareAssemblies(target1File, target2File, outputFormat)), target1FileOption, target2FileOption, outputFormatOption);
+        this.SetAction(parseResult =>
+        {
+            Task.FromResult(this.CompareAssemblies(
+                parseResult.GetRequiredValue(target1FileOption), 
+                parseResult.GetRequiredValue(target2FileOption),
+                parseResult.GetRequiredValue(outputFormatOption)));
+
+        });
     }
 }

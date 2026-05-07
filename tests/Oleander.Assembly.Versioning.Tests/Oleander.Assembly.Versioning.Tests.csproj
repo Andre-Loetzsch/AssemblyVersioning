@@ -1,57 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
-    <VersionSuffix></VersionSuffix>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
-    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-    <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
-    <IsPublishable>False</IsPublishable>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyVersion>3.0.0.2</AssemblyVersion>
+		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<SourceRevisionId>343328e848e6c52e0500217546e9961217dd3ed2</SourceRevisionId>
+		<VersionSuffix></VersionSuffix>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+		<Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
+		<IsPublishable>False</IsPublishable>
+		<IsPackable>false</IsPackable>
+		<OutputType>exe</OutputType>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Simulations\**" />
-    <EmbeddedResource Remove="Simulations\**" />
-    <None Remove="Simulations\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Simulations\**" />
+		<EmbeddedResource Remove="Simulations\**" />
+		<None Remove="Simulations\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <!--<PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="0.0.18.0" />-->
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+		<PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <NoWarn>$(NoWarn);nullable</NoWarn>
-  </PropertyGroup>
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
-  </ItemGroup>
+		<PackageReference Include="xunit.v3" Version="3.2.2" />
+	</ItemGroup>
 
-  <Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
-    <Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
-    <Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
-  </Target>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Oleander.Assembly.Versioning\Oleander.Assembly.Versioning.csproj" />
+	</ItemGroup>
 
-  <Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
-    <Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;" Condition="Exists('$(TargetDir)Simulations')" />
-    <Exec Command="cp -r &quot;$(ProjectDir)Simulations&quot; &quot;$(TargetDir)&quot;" />
-  </Target>
 
-  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
-    <!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
-  </Target>
+	<Target Name="PreBuild_Windows" Condition="'$(OS)' == 'Windows_NT'" AfterTargets="PreBuildEvent">
+		<Exec Command="rmdir &quot;$(TargetDir)Simulations\&quot; /S /Q" />
+		<Exec Command="xcopy &quot;$(ProjectDir)Simulations\&quot; &quot;$(TargetDir)Simulations\&quot; /E" />
+	</Target>
+
+	<Target Name="PreBuild_Ubuntu" Condition="'$(OS)' != 'Windows_NT'" AfterTargets="PreBuildEvent">
+		<Exec Command="rm -r &quot;$(TargetDir)Simulations&quot;" Condition="Exists('$(TargetDir)Simulations')" />
+		<Exec Command="cp -r &quot;$(ProjectDir)Simulations&quot; &quot;$(TargetDir)&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
+		<!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
+		<!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
+	</Target>
 
 </Project>
