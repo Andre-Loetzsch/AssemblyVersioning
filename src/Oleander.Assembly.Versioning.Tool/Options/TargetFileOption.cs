@@ -4,10 +4,10 @@ namespace Oleander.Assembly.Versioning.Tool.Options;
 
 internal class TargetFileOption : Option<FileInfo>
 {
-    public TargetFileOption() : base(name: "--target", description: "The target assembly")
+    public TargetFileOption() : base(name: "--target", "-t")
     {
-        this.AddAlias("-t");
-        this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.dll"));
-        this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.exe"));
+        this.Description = "The target assembly";
+        this.CompletionSources.Add(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.dll"));
+        this.CompletionSources.Add(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.exe"));
     }
 }

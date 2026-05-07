@@ -5,8 +5,8 @@ namespace Oleander.Assembly.Versioning.Tool.Options;
 
 internal class OutputFormatOption : Option<OutputFormat>
 {
-    public OutputFormatOption() : base(name: "--output", description: "Output format")
+    public OutputFormatOption() : base(name: "--output", "-o")
     {
-        this.AddAlias("-o");
+        this.Description = "Output format";
     }
 }

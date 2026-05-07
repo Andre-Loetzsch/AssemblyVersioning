@@ -4,11 +4,10 @@ namespace Oleander.Assembly.Versioning.Tool.Options;
 
 internal class ProjectFileOption : Option<FileInfo>
 {
-    public ProjectFileOption() : base(name: "--project", description: "The project file for which the version is to be calculated")
+    public ProjectFileOption() : base(name: "--project", "-p")
     {
-        this.AddAlias("-p");
-
-        this.AddValidator(result =>
+        this.Description = "The project file for which the version is to be calculated";
+        this.Validators.Add(result =>
         {
             var fullName = result.GetValueOrDefault<FileInfo>()?.FullName;
 
@@ -16,11 +15,11 @@ internal class ProjectFileOption : Option<FileInfo>
 
             if (!string.Equals(Path.GetExtension(fullName), ".csproj"))
             {
-                result.ErrorMessage = $"Invalid project file: '{fullName}'";
+                result.AddError($"Invalid project file: '{fullName}'");
             }
         });
 
-        this.AddCompletions(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.csproj"));
+        this.CompletionSources.Add(ctx => TabCompletions.FileCompletions(ctx.WordToComplete, "*.csproj"));
     }
 }
 

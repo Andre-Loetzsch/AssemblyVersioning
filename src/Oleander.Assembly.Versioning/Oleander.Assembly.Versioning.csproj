@@ -1,44 +1,51 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <SourceRevisionId>52f00107ccdc35de97e636b1f6a2ce3cee5158a9</SourceRevisionId>
-    <VersionSuffix></VersionSuffix>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
-    <Version>$(AssemblyVersion)</Version>
-    <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyVersion>1.5.0.1</AssemblyVersion>
+		<SourceRevisionId>343328e848e6c52e0500217546e9961217dd3ed2</SourceRevisionId>
+		<VersionSuffix></VersionSuffix>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
+	</PropertyGroup>
 
-  <Import Project="..\..\common\targets\common.targets" />
+	<Import Project="..\..\common\targets\common.targets" />
 
-  <PropertyGroup>
-    <Description>Calculate the next version of an assembly</Description>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>Calculate the next version of an assembly</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\common\src\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\common\src\NullableAttributes.cs" Link="Common\NullableAttributes.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="17.11.31" NoWarn="NU1701" />
-    <PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.1.3" />
-    <PackageReference Include="NuGet.Frameworks" Version="6.14.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.14.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Condition="'$(TargetFramework)' == 'net10.0'" Include="Microsoft.Build" Version="18.4.0" NoWarn="NU1701" />
+		<PackageReference Condition="'$(TargetFramework)' != 'net10.0'" Include="Microsoft.Build" Version="17.11.48" NoWarn="NU1701" />
 
-  <ItemGroup>
-    <Folder Include="Common\" />
-  </ItemGroup>
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="NuGet.Frameworks" Version="6.14.3" />
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="NuGet.Protocol" Version="6.14.3" />
+		
+		<PackageReference Condition="'$(TargetFramework)' != 'netstandard2.0'" Include="NuGet.Frameworks" Version="7.3.1" />
+		<PackageReference Condition="'$(TargetFramework)' != 'netstandard2.0'" Include="NuGet.Protocol" Version="7.3.1" />
+		
+		<PackageReference Include="Microsoft.IO.Redist" NoWarn="NU1701" Version="6.1.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+		<PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Oleander.Assembly.Comparers\Oleander.Assembly.Comparers.csproj" />
-  </ItemGroup>
 
-  <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
-    <!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
-    <!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
-  </Target>
+	<ItemGroup>
+		<Folder Include="Common\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Oleander.Assembly.Comparers\Oleander.Assembly.Comparers.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
+		<!--<Exec Command="$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe update -t $(TargetPath)" />-->
+		<!--<Exec Command="echo &quot;$(SolutionDir)src\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe&quot; update -t &quot;$(TargetPath)&quot; &gt;&gt; &quot;$(SolutionDir)update_solution_versions.cmd&quot;" />-->
+	</Target>
 
 </Project>

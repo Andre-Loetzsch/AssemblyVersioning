@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyVersion>2.1.0.1</AssemblyVersion>
-    <SourceRevisionId>0f84f7af546265b64c9e656774b4d67784031aa9</SourceRevisionId>
+    <AssemblyVersion>2.1.0.2</AssemblyVersion>
+    <SourceRevisionId>343328e848e6c52e0500217546e9961217dd3ed2</SourceRevisionId>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version Condition="'$(VersionSuffix)' != ''">$(AssemblyVersion)-$(VersionSuffix)</Version>
     <Version Condition="'$(VersionSuffix)' == ''">$(AssemblyVersion)</Version>
@@ -17,10 +17,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
     <!--<RuntimeIdentifier>linux-arm64</RuntimeIdentifier>-->
   </PropertyGroup>
+
+  <!--<ItemGroup>
+    <PackageReference Include="Oleander.Assembly.Versioning.BuildTask" Version="1.5.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>-->
 
   
   <Target Name="PostBuild" Condition="Exists('$(SolutionDir)src\\Oleander.Assembly.Versioning.Tool\bin\$(Configuration)\net8.0\Oleander.Assembly.Versioning.Tool.exe')" AfterTargets="PostBuildEvent">
