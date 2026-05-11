@@ -60,9 +60,9 @@ namespace Oleander.Assembly.Versioning.Tool
             if (!string.IsNullOrEmpty(errorText))
             {
                 logger.LogError("{stream.error}", errorText);
-                Console.WriteLine(MSBuildLogFormatter.CreateMSBuildErrorFormat("SRG1", outText, "Oleander.StrResGen.Tool"));
+                Console.WriteLine(MSBuildLogFormatter.CreateMSBuildErrorFormat("SRG1", errorText, "Oleander.StrResGen.Tool"));
             }
-            else
+            else if(!string.IsNullOrEmpty(outText))
             {
                 logger.LogInformation("{stream.out}", outText);
             }
